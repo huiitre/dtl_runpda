@@ -597,3 +597,51 @@ run() {
 }
 # todo alias run to RUN
 alias RUN='run'
+
+# todo en cours de dev
+# déconnection et connexion de dbeaver à la base de donnée
+# # Chemin complet du fichier de la base de données
+# db_file="/path/to/database/file"
+
+# # Délai de surveillance en secondes
+# watch_interval=5
+
+# # Connexion à la base de données à surveiller
+# # Remplacez les valeurs entre < > par les informations de connexion appropriées
+# dbeaver_connection_name="<connection_name>"
+# dbeaver_driver="<driver_name>"
+# dbeaver_url="<jdbc_url>"
+# dbeaver_username="<username>"
+# dbeaver_password="<password>"
+
+# # Fonction de déconnexion de la base de données dans DBeaver
+# function disconnect_dbeaver() {
+#   dbeaver-cli --command "disconnect $dbeaver_connection_name"
+# }
+
+# # Fonction de connexion à la base de données dans DBeaver
+# function connect_dbeaver() {
+#   dbeaver-cli --command "open --name $dbeaver_connection_name --driver $dbeaver_driver --url $dbeaver_url --user $dbeaver_username --password $dbeaver_password"
+# }
+
+# # Initialisation de la connexion à la base de données dans DBeaver
+# connect_dbeaver
+
+# # Boucle de surveillance du fichier de la base de données avec inotifywait
+# while true; do
+#   # Récupération de la date de modification actuelle du fichier
+#   current_file_date=$(stat -c %Y "$db_file")
+  
+#   # Surveillance du fichier avec inotifywait pendant le délai spécifié
+#   inotifywait -q -e modify -t "$watch_interval" "$db_file" > /dev/null 2>&1
+  
+#   # Récupération de la date de modification la plus récente du fichier
+#   latest_file_date=$(stat -c %Y "$db_file")
+  
+#   # Si la date de modification a changé, déconnecter puis reconnecter la base de données dans DBeaver
+#   if [[ "$current_file_date" != "$latest_file_date" ]]; then
+#     echo "Database file has been modified. Disconnecting and reconnecting to the database..."
+#     disconnect_dbeaver
+#     connect_dbeaver
+#   fi
+# done
