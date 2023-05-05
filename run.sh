@@ -149,6 +149,11 @@ run() {
 		printf "%-50s %s\n" "-h | -H | -help    | -HELP" "Affiche l'aide"
 		printf "%-50s %s\n" "-l | -L | -list    | -LIST" "Affiche la liste des PDA"
 		printf "%-50s %s\n" "-v | -V | -version | -VERSION" "Version actuelle du script"
+		printf "%-50s %s\n" "-d | -D | -default | -DEFAULT" "Attribution d'un PDA par défaut"
+		printf "%-50s %s\n" "-c | -C | -clear | -CLEAR" "Vide la base de donnée de l'application EM du PDA sélectionné"
+		printf "%-50s %s\n" "-u | -U | -uninstall | -UNINSTALL" "Désinstalle l'application EM du PDA sélectionné"
+		printf "%-50s %s\n" "-b | -B | -build | -BUILD" "Génère un build APK DEBUG ou RELEASE de l'application (PDA non obligatoire)"
+		printf "%-50s %s\n" "-e | -E | -export | -EXPORT" "Permet d'exporter la base de donnée du PDA sélectionné dans le dossier /database/model-du-pda/"
 	}
 
 	displayDefault() {
