@@ -179,7 +179,7 @@ run() {
 		echo -e $BIPurple
 		echo -e "##################################################"
 		echo -e "||                   RUN PDA                    ||"
-		echo -e "||                 Version 1.0                  ||"
+		echo -e "||                 Version 1.1                  ||"
 		echo -e "||                    by YDL                    ||"
 		echo -e "##################################################"$Color_Off
 		echo ""
