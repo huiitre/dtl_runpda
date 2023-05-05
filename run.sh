@@ -133,7 +133,7 @@ run() {
 			fi
 
 			displayPdaList
-			printf "${BGreen}Lancement du build en cours ...${Color_Off}\n"
+			printf "${BGreen}Lancement du build du PDA $model en cours ...${Color_Off}\n"
 			cordova run android --target="$device_id"
 		fi
 	}
@@ -282,12 +282,12 @@ run() {
 			result=$(adb -s $device_id shell pm clear net.distrilog.easymobile)
 			
 			if [ $result = 'Success' ]; then
-				printf "${BGreen}L'application a bien été clear !${Color_Off}\n"
-				printf "${BBlue}Lancement de l'application ...${Color_Off}\n"
+				printf "${BGreen}L'application du PDA $model a bien été clear !${Color_Off}\n"
+				printf "${BBlue}Lancement de l'application du PDA $model ...${Color_Off}\n"
 				adb -s $device_id shell am start -n net.distrilog.easymobile/.MainActivity > /dev/null 2>&1
-				printf "${BGreen}L'application a bien été lancé !${Color_Off}\n"
+				printf "${BGreen}L'application du PDA $model a bien été lancé !${Color_Off}\n"
 			else
-				printf $BRed"Erreur lors du clear de l'application."$Color_Off
+				printf $BRed"Erreur lors du clear de l'application du PDA $model."$Color_Off
 				return 1
 			fi
 
@@ -319,12 +319,12 @@ run() {
 			result=$(adb -s $device_id shell pm clear net.distrilog.easymobile)
 			
 			if [ $result = 'Success' ]; then
-				printf "${BGreen}L'application a bien été clear !${Color_Off}\n"
-				printf "${BBlue}Lancement de l'application ...${Color_Off}\n"
+				printf "${BGreen}L'application du PDA $model a bien été clear !${Color_Off}\n"
+				printf "${BBlue}Lancement de l'application du PDA $model ...${Color_Off}\n"
 				adb -s $device_id shell am start -n net.distrilog.easymobile/.MainActivity > /dev/null 2>&1
-				printf "${BGreen}L'application a bien été lancé !${Color_Off}\n"
+				printf "${BGreen}L'application du PDA $model a bien été lancé !${Color_Off}\n"
 			else
-				printf $BRed"Erreur lors du clear de l'application."$Color_Off
+				printf $BRed"Erreur lors du clear de l'application du PDA $model."$Color_Off
 				return 1
 			fi
 		fi
@@ -372,9 +372,9 @@ run() {
 			result=$(adb -s $device_id uninstall net.distrilog.easymobile)
 			
 			if [ $result = 'Success' ]; then
-				printf "${BGreen}L'application a bien été désinstallé !${Color_Off}\n"
+				printf "${BGreen}L'application du PDA $model a bien été désinstallé !${Color_Off}\n"
 			else
-				printf $BRed"Erreur lors de la désinstallation de l'application."$Color_Off
+				printf $BRed"Erreur lors de la désinstallation de l'application du PDA $model."$Color_Off
 				return 1
 			fi
 
@@ -406,9 +406,9 @@ run() {
 			result=$(adb -s $device_id uninstall net.distrilog.easymobile)
 			
 			if [ $result = 'Success' ]; then
-				printf "${BGreen}L'application a bien été clear !${Color_Off}\n"
+				printf "${BGreen}L'application du PDA $model a bien été clear !${Color_Off}\n"
 			else
-				printf $BRed"Erreur lors du clear de l'application."$Color_Off
+				printf $BRed"Erreur lors du clear de l'application du PDA $model."$Color_Off
 				return 1
 			fi
 		fi
@@ -497,7 +497,7 @@ run() {
 
 			# * est-ce que l'app est installé sur le pda
 			if [ $(checkAppInstalled $device_id) = 'false' ]; then
-				printf "EasyMobile n'est pas installé sur le PDA $model"
+				printf $BRed"EasyMobile n'est pas installé sur le PDA $model"$Color_Off
 				return 1
 			fi
 		# * sinon, si on a un argument
@@ -520,7 +520,7 @@ run() {
 
 			# * est-ce que l'app est installé sur le pda
 			if [ $(checkAppInstalled $device_id) = 'false' ]; then
-				printf "EasyMobile n'est pas installé sur le PDA $model"
+				printf $BRed"EasyMobile n'est pas installé sur le PDA $model"$Color_Off
 				return 1
 			fi
 		fi
@@ -532,20 +532,20 @@ run() {
     database_name=$model"_"$device_id
 
     if [ -z "$filename" ]; then
-      echo "ERROR"
-      echo "Aucun fichier trouvé dans le répertoire app_webview/Default/databases/file__0/"
+      printf $BRed"ERROR"$Color_Off
+      printf $BRed"Aucun fichier trouvé dans le répertoire app_webview/Default/databases/file__0/"$Color_Off
     else
       # * on check si le dossier du pda a été créé ou non
       if [ ! -d "$FILE_PATH/database/$model" ]; then
-        echo "Le dossier n'existe pas, il va être créé."
+        printf $BGreen"Le dossier n'existe pas, il va être créé."$Color_Off
         mkdir "$FILE_PATH/database/$model"
       fi
 
       output=$(adb -s $device_id exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/$filename > $FILE_PATH/database/$model/$database_name)
       if echo "$output" | grep -q "error"; then
-        echo $BRed"La commande a retourné une erreur : $output"$Color_Off
+        printf $BRed"Erreur lors de l'exportation de la base du PDA $model : $output"$Color_Off
       else
-        echo $BGreen"La commande s'est exécutée avec succès"$Color_Off
+        printf $BGreen"La base du PDA $model a été exportée avec succès !"$Color_Off
       fi
     fi
 
