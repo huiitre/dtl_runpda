@@ -138,15 +138,11 @@ run() {
 		fi
 	}
 
-	# displayListActivesPda() {
-
-	# }
-
 	displayHelp() {
 		echo -e $BIBlue"==========================================="$Color_Off
 		echo -e $BIBlue"Liste des commandes disponibles : $Color_Off"
 		echo -e $BIBlue"==========================================="$Color_Off
-		echo -e $Italic"Note : Marche également avec deux tirets << -- >>."$Style_Off
+		echo -e $Italic"Note : NE FONCTIONNE PAS AVEC PLUS D'UN TIRET, EXEMPLE : << -- >>."$Style_Off
 		echo ""
 		printf $BIBlue"%-50s %s" "Commande :" "Description :"
 		echo -e $Color_Off
@@ -458,8 +454,6 @@ run() {
 	}
 
 	exportBase() {
-		echo "export de la base"
-
     # * pda en paramètre
     pda=$1
     # * date et heure actuelle
@@ -544,9 +538,9 @@ run() {
 
       output=$(adb -s $device_id exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/$filename > $FILE_PATH/database/$model/$database_name)
       if echo "$output" | grep -q "error"; then
-        echo "La commande a retourné une erreur : $output"
+        echo $BRed"La commande a retourné une erreur : $output"$Color_Off
       else
-        echo "La commande s'est exécutée avec succès"
+        echo $BGreen"La commande s'est exécutée avec succès"$Color_Off
       fi
     fi
 
@@ -566,34 +560,82 @@ run() {
 	# désinstaller l'appli
 	# adb -s 21245B18DD uninstall net.distrilog.easymobile
 	# * Liste des commandes disponibles
-	if echo "$1" | grep -qiE '^-{1,2}h(elp)?$'; then
-		displayHelp
-	elif echo "$1" | grep -qiE '^-{1,2}d(efault)?$'; then
-		if [ $defaultMode = true ]; then
-			displayDefault
-		else
-			echo -e $BRed"La déclaration d'un PDA par défaut est désactivée car vous n'avez pas les droits d'écriture sur $CONFIG_FILE, vous ne pouvez pas utiliser cette commande."$Color_Off
-			echo -e $BRed"Pour activer la fonctionnalité, veuillez modifier la variable CONFIG_FILE en lui spécifiant un chemin correct et accessible en lecture et écriture."$Color_Off
-		fi
-	elif echo "$1" | grep -qiE '^-{1,2}l(ist)?$'; then
-		displayPdaList
-	elif echo "$1" | grep -qiE '^-{1,2}v(ersion)?$'; then
-		displayVersion
-	elif echo "$1" | grep -qiE '^-{1,2}l(ist)?$'; then
-		displayListActivesPda
-	elif echo "$1" | grep -qiE '^-{1,2}c(lear)?$'; then	
-		displayClearApp $2
-	elif echo "$1" | grep -qiE '^-{1,2}u(ninstall)?$'; then	
-		displayUninstall $2
-	elif echo "$1" | grep -qiE '^-{1,2}b(uild)?$'; then	
-		displayGenerateBuild
-	elif echo "$1" | grep -qiE '^-{1,2}e(xport)?$'; then	
-		exportBase
-	elif echo "$1" | grep -qiE '^--?.*'; then
-		echo "commande inconnue"
-	else
-		runPda $1
-	fi
+	case $1 in
+		# ? HELP
+		"-h"|"-H"|"-help"|"-HELP")
+			displayHelp;;
+
+		#? LISTE DES PDA
+		"-l"|"-L"|"-list"|"-LIST")
+			displayPdaList;;
+
+		# ? PDA PAR DEFAUT
+		"-d"|"-D"|"-DEFAULT"|"-DEFAULT")
+			if [ $defaultMode = true ]; then
+				displayDefault
+			else
+				echo -e $BRed"La déclaration d'un PDA par défaut est désactivée car vous n'avez pas les droits d'écriture sur $CONFIG_FILE, vous ne pouvez pas utiliser cette commande."$Color_Off
+				echo -e $BRed"Pour activer la fonctionnalité, veuillez modifier la variable CONFIG_FILE en lui spécifiant un chemin correct et accessible en lecture et écriture."$Color_Off
+			fi;;
+
+		# ? VERSION DE L'APP
+		"-v"|"-V"|"-version"|"-VERSION")
+			displayVersion;;
+
+		# ? CLEAR DATABASE DE L'APP
+		"-c"|"-C"|"-clear"|"-CLEAR")
+			displayClearApp;;
+
+		# ? DESINSTALLATION DE L'APP
+		"-u"|"-U"|"-uninstall"|"-UNINSTALL")
+			displayUninstall;;
+
+		# ? GENERATION D'UN BUILD
+		"-b"|"-B"|"-build"|"-BUILD")
+			displayGenerateBuild;;
+
+		# ? EXPORT DE LA BASE
+		"-e"|"-E"|"-export"|"-EXPORT")
+			exportBase;;
+
+		# ? COMMANDE INCORRECT
+		"-"*)
+			printf $BRed"Commande introuvable"$Color_Off
+			echo ""
+			echo ""
+			displayHelp;;
+
+		# ? RUN
+		*)
+			runPda $1;;
+	esac
+
+	# if echo "$1" | grep -qiE '^-{1,2}h(elp)?$'; then
+	# 	displayHelp
+	# elif echo "$1" | grep -qiE '^-{1,2}d(efault)?$'; then
+	# 	if [ $defaultMode = true ]; then
+	# 		displayDefault
+	# 	else
+	# 		echo -e $BRed"La déclaration d'un PDA par défaut est désactivée car vous n'avez pas les droits d'écriture sur $CONFIG_FILE, vous ne pouvez pas utiliser cette commande."$Color_Off
+	# 		echo -e $BRed"Pour activer la fonctionnalité, veuillez modifier la variable CONFIG_FILE en lui spécifiant un chemin correct et accessible en lecture et écriture."$Color_Off
+	# 	fi
+	# elif echo "$1" | grep -qiE '^-{1,2}l(ist)?$'; then
+	# 	displayPdaList
+	# elif echo "$1" | grep -qiE '^-{1,2}v(ersion)?$'; then
+	# 	displayVersion
+	# elif echo "$1" | grep -qiE '^-{1,2}c(lear)?$'; then	
+	# 	displayClearApp $2
+	# elif echo "$1" | grep -qiE '^-{1,2}u(ninstall)?$'; then	
+	# 	displayUninstall $2
+	# elif echo "$1" | grep -qiE '^-{1,2}b(uild)?$'; then	
+	# 	displayGenerateBuild
+	# elif echo "$1" | grep -qiE '^-{1,2}e(xport)?$'; then	
+	# 	exportBase
+	# elif echo "$1" | grep -qiE '^--?.*'; then
+	# 	echo "commande inconnue"
+	# else
+	# 	runPda $1
+	# fi
 }
 # todo alias run to RUN
 alias RUN='run'
