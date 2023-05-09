@@ -110,7 +110,7 @@ run() {
 			fi
 
 			displayPdaList
-			printf "${BGreen}Lancement du build en cours ...${Color_Off}\n"
+			printf "${BGreen}Lancement du build du PDA $model en cours ...${Color_Off}\n"
 			cordova run android --target="$device_id"
 
 		# * l'argument n'est pas vide, on continue
