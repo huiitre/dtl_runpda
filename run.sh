@@ -463,7 +463,6 @@ run() {
     pda=$1
     # * date et heure actuelle
     TIME=$(date +"%Y-%m-%d_%H-%M-%S")
-    echo "time : $TIME"
 
 		# * est-ce qu'on a des pda de branchés
 		if [ "$(echo "$devices" | tr -d '\r\n')" = "List of devices attached" ]; then
