@@ -21,6 +21,12 @@ run() {
 	# * variable qui gère le mode défaut
 	local defaultMode=true
 
+	# * version
+	local APP_VERSION=false
+
+	# * date de la version
+	local APP_VERSION_DATE=false
+
 	checkConfigFile() {
 		# * est-ce que le fichier existe
 		if [ -f "$CONFIG_FILE" ]; then
@@ -37,6 +43,17 @@ run() {
 			fi
 			echo "DEFAULT_PDA=ct60" >> "$CONFIG_FILE"
 		fi
+	}
+
+	# * récupération de la dernière version du script
+	checkMaj() {
+		curl -s "https://api.tools.huiitre.fr/run-pda/check-version" > response.json
+
+		version=$(awk -F'"version":' '{print $2}' response.json | cut -d ',' -f1 | sed 's/[^0-9.]//g')
+		date=$(powershell -command "(Get-Content -Raw response.json | ConvertFrom-Json).date")
+
+		echo "Version: $version"
+		echo "Date: $date"
 	}
 
 	displayPdaList() {
@@ -602,6 +619,10 @@ run() {
 		# ? EXPORT DE LA BASE
 		"-e"|"-E"|"-export"|"-EXPORT")
 			exportBase;;
+
+		# ? EXPORT DE LA BASE
+		"-m"|"-M"|"-maj"|"-MAJ")
+			checkMaj;;
 
 		# ? COMMANDE INCORRECT
 		"-"*)
