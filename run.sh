@@ -12,6 +12,7 @@ run() {
 	local Style_Off='\e[0m'
 	local BRed='\033[1;31m'
 	local BGreen='\033[1;32m'
+	local BYellow='\033[1;33m'
 	local Italic='\e[3m'
 
 	# * on récupère la valeur par défaut
@@ -54,6 +55,8 @@ run() {
 
 		echo "Version: $version"
 		echo "Date: $date"
+
+		rm response.json
 	}
 
 	displayPdaList() {
@@ -71,13 +74,6 @@ run() {
 			serial=$(adb -s $device shell getprop ro.serialno | tr -d '\r' || echo "null")
 			versionEM=$(adb -s $device shell dumpsys package net.distrilog.easymobile | grep versionName | sed 's/.*versionName=//;s/[" ]//g' || null)
 			versionAndroid=$(adb -s $device shell getprop ro.build.version.release)
-
-			# Ignore les périphériques avec des propriétés manquantes
-			# if [[ $model == "null" || $serial == "null" ]]; then
-			# 	continue
-			# fi
-
-			# Ajoute les propriétés au tableau
 			output+=("$model" "$serial" "$versionEM" "$versionAndroid")
 		done
 
@@ -110,12 +106,14 @@ run() {
 			read -p "Veuillez cibler le PDA [défaut : $DEFAULT_PDA]: " name
 			local name=${name:-$DEFAULT_PDA}
 			# * on récupère le modèle et on converti les caractères minuscule en majuscule
-			local model=$(echo "$name" | tr '[:lower:]' '[:upper:]')
-			local result=$(echo "$devices" | grep -iw "$model")
+			local modelPDA=$(echo "$name" | tr '[:lower:]' '[:upper:]')
+			echo "modelPDA : $modelPDA"
+			local result=$(echo "$devices" | grep -iw "$modelPDA")
+			echo "result : $result"
 
 			# * si le pda n'a pas été trouvé
 			if [ -z "$result" ]; then
-				printf $BRed"Erreur: $model non trouvé."$Color_Off
+				printf $BRed"Erreur: $modelPDA non trouvé."$Color_Off
 				return 1
 			fi
 
@@ -127,14 +125,32 @@ run() {
 			fi
 
 			displayPdaList
-			printf "${BGreen}Lancement du build du PDA $model en cours ...${Color_Off}\n"
+
+			# * on check la version EM du PDA
+			versionEM=$(adb -s $device_id shell dumpsys package net.distrilog.easymobile | grep versionName | sed 's/.*versionName=//;s/[" ]//g' || null)
+
+			# * on récupère la version du fichier config.xml
+			config_file="config.xml"
+			versionToCompile=$(grep -oP '(?<=<widget id="net.distrilog.easymobile" version=")[^"]+' "$config_file")
+
+			if [[ "$versionEM" && "$versionToCompile" ]]; then
+				if [[ $versionToCompile == 1.2* && $versionEM == 1.1* ]]; then
+					printf $BYellow"Tu cherches à installer une 1.2 sur une 1.1"
+					return 1
+				elif awk 'BEGIN { exit !('$versionToCompile' < '$versionEM') }'; then
+					printf $BRed"La version à compiler est inférieure à la version EM installée sur le PDA."$Color_Off
+					return 1
+				fi
+			fi
+
+			printf "${BGreen}Lancement du build du PDA $modelPDA en cours ...${Color_Off}\n"
 			cordova run android --target="$device_id"
 
 		# * l'argument n'est pas vide, on continue
 		else
 			# * on récupère le modèle et on converti les caractères minuscule en majuscule
-			local model=$(echo "$1" | tr '[:lower:]' '[:upper:]')
-			local result=$(echo "$devices" | grep -iw "$model")
+			local modelPDA=$(echo "$1" | tr '[:lower:]' '[:upper:]')
+			local result=$(echo "$devices" | grep -iw "$modelPDA")
 
 			# * si le pda n'a pas été trouvé
 			if [ -z "$result" ]; then
@@ -150,7 +166,25 @@ run() {
 			fi
 
 			displayPdaList
-			printf "${BGreen}Lancement du build du PDA $model en cours ...${Color_Off}\n"
+
+			# * on check la version EM du PDA
+			versionEM=$(adb -s $device_id shell dumpsys package net.distrilog.easymobile | grep versionName | sed 's/.*versionName=//;s/[" ]//g' || null)
+
+			# * on récupère la version du fichier config.xml
+			config_file="config.xml"
+			versionToCompile=$(grep -oP '(?<=<widget id="net.distrilog.easymobile" version=")[^"]+' "$config_file")
+
+			if [[ "$versionEM" && "$versionToCompile" ]]; then
+				if [[ $versionToCompile == 1.2* && $versionEM == 1.1* ]]; then
+					printf $BYellow"Tu cherches à installer une 1.2 sur une 1.1"
+					return 1
+				elif awk 'BEGIN { exit !('$versionToCompile' < '$versionEM') }'; then
+					printf $BRed"La version à compiler est inférieure à la version EM installée sur le PDA."$Color_Off
+					return 1
+				fi
+			fi
+
+			printf "${BGreen}Lancement du build du PDA $modelPDA en cours ...${Color_Off}\n"
 			cordova run android --target="$device_id"
 		fi
 	}
