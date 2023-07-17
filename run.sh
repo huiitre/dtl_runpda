@@ -107,9 +107,7 @@ run() {
 			local name=${name:-$DEFAULT_PDA}
 			# * on récupère le modèle et on converti les caractères minuscule en majuscule
 			local modelPDA=$(echo "$name" | tr '[:lower:]' '[:upper:]')
-			echo "modelPDA : $modelPDA"
 			local result=$(echo "$devices" | grep -iw "$modelPDA")
-			echo "result : $result"
 
 			# * si le pda n'a pas été trouvé
 			if [ -z "$result" ]; then
