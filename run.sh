@@ -74,18 +74,22 @@ run() {
 			serial=$(adb -s $device shell getprop ro.serialno | tr -d '\r' || echo "null")
 			versionEM=$(adb -s $device shell dumpsys package net.distrilog.easymobile | grep versionName | sed 's/.*versionName=//;s/[" ]//g' || null)
 			versionAndroid=$(adb -s $device shell getprop ro.build.version.release)
-			output+=("$model" "$serial" "$versionEM" "$versionAndroid")
+			firstInstall=$(adb -s $device shell dumpsys package net.distrilog.easymobile | grep firstInstallTime | sed 's/.*firstInstallTime=//;s/[" ]//g' | sed 's/\(....-..-..\)\(.*\)/\1 \2/' || null)
+			# echo "firstInstall : $firstInstall"
+			lastUpdate=$(adb -s $device shell dumpsys package net.distrilog.easymobile | grep lastUpdateTime | sed 's/.*lastUpdateTime=//;s/[" ]//g' | sed 's/\(....-..-..\)\(.*\)/\1 \2/' || null)
+			# echo "lastUpdate : $lastUpdate"
+			output+=("$model" "$serial" "$versionEM" "$versionAndroid" "$firstInstall" "$lastUpdate")
 		done
 
 		# Affiche le tableau
 		printf "${BGreen}Liste des pda${Color_Off}\n"
 		if [ ${#output[@]} -gt 0 ]; then
-			printf "%-20s %-20s %-20s %-20s\n" "Model" "Serial Number" "EM version" "Android version"
-			printf "%-20s %-20s %-20s %-20s\n" "-----" "-------------" "----------" "---------------"
+			printf "%-20s %-20s %-20s %-20s %-20s %-20s %-20s\n" "Model" "Serial Number" "EM version" "Android version" "First install" "Last Update"
+			printf "%-20s %-20s %-20s %-20s %-20s %-20s %-20s\n" "-----" "-------------" "----------" "---------------" "-------------" "-----------"
 
-			for ((i=0; i<${#output[@]}; i+=4))
+			for ((i=0; i<${#output[@]}; i+=6))
 			do
-				printf "%-20s %-20s %-20s %-20s\n" "${output[$i]}" "${output[$i+1]}" "${output[$i+2]}" "${output[$i+3]}"
+				printf "%-20s %-20s %-20s %-20s %-20s %-20s %-20s\n" "${output[$i]}" "${output[$i+1]}" "${output[$i+2]}" "${output[$i+3]}" "${output[$i+4]}" "${output[$i+5]}"
 			done
 		else
 			printf $BRed"Erreur: aucun appareil trouvé."$Color_Off
