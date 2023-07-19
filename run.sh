@@ -635,7 +635,6 @@ run() {
 			if [ $defaultMode = true ]; then
 				shift
 				displayDefault "$@"
-				;;
 			else
 				echo -e $BRed"La déclaration d'un PDA par défaut est désactivée car vous n'avez pas les droits d'écriture sur $CONFIG_FILE, vous ne pouvez pas utiliser cette commande."$Color_Off
 				echo -e $BRed"Pour activer la fonctionnalité, veuillez modifier la variable CONFIG_FILE en lui spécifiant un chemin correct et accessible en lecture et écriture."$Color_Off
