@@ -74,6 +74,10 @@ run() {
 			serial=$(adb -s $device shell getprop ro.serialno | tr -d '\r' || echo "null")
 			versionEM=$(adb -s $device shell dumpsys package net.distrilog.easymobile | grep versionName | sed 's/.*versionName=//;s/[" ]//g' || null)
 			versionAndroid=$(adb -s $device shell getprop ro.build.version.release)
+
+			# todo récupération de l'instance en cours
+			# * extraction de la base de donnée du PDA
+
 			firstInstall=$(adb -s $device shell dumpsys package net.distrilog.easymobile | grep firstInstallTime | sed 's/.*firstInstallTime=//;s/[" ]//g' | sed 's/\(....-..-..\)\(.*\)/\1 \2/' || null)
 			# echo "firstInstall : $firstInstall"
 			lastUpdate=$(adb -s $device shell dumpsys package net.distrilog.easymobile | grep lastUpdateTime | sed 's/.*lastUpdateTime=//;s/[" ]//g' | sed 's/\(....-..-..\)\(.*\)/\1 \2/' || null)
@@ -629,7 +633,9 @@ run() {
 		# ? PDA PAR DEFAUT
 		"-d"|"-D"|"-DEFAULT"|"-DEFAULT")
 			if [ $defaultMode = true ]; then
-				displayDefault
+				shift
+				displayDefault "$@"
+				;;
 			else
 				echo -e $BRed"La déclaration d'un PDA par défaut est désactivée car vous n'avez pas les droits d'écriture sur $CONFIG_FILE, vous ne pouvez pas utiliser cette commande."$Color_Off
 				echo -e $BRed"Pour activer la fonctionnalité, veuillez modifier la variable CONFIG_FILE en lui spécifiant un chemin correct et accessible en lecture et écriture."$Color_Off
@@ -641,11 +647,15 @@ run() {
 
 		# ? CLEAR DATABASE DE L'APP
 		"-c"|"-C"|"-clear"|"-CLEAR")
-			displayClearApp;;
+			shift
+			displayClearApp "$@"
+			;;
 
 		# ? DESINSTALLATION DE L'APP
 		"-u"|"-U"|"-uninstall"|"-UNINSTALL")
-			displayUninstall;;
+			shift
+			displayUninstall "$@"
+			;;
 
 		# ? GENERATION D'UN BUILD
 		"-b"|"-B"|"-build"|"-BUILD")
@@ -653,7 +663,9 @@ run() {
 
 		# ? EXPORT DE LA BASE
 		"-e"|"-E"|"-export"|"-EXPORT")
-			exportBase;;
+			shift
+			exportBase "$@"
+			;;
 
 		# ? EXPORT DE LA BASE
 		"-m"|"-M"|"-maj"|"-MAJ")
