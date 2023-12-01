@@ -609,6 +609,10 @@ run() {
 		# cd app_webview/Default/databases/file__0
 	}
 
+	testReturn() {
+		echo "Hello from myFunction"
+	}
+
 	# * on lance checkConfigFile afin de créer le fichier de config
 	checkConfigFile
 	
@@ -622,6 +626,9 @@ run() {
 	# adb -s 21245B18DD uninstall net.distrilog.easymobile
 	# * Liste des commandes disponibles
 	case $1 in
+		# ? TEST
+		"-t")
+			testReturn;;
 		# ? HELP
 		"-h"|"-H"|"-help"|"-HELP")
 			displayHelp;;
@@ -709,8 +716,13 @@ run() {
 	# 	runPda $1
 	# fi
 }
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    run $1
+fi
+
 # todo alias run to RUN
-alias RUN='run'
+# alias RUN='run'
 
 # todo en cours de dev
 # déconnection et connexion de dbeaver à la base de donnée

@@ -1,13 +1,13 @@
 {
-  "name": "runpda",
-  "version": "1.0.5",
-  "description": "Test création package NPM",
+  "name": "dtl_runpda",
+  "version": "0.0.1",
+  "description": "Outils de développement pour la mobilité EASYWEB",
   "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "run": "./index.js"
   },
   "repository": {
     "type": "git",
