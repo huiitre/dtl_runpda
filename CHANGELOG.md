@@ -1,7 +1,7 @@
 # Changelog
 
-## [0.0.13] - 01-12-2023
-- Ajout d'un dossier V et d'un fichier 0.0.13.md pour tester + retrait du préfix de partout
+## [v0.0.13] - 01-12-2023
+- Ajout d'un dossier V et d'un fichier 0.0.13.md pour tester
 
 ## [v0.0.12] - 01-12-2023
 - Ajout d'une propriété "files" dans le package.json afin d'y ajouter le CHANGELOG.md
