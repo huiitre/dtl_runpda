@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.0.10] - 01-12-2023
+- Ajout du fichier .npmrc à la racine pour tester l'affichage du changelog par version sur NPM
+
 ## [0.0.9] - 01-12-2023
 - Test d'affichage du changelog sur NPM
 
