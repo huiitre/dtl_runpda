@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.1.3] - 02-12-2023
+- CORRECTIF : Ajout des fichiers utils.js et run.sh dans le package.json
+
 ## [v0.1.2] - 02-12-2023
 - Mise en place d'un fichier utils.js
 - Ajout de la lib CHALK pour ajouter de la couleur au texte et BOXEN pour encadrer le texte
