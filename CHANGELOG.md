@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.1.1] - 01-12-2023
+- Modification fictive afin de voir si je peux afficher un message à l'utilisateur si le package a été mis à jour
+
 ## [v0.1.0] - 01-12-2023
 - Pas possible d'afficher le changelog sur NPM directement, du coup on va s'en passer
 - Suppression du dossier "v"
