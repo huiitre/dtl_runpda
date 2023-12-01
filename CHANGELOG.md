@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.0.12] - 01-12-2023
+- Ajout d'une propriété "files" dans le package.json afin d'y ajouter le CHANGELOG.md
+
 ## [v0.0.11] - 01-12-2023
 - Un autre test ...
 
