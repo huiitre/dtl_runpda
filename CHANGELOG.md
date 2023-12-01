@@ -2,6 +2,7 @@
 
 ## [v0.1.4] - 02-12-2023
 - Test du développement précédent avant d'aller dormir
+- Ajout + test en cours du fichier release.sh
 
 ## [v0.1.3] - 02-12-2023
 - CORRECTIF : Ajout des fichiers utils.js et run.sh dans le package.json
