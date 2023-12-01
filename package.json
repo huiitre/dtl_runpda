@@ -1,6 +1,6 @@
 {
   "name": "runpda",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Test création package NPM",
   "main": "index.js",
   "directories": {
