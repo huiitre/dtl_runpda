@@ -5,9 +5,7 @@ const { log } = require('console');
 
 const args = process.argv.slice(2)
 console.log("%c index.js #7 || BIENVENUE SUR MON SCRIPT DE LA MORT", 'background:blue;color:#fff;font-weight:bold;');
-console.log("%c index.js #7 || BIENVENUE SUR MON SCRIPT DE LA MORT", 'background:blue;color:#fff;font-weight:bold;');
 console.log("%c index.js #8 || args : ", 'background:red;color:#fff;font-weight:bold;', args);
-console.log("%c index.js #9 || FIN DU SCRIPT DE LA MORT", 'background:blue;color:#fff;font-weight:bold;');
 console.log("%c index.js #9 || FIN DU SCRIPT DE LA MORT", 'background:blue;color:#fff;font-weight:bold;');
 
 /* const command = 'bash run.sh -v'
