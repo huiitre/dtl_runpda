@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.0.14] - 01-12-2023
+## [v0.1.0] - 01-12-2023
 - Pas possible d'afficher le changelog sur NPM directement, du coup on va s'en passer
 - Suppression du dossier "v"
 
