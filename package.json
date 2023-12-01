@@ -1,9 +1,11 @@
 {
   "name": "dtl_runpda",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Outils de développement pour la mobilité EASYWEB",
   "main": "index.js",
-  "files": ["CHANGELOG.md"],
+  "files": [
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
