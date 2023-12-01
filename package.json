@@ -1,0 +1,22 @@
+{
+  "name": "runpda",
+  "version": "1.0.2",
+  "description": "Test création package NPM",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huiitre/run-pda-shell.git"
+  },
+  "author": "huiitre.fr",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/huiitre/run-pda-shell/issues"
+  },
+  "homepage": "https://github.com/huiitre/run-pda-shell#readme"
+}
