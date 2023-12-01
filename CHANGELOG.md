@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.1.2] - 02-12-2023
+- Mise en place d'un fichier utils.js
+- Ajout de la lib CHALK pour ajouter de la couleur au texte et BOXEN pour encadrer le texte
+- Création de deux fonctions utilitaires pour aller chercher la dernière version du package + afficher si une mise à jour est disponible
+- Mise en place de ces deux fonction
+
 ## [v0.1.1] - 01-12-2023
 - Modification fictive afin de voir si je peux afficher un message à l'utilisateur si le package a été mis à jour
 

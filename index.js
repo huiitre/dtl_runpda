@@ -1,14 +1,25 @@
 #!/usr/bin/env node
 
-const { exec } = require('child_process');
-const { log } = require('console');
+const utils = require('./utils')
+const { version } = require('./package.json')
 
-const args = process.argv.slice(2)
-console.log("%c index.js #7 || BIENVENUE SUR MON SCRIPT DE LA MORT", 'background:blue;color:#fff;font-weight:bold;');
-console.log("%c index.js #7 || BIENVENUE SUR MON SCRIPT DE LA MORT", 'background:blue;color:#fff;font-weight:bold;');
-console.log("%c index.js #8 || args : ", 'background:red;color:#fff;font-weight:bold;', args);
-console.log("%c index.js #9 || FIN DU SCRIPT DE LA MORT", 'background:blue;color:#fff;font-weight:bold;');
-console.log("%c index.js #9 || FIN DU SCRIPT DE LA MORT", 'background:blue;color:#fff;font-weight:bold;');
+const init = async() => {
+  //* vérification de mise à jour
+  const latestVersion = await utils.getLatestVersion()
+
+  if (version != latestVersion) {
+    utils.updatePackage(version, latestVersion)
+  }
+
+  const args = process.argv.slice(2)
+  console.log("%c index.js #7 || BIENVENUEqsdqsd SUR MON SCRIPT DE LA MORT", 'background:blue;color:#fff;font-weight:bold;');
+  console.log("%c index.js #7 || BIENVENUE SUR MON SCRIPT DE LA MORT", 'background:blue;color:#fff;font-weight:bold;');
+  console.log("%c index.js #8 || args : ", 'background:red;color:#fff;font-weight:bold;', args);
+  console.log("%c index.js #9 || FIN DU SCRIPT DE LA MORT", 'background:blue;color:#fff;font-weight:bold;');
+  console.log("%c index.js #9 || FIN DU SCRIPT DE LA MORT", 'background:blue;color:#fff;font-weight:bold;');
+}
+
+init()
 
 /* const command = 'bash run.sh -v'
 
