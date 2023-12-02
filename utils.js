@@ -2,16 +2,18 @@ const chalk = require('chalk')
 const boxen = require('boxen')
 const { exec } = require('child_process');
 const readline = require('readline');
+const fs = require('fs');
 
 module.exports = {
   //* Fonction d'affiche si une mise à jour est disponible
-  updatePackage: (current, latest) => {
+  updatePackage: (current, latest, changelog) => {
     const packageName = 'DTL_RUNPDA'
     const message = `
       ${chalk.bold(packageName)}
+      ${chalk.bold(chalk.magenta.bold(changelog))}
 
-      Mise à jour disponible ${current} -> ${chalk.green(latest)}
-      Exécutez ${chalk.blue('npm i -g dtl_runpda')} pour mettre à jour
+      Mise à jour disponible ${current} -> ${chalk.green.bold(latest)}
+      Exécutez ${chalk.blue.bold('npm i -g dtl_runpda')} pour mettre à jour
     `;
 
     const options = {
@@ -72,9 +74,6 @@ module.exports = {
         else if (this.isStringEmpty(initialValue) && this.isStringEmpty(defaultValue))
           resolve(false)
     
-        // Faites ce que vous devez faire avec le modèle PDA
-        console.log(`Vous avez choisi le PDA : ${initialValue}`);
-    
         rl.close();
 
         resolve(initialValue)
@@ -82,5 +81,19 @@ module.exports = {
         // Fermer l'interface readline
       });
     })
+  },
+
+  //* modifie le fichier config.json
+  updateConfig: (object, key, value) => {
+    try {
+      object[key] = value
+      const newConfig = JSON.stringify(object, null, 2)
+      fs.writeFileSync('./config.json', newConfig, 'utf-8')
+      return true
+    } catch(err) {
+      chalk.red.bold(`Erreur lors de la modification de la config ${key}`)
+      console.log(err)
+      return false
+    }
   }
 }

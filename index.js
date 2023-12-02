@@ -3,25 +3,36 @@
 const utils = require('./utils')
 const { version } = require('./package.json')
 const functions = require('./functions')
+const fs = require('fs');
+const chalk = require('chalk');
 
 const init = async() => {
+  //* récupération des config
+  let config = {}
+  try {
+    const jsonFile = fs.readFileSync('./config.json', 'utf-8')
+    config = JSON.parse(jsonFile)
+  } catch(err) {
+    console.log(chalk.bold(chalk.red(`Erreur lors de la récupération de la configuration : ${err}`)))
+  }
+
+  const DEFAULT_PDA = config.DEFAULT_PDA
+  const CHANGELOG = config.CHANGELOG
+
   //* vérification de mise à jour
+  let needUpdate = false
   const latestVersion = await utils.getLatestVersion()
 
   if (version != latestVersion) {
-    utils.updatePackage(version, latestVersion)
+    utils.updatePackage(version, latestVersion, CHANGELOG)
+    needUpdate = true
   }
-
-  //* récupération des config
-  /* const config = JSON.parse('./config.json')
-  console.log("%c index.js #17 || config : ", 'background:red;color:#fff;font-weight:bold;', config); */
 
   const args = process.argv.slice(2)
 
   if (args.length == 0) {
     try {
       const result = await utils.execCommand(`adb devices -l`)
-      console.log("%c index.js #19 || result : ", 'background:red;color:#fff;font-weight:bold;', result);
     } catch(err) {
       console.log("%c index.js #21 || ERROR : ", 'background:red;color:#fff;font-weight:bold;', err);
     }
@@ -40,7 +51,11 @@ const init = async() => {
         case 'V':
         case 'version':
         case 'VERSION':
-          console.log(version)
+          //* on affiche la version classique seulement si on ne nécessite pas de mise à jour, sinon ça fait doublon et c'est moche
+          if (!needUpdate) {
+            console.log(chalk.green.bold(version))
+            console.log(chalk.magenta.bold(CHANGELOG))
+          }
           break;
 
         case 'h':
@@ -56,7 +71,7 @@ const init = async() => {
         case 'DEFAULT':
         case 'defaut':
         case 'DEFAUT':
-          console.log("%c index.js #39 || pda par defaut", 'background:blue;color:#fff;font-weight:bold;');
+          functions.changeDefaultPda(DEFAULT_PDA, config)
           break;
 
         case 'c':
@@ -92,7 +107,7 @@ const init = async() => {
         case 'test':
         case 'TEST':
           console.log("%c index.js #46 || TEST", 'background:blue;color:#fff;font-weight:bold;');
-          const pdaSelected = await functions.testReadline('ct60')
+          const pdaSelected = await functions.testReadline(DEFAULT_PDA)
           console.log("%c index.js #54 || pdaSelected : ", 'background:red;color:#fff;font-weight:bold;', pdaSelected);
           break;
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.2.1] - xx-12-2023
+- Mise en place de la fonction qui affiche la liste des PDA
+- Mise en place de la commande "list" qui utilise la fonction d'affichage des PDA
+- Modification du style du numéro de version pour la commande "version"
+- Ajout du lien vers le changelog lors de la commande "version" et également quand une mise à jour est disponible
+
 ## [v0.2.0] - 02-12-2023
 - Mise en place du switch qui gère les différentes commandes
 - ajout de la lib cli-table afin d'afficher un tableau dans le terminal
