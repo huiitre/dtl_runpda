@@ -673,7 +673,7 @@ run() {
 			exportBase "$@"
 			;;
 
-		# ? EXPORT DE LA BASE
+		# ? CHECK MAJ
 		"-m"|"-M"|"-maj"|"-MAJ")
 			checkMaj;;
 
@@ -717,9 +717,14 @@ run() {
 	# fi
 }
 
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    run $1
-fi
+# if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+#     run $1
+# fi
+
+testReturn() {
+	echo "Hello from myFunction"
+}
+testReturn
 
 # todo alias run to RUN
 # alias RUN='run'

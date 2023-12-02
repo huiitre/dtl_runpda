@@ -26,6 +26,7 @@
   "homepage": "https://github.com/huiitre/run-pda-shell#readme",
   "dependencies": {
     "boxen": "^3.0.0",
-    "chalk": "^4.1.2"
+    "chalk": "^4.1.2",
+    "cli-table": "^0.3.11"
   }
 }

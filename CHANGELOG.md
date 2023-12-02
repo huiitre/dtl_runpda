@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.2.0] - 02-12-2023
+- Mise en place du switch qui gère les différentes commandes
+- ajout de la lib cli-table afin d'afficher un tableau dans le terminal
+- Mise en place de la première commande qui affiche le numéro de version
+
 ## [v0.1.4] - 02-12-2023
 - Test du développement précédent avant d'aller dormir
 - Ajout + test en cours du fichier release.sh
