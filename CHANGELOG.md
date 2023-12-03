@@ -1,7 +1,8 @@
 # Changelog
 
-## [v0.2.2] - 03-12-2023
+## [v0.2.2] - 03-12-2023 latest
 - Ajout d'un argument optionnel lors du changement du pda par défaut (run -d optionArgs) afin d'aller plus vite
+- Ajout du fichier config.json dans le package.json
 
 ## [v0.2.1] - 03-12-2023
 - Mise en place de la fonction qui affiche la liste des PDA
