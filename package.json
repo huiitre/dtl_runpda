@@ -1,6 +1,6 @@
 {
   "name": "dtl_runpda",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "description": "Outils de développement pour la mobilité EASYWEB",
   "main": "index.js",
   "files": [
