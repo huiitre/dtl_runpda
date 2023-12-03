@@ -9,8 +9,7 @@
     "run.sh",
     "release.sh",
     "functions.js",
-    "commands.js",
-    "config.json"
+    "commands.js"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

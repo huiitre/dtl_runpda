@@ -13,28 +13,31 @@ const init = async() => {
 
   //* chemin absolu vers le module pour créer le fichier json
   const jsonPath = path.join(__dirname, 'config.json')
+  console.log("%c index.js #16 || jsonPath : ", 'background:red;color:#fff;font-weight:bold;', jsonPath);
 
   //* récupération des config
   let config = {}
-  try {
-    const jsonFile = fs.readFileSync(jsonPath, 'utf-8')
-    config = JSON.parse(jsonFile)
-  } catch(err) {
-    if (err.code === 'ENOENT') {
-      initialConfig = {
-        CHANGELOG: "https://github.com/huiitre/run-pda-shell/blob/master/CHANGELOG.md",
-        DEFAULT_PDA: "eda52",
-        TIME_BEFORE_CHECK_UPDATE: 1,
-        REQUIRE_UPDATE: false,
-        LATEST_VERSION: null,
-        LAST_CHECK_UPDATE: null
-      }
-      fs.writeFileSync(jsonPath, JSON.stringify(initialConfig, null, 2), 'utf-8');
-      const jsonFile = fs.readFileSync('./config.json', 'utf-8')
+  if (fs.existsSync(jsonPath)) {
+    console.log("%c index.js #21 || le fichier existe", 'background:blue;color:#fff;font-weight:bold;');
+    try {
+      const jsonFile = fs.readFileSync(jsonPath, 'utf-8')
       config = JSON.parse(jsonFile)
-    } else {
+    } catch(err) {
       console.log(chalk.bold(chalk.red(`Erreur lors de la récupération de la configuration : ${err}`)))
     }
+  } else {
+    console.log("%c index.js #23 || le fichier n'existe pas", 'background:blue;color:#fff;font-weight:bold;');
+    initialConfig = {
+      CHANGELOG: "https://github.com/huiitre/run-pda-shell/blob/master/CHANGELOG.md",
+      DEFAULT_PDA: "eda52",
+      TIME_BEFORE_CHECK_UPDATE: 1,
+      REQUIRE_UPDATE: false,
+      LATEST_VERSION: null,
+      LAST_CHECK_UPDATE: null
+    }
+    fs.writeFileSync(jsonPath, JSON.stringify(initialConfig, null, 2), 'utf-8');
+    const jsonFile = fs.readFileSync('./config.json', 'utf-8')
+    config = JSON.parse(jsonFile)
   }
 
   //* pda par défaut
