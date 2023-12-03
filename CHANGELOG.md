@@ -1,6 +1,9 @@
 # Changelog
 
-## [v0.2.6] - 03-12-2023 latest
+## [v0.2.7] - 03-12-2023 latest
+- Retrait des console.log + test OK
+
+## [v0.2.6] - 03-12-2023
 - Fix en ajoutant le path global également dans la fonction updateConfig (oublie)
 
 ## [v0.2.5] - 03-12-2023

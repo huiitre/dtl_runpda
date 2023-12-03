@@ -14,10 +14,8 @@ const init = async() => {
   //* récupération des config
   //* chemin absolu vers le module pour créer le fichier json
   const jsonPath = path.join(__dirname, 'config.json')
-  console.log("%c index.js #16 || jsonPath : ", 'background:red;color:#fff;font-weight:bold;', jsonPath);
   let config = {}
   if (fs.existsSync(jsonPath)) {
-    console.log("%c index.js #21 || le fichier existe", 'background:blue;color:#fff;font-weight:bold;');
     try {
       const jsonFile = fs.readFileSync(jsonPath, 'utf-8')
       config = JSON.parse(jsonFile)
@@ -25,7 +23,6 @@ const init = async() => {
       console.log(chalk.bold(chalk.red(`Erreur lors de la récupération de la configuration : ${err}`)))
     }
   } else {
-    console.log("%c index.js #23 || le fichier n'existe pas", 'background:blue;color:#fff;font-weight:bold;');
     initialConfig = {
       CHANGELOG: "https://github.com/huiitre/run-pda-shell/blob/master/CHANGELOG.md",
       DEFAULT_PDA: "eda52",
