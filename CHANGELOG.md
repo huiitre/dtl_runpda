@@ -1,6 +1,9 @@
 # Changelog
 
-## [v0.2.13] - 03-12-2023 latest
+## [v0.2.14] - 03-12-2023 latest
+- FIX suppression d'un console.log qui fait planter l'app
+
+## [v0.2.13] - 03-12-2023
 - Modification du path du fichier de config par celui de l'utilisateur/dtl_runpda afin qu'il ne soit pas écrasé lors de l'update
 
 ## [v0.2.12] - 03-12-2023

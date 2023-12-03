@@ -9,7 +9,6 @@ const path = require('path');
 const os = require('os')
 
 const init = async() => {
-  console.log("%c index.js #13 || userConfigPath : ", 'background:red;color:#fff;font-weight:bold;', userConfigPath);
   //* on lance le serveur adb
   await utils.execCommand(`adb start-server`)
 
