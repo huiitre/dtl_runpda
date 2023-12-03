@@ -1,6 +1,9 @@
 # Changelog
 
-## [v0.2.3] - 03-12-2023 latest
+## [v0.2.4] - 03-12-2023 latest
+- Ajout d'un path qui pointe vers le module dtl_runpda et non plus sur le dossier en cours
+
+## [v0.2.3] - 03-12-2023
 - Extraction du config.json si celui ci n'existe pas et a été créé
 
 ## [v0.2.2] - 03-12-2023

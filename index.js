@@ -5,15 +5,19 @@ const { version } = require('./package.json')
 const functions = require('./functions')
 const fs = require('fs');
 const chalk = require('chalk');
+const path = require('path');
 
 const init = async() => {
   //* on lance le serveur adb
   await utils.execCommand(`adb start-server`)
 
+  //* chemin absolu vers le module pour créer le fichier json
+  const jsonPath = path.join(__dirname, 'config.json')
+
   //* récupération des config
   let config = {}
   try {
-    const jsonFile = fs.readFileSync('./config.json', 'utf-8')
+    const jsonFile = fs.readFileSync(jsonPath, 'utf-8')
     config = JSON.parse(jsonFile)
   } catch(err) {
     if (err.code === 'ENOENT') {
@@ -25,7 +29,7 @@ const init = async() => {
         LATEST_VERSION: null,
         LAST_CHECK_UPDATE: null
       }
-      fs.writeFileSync('./config.json', JSON.stringify(initialConfig, null, 2), 'utf-8');
+      fs.writeFileSync(jsonPath, JSON.stringify(initialConfig, null, 2), 'utf-8');
       const jsonFile = fs.readFileSync('./config.json', 'utf-8')
       config = JSON.parse(jsonFile)
     } else {
