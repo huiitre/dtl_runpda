@@ -1,6 +1,9 @@
 # Changelog
 
-## [v0.2.12] - 03-12-2023 latest
+## [v0.2.13] - 03-12-2023 latest
+- Modification du path du fichier de config par celui de l'utilisateur/dtl_runpda afin qu'il ne soit pas écrasé lors de l'update
+
+## [v0.2.12] - 03-12-2023
 - ROLLBACK de la création du dossier config
 
 ## [v0.2.11] - 03-12-2023

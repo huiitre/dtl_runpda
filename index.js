@@ -6,14 +6,16 @@ const functions = require('./functions')
 const fs = require('fs');
 const chalk = require('chalk');
 const path = require('path');
+const os = require('os')
 
 const init = async() => {
+  console.log("%c index.js #13 || userConfigPath : ", 'background:red;color:#fff;font-weight:bold;', userConfigPath);
   //* on lance le serveur adb
   await utils.execCommand(`adb start-server`)
 
   //* récupération des config
   //* chemin absolu vers le module pour créer le fichier json
-  const jsonPath = path.join(__dirname, 'config.json')
+  const jsonPath = path.join(os.homedir(), 'dtl_runpda', 'config.json')
   let config = {}
   if (fs.existsSync(jsonPath)) {
     try {
