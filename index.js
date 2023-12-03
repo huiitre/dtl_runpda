@@ -52,7 +52,6 @@ const init = async() => {
   //* dans tous les cas si la date est dépassé, on check
   //* ou sinon dans tous les cas on check si une maj est requise
   if (now > nextCheck || REQUIRE_UPDATE) {
-    console.log("%c index.js #37 || dans le if bizarre", 'background:blue;color:#fff;font-weight:bold;');
     utils.updateConfig(config, 'LAST_CHECK_UPDATE', now)
 
     //* on récupère la dernière version
