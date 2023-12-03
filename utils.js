@@ -87,7 +87,7 @@ module.exports = {
   //* modifie le fichier config.json
   updateConfig: (object, key, value) => {
     try {
-      const jsonPath = path.join(__dirname, 'config', 'config.json')
+      const jsonPath = path.join(__dirname, 'config.json')
       object[key] = value
       const newConfig = JSON.stringify(object, null, 2)
       fs.writeFileSync(jsonPath, newConfig, 'utf-8')

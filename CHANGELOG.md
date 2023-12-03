@@ -1,6 +1,9 @@
 # Changelog
 
-## [v0.2.11] - 03-12-2023 latest
+## [v0.2.12] - 03-12-2023 latest
+- ROLLBACK de la création du dossier config
+
+## [v0.2.11] - 03-12-2023
 - Ajout d'un dossier config pour stocker le json
 
 ## [v0.2.10] - 03-12-2023
