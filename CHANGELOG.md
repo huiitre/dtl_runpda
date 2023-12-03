@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.2.2] - 03-12-2023
+- Ajout d'un argument optionnel lors du changement du pda par défaut (run -d optionArgs) afin d'aller plus vite
+
 ## [v0.2.1] - 03-12-2023
 - Mise en place de la fonction qui affiche la liste des PDA
 - Mise en place de la commande "list" qui utilise la fonction d'affichage des PDA
