@@ -1,6 +1,9 @@
 # Changelog
 
-## [v0.2.7] - 03-12-2023 latest
+## [v0.2.8] - 03-12-2023 latest
+- Ajout du fichier .npmignore afin d'ignorer l'écrasement du fichier config.json
+
+## [v0.2.7] - 03-12-2023
 - Retrait des console.log + test OK
 
 ## [v0.2.6] - 03-12-2023
