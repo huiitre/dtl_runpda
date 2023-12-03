@@ -13,7 +13,7 @@ const init = async() => {
 
   //* récupération des config
   //* chemin absolu vers le module pour créer le fichier json
-  const jsonPath = path.join(__dirname, 'config.json')
+  const jsonPath = path.join(__dirname, 'config', 'config.json')
   let config = {}
   if (fs.existsSync(jsonPath)) {
     try {

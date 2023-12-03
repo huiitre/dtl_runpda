@@ -4,6 +4,7 @@
   "description": "Outils de développement pour la mobilité EASYWEB",
   "main": "index.js",
   "files": [
+    "config",
     "CHANGELOG.md",
     "utils.js",
     "run.sh",

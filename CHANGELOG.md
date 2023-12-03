@@ -1,6 +1,9 @@
 # Changelog
 
-## [v0.2.10] - 03-12-2023 latest
+## [v0.2.11] - 03-12-2023 latest
+- Ajout d'un dossier config pour stocker le json
+
+## [v0.2.10] - 03-12-2023
 - TEST Ajout du npmignore dans le package.json
 
 ## [v0.2.9] - 03-12-2023
