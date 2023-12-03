@@ -1,6 +1,9 @@
 # Changelog
 
-## [v0.2.9] - 03-12-2023 latest
+## [v0.2.10] - 03-12-2023 latest
+- TEST Ajout du npmignore dans le package.json
+
+## [v0.2.9] - 03-12-2023
 - Ajout du npmignore dans le package.json
 
 ## [v0.2.8] - 03-12-2023
