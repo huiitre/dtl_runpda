@@ -1,6 +1,9 @@
 # Changelog
 
-## [v0.2.4] - 03-12-2023 latest
+## [v0.2.5] - 03-12-2023 latest
+- Fix création du json + ajout de logs pour tester
+
+## [v0.2.4] - 03-12-2023
 - Ajout d'un path qui pointe vers le module dtl_runpda et non plus sur le dossier en cours
 
 ## [v0.2.3] - 03-12-2023
