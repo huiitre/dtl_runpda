@@ -75,16 +75,24 @@ module.exports = {
   },
 
   //* Change le PDA par défaut
-  changeDefaultPda: async(defaultPda, config) => {
+  changeDefaultPda: async(defaultPda, config, args) => {
     try {
-      console.log('')
-      const pda = await utils.getUserInput(chalk.bold(`Veuillez inscrire le nouveau PDA à utiliser par défaut`), defaultPda)
+      if (args != null) {
+        utils.updateConfig(config, 'DEFAULT_PDA', args)
+        
+        console.log('')
 
-      utils.updateConfig(config, 'DEFAULT_PDA', pda)
-      
-      console.log('')
+        console.log(`Le PDA par défaut a été changé par ${chalk.green.bold(args)} (anciennement ${chalk.red.bold(defaultPda)})`)
+      } else {
+        console.log('')
+        const pda = await utils.getUserInput(chalk.bold(`Veuillez inscrire le nouveau PDA à utiliser par défaut`), defaultPda)
 
-      console.log(`Le PDA par défaut a été changé par ${chalk.green.bold(pda)} (anciennement ${chalk.red.bold(defaultPda)})`)
+        utils.updateConfig(config, 'DEFAULT_PDA', pda)
+        
+        console.log('')
+
+        console.log(`Le PDA par défaut a été changé par ${chalk.green.bold(pda)} (anciennement ${chalk.red.bold(defaultPda)})`)
+      }
 
     } catch(err) {
       console.log(`ERROR : ${err}`)

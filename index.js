@@ -7,6 +7,9 @@ const fs = require('fs');
 const chalk = require('chalk');
 
 const init = async() => {
+  //* on lance le serveur adb
+  await utils.execCommand(`adb start-server`)
+
   //* récupération des config
   let config = {}
   try {
@@ -113,7 +116,7 @@ const init = async() => {
         case 'DEFAULT':
         case 'defaut':
         case 'DEFAUT':
-          functions.changeDefaultPda(DEFAULT_PDA, config)
+          functions.changeDefaultPda(DEFAULT_PDA, config, (args[1] || null))
           break;
 
         case 'c':

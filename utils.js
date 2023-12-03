@@ -41,11 +41,11 @@ module.exports = {
     return new Promise((resolve, reject) => {
       exec(command, (err, stdout, stderr) => {
         if (err) {
-          console.log("%c utils.js #40 || ERROR : ", 'background:red;color:#fff;font-weight:bold;', err);
+          console.log("ERROR : ", err);
           reject(err)
         }
         if (stderr) {
-          console.log("%c utils.js #44 || stderr : ", 'background:red;color:#fff;font-weight:bold;', stderr);
+          console.log(stderr);
         }
         resolve(stdout)
       })
