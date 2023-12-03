@@ -3,6 +3,7 @@ const boxen = require('boxen')
 const { exec } = require('child_process');
 const readline = require('readline');
 const fs = require('fs');
+const path = require('path');
 
 module.exports = {
   //* Fonction d'affiche si une mise à jour est disponible
@@ -86,9 +87,10 @@ module.exports = {
   //* modifie le fichier config.json
   updateConfig: (object, key, value) => {
     try {
+      const jsonPath = path.join(__dirname, 'config.json')
       object[key] = value
       const newConfig = JSON.stringify(object, null, 2)
-      fs.writeFileSync('./config.json', newConfig, 'utf-8')
+      fs.writeFileSync(jsonPath, newConfig, 'utf-8')
       return true
     } catch(err) {
       chalk.red.bold(`Erreur lors de la modification de la config ${key}`)

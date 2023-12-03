@@ -1,6 +1,9 @@
 # Changelog
 
-## [v0.2.5] - 03-12-2023 latest
+## [v0.2.6] - 03-12-2023 latest
+- Fix en ajoutant le path global également dans la fonction updateConfig (oublie)
+
+## [v0.2.5] - 03-12-2023
 - Fix création du json + ajout de logs pour tester
 
 ## [v0.2.4] - 03-12-2023

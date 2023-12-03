@@ -11,11 +11,10 @@ const init = async() => {
   //* on lance le serveur adb
   await utils.execCommand(`adb start-server`)
 
+  //* récupération des config
   //* chemin absolu vers le module pour créer le fichier json
   const jsonPath = path.join(__dirname, 'config.json')
   console.log("%c index.js #16 || jsonPath : ", 'background:red;color:#fff;font-weight:bold;', jsonPath);
-
-  //* récupération des config
   let config = {}
   if (fs.existsSync(jsonPath)) {
     console.log("%c index.js #21 || le fichier existe", 'background:blue;color:#fff;font-weight:bold;');
@@ -36,7 +35,7 @@ const init = async() => {
       LAST_CHECK_UPDATE: null
     }
     fs.writeFileSync(jsonPath, JSON.stringify(initialConfig, null, 2), 'utf-8');
-    const jsonFile = fs.readFileSync('./config.json', 'utf-8')
+    const jsonFile = fs.readFileSync(jsonPath, 'utf-8')
     config = JSON.parse(jsonFile)
   }
 
