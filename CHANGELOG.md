@@ -1,6 +1,9 @@
 # Changelog
 
-## [v0.2.2] - 03-12-2023 latest
+## [v0.2.3] - 03-12-2023 latest
+- Extraction du config.json si celui ci n'existe pas et a été créé
+
+## [v0.2.2] - 03-12-2023
 - Ajout d'un argument optionnel lors du changement du pda par défaut (run -d optionArgs) afin d'aller plus vite
 - Ajout du fichier config.json dans le package.json
 

@@ -26,6 +26,8 @@ const init = async() => {
         LAST_CHECK_UPDATE: null
       }
       fs.writeFileSync('./config.json', JSON.stringify(initialConfig, null, 2), 'utf-8');
+      const jsonFile = fs.readFileSync('./config.json', 'utf-8')
+      config = JSON.parse(jsonFile)
     } else {
       console.log(chalk.bold(chalk.red(`Erreur lors de la récupération de la configuration : ${err}`)))
     }
