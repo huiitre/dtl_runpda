@@ -3,6 +3,7 @@ const boxen = require('boxen')
 const { exec } = require('child_process');
 const readline = require('readline');
 const fs = require('fs');
+const os = require('os')
 const path = require('path');
 
 module.exports = {
@@ -87,7 +88,8 @@ module.exports = {
   //* modifie le fichier config.json
   updateConfig: (object, key, value) => {
     try {
-      const jsonPath = path.join(os.homedir(), 'dtl_runpda', 'config.json')
+      const configDir = path.join(os.homedir(), 'dtl_runpda');
+      const jsonPath = path.join(configDir, 'config.json')
       object[key] = value
       const newConfig = JSON.stringify(object, null, 2)
       fs.writeFileSync(jsonPath, newConfig, 'utf-8')

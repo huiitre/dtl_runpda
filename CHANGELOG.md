@@ -1,6 +1,9 @@
 # Changelog
 
-## [v0.2.14] - 03-12-2023 latest
+## [v0.2.15] - 03-12-2023 latest
+- FIX création du dossier avec mkdirsync avant de créer le fichier
+
+## [v0.2.14] - 03-12-2023
 - FIX suppression d'un console.log qui fait planter l'app
 
 ## [v0.2.13] - 03-12-2023

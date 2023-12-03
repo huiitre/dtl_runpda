@@ -14,7 +14,8 @@ const init = async() => {
 
   //* récupération des config
   //* chemin absolu vers le module pour créer le fichier json
-  const jsonPath = path.join(os.homedir(), 'dtl_runpda', 'config.json')
+  const configDir = path.join(os.homedir(), 'dtl_runpda');
+  const jsonPath = path.join(configDir, 'config.json')
   let config = {}
   if (fs.existsSync(jsonPath)) {
     try {
@@ -32,6 +33,7 @@ const init = async() => {
       LATEST_VERSION: null,
       LAST_CHECK_UPDATE: null
     }
+    fs.mkdirSync(configDir)
     fs.writeFileSync(jsonPath, JSON.stringify(initialConfig, null, 2), 'utf-8');
     const jsonFile = fs.readFileSync(jsonPath, 'utf-8')
     config = JSON.parse(jsonFile)
