@@ -17,7 +17,10 @@ const init = async() => {
       initialConfig = {
         CHANGELOG: "https://github.com/huiitre/run-pda-shell/blob/master/CHANGELOG.md",
         DEFAULT_PDA: "eda52",
-        TIME_BEFORE_CHECK_UPDATE: 1
+        TIME_BEFORE_CHECK_UPDATE: 1,
+        REQUIRE_UPDATE: false,
+        LATEST_VERSION: null,
+        LAST_CHECK_UPDATE: null
       }
       fs.writeFileSync('./config.json', JSON.stringify(initialConfig, null, 2), 'utf-8');
     } else {
@@ -36,7 +39,9 @@ const init = async() => {
   //* temps (en heure) avant le prochain check de version
   const TIME_BEFORE_CHECK_UPDATE = config.TIME_BEFORE_CHECK_UPDATE
   //* est-ce qu'un update est requis
-  let REQUIRE_UPDATE = false
+  let REQUIRE_UPDATE = config.REQUIRE_UPDATE
+  //* dernière version depuis le dernier check
+  let LATEST_VERSION = config.LATEST_VERSION
 
   //* date courante
   const now = new Date()
@@ -44,8 +49,9 @@ const init = async() => {
   //* vérification de mise à jour
   const nextCheck = new Date(LAST_CHECK_UPDATE.getTime() + TIME_BEFORE_CHECK_UPDATE * 60 * 60 * 1000)
 
-  //* est-ce qu'on doit check la mise à jour
-  if (now > nextCheck && !REQUIRE_UPDATE) {
+  //* dans tous les cas si la date est dépassé, on check
+  //* ou sinon dans tous les cas on check si une maj est requise
+  if (now > nextCheck || REQUIRE_UPDATE) {
     console.log("%c index.js #37 || dans le if bizarre", 'background:blue;color:#fff;font-weight:bold;');
     utils.updateConfig(config, 'LAST_CHECK_UPDATE', now)
 
@@ -56,6 +62,12 @@ const init = async() => {
     if (version != latestVersion) {
       utils.updatePackage(version, latestVersion, CHANGELOG)
       REQUIRE_UPDATE = true
+      utils.updateConfig(config, 'REQUIRE_UPDATE', true)
+    }
+    //* finalement l'app a été mise à jour dernièrement, donc on est plus requis d'update
+    else {
+      REQUIRE_UPDATE = false
+      utils.updateConfig(config, 'REQUIRE_UPDATE', false)
     }
   }
 
