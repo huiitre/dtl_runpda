@@ -13,19 +13,50 @@ const init = async() => {
     const jsonFile = fs.readFileSync('./config.json', 'utf-8')
     config = JSON.parse(jsonFile)
   } catch(err) {
-    console.log(chalk.bold(chalk.red(`Erreur lors de la récupération de la configuration : ${err}`)))
+    if (err.code === 'ENOENT') {
+      initialConfig = {
+        CHANGELOG: "https://github.com/huiitre/run-pda-shell/blob/master/CHANGELOG.md",
+        DEFAULT_PDA: "eda52",
+        TIME_BEFORE_CHECK_UPDATE: 1
+      }
+      fs.writeFileSync('./config.json', JSON.stringify(initialConfig, null, 2), 'utf-8');
+    } else {
+      console.log(chalk.bold(chalk.red(`Erreur lors de la récupération de la configuration : ${err}`)))
+    }
   }
 
+  //* pda par défaut
   const DEFAULT_PDA = config.DEFAULT_PDA
+  //* url du fichier changelog
   const CHANGELOG = config.CHANGELOG
+  
+  //* est-ce qu'un update est requis
+  //* date du dernier check de mise à jour
+  const LAST_CHECK_UPDATE = new Date(config.LAST_CHECK_UPDATE)
+  //* temps (en heure) avant le prochain check de version
+  const TIME_BEFORE_CHECK_UPDATE = config.TIME_BEFORE_CHECK_UPDATE
+  //* est-ce qu'un update est requis
+  let REQUIRE_UPDATE = false
+
+  //* date courante
+  const now = new Date()
 
   //* vérification de mise à jour
-  let needUpdate = false
-  const latestVersion = await utils.getLatestVersion()
+  const nextCheck = new Date(LAST_CHECK_UPDATE.getTime() + TIME_BEFORE_CHECK_UPDATE * 60 * 60 * 1000)
 
-  if (version != latestVersion) {
-    utils.updatePackage(version, latestVersion, CHANGELOG)
-    needUpdate = true
+  //* est-ce qu'on doit check la mise à jour
+  if (now > nextCheck && !REQUIRE_UPDATE) {
+    console.log("%c index.js #37 || dans le if bizarre", 'background:blue;color:#fff;font-weight:bold;');
+    utils.updateConfig(config, 'LAST_CHECK_UPDATE', now)
+
+    //* on récupère la dernière version
+    const latestVersion = await utils.getLatestVersion()
+
+    //* si la dernière version est supérieure à celle en cours
+    if (version != latestVersion) {
+      utils.updatePackage(version, latestVersion, CHANGELOG)
+      REQUIRE_UPDATE = true
+    }
   }
 
   const args = process.argv.slice(2)
@@ -52,7 +83,7 @@ const init = async() => {
         case 'version':
         case 'VERSION':
           //* on affiche la version classique seulement si on ne nécessite pas de mise à jour, sinon ça fait doublon et c'est moche
-          if (!needUpdate) {
+          if (!REQUIRE_UPDATE) {
             console.log(chalk.green.bold(version))
             console.log(chalk.magenta.bold(CHANGELOG))
           }
