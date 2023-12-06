@@ -1,6 +1,10 @@
 # Changelog
 
-## [v0.2.15] - 03-12-2023 latest
+## [v0.2.16] - 06-12-2023 latest
+- Ajout d'une commande `run --update` afin d'update le package plus facilement
+- Refactorisation d'une partie du code (commands.js -> cli-commands.js)
+
+## [v0.2.15] - 03-12-2023
 - FIX création du dossier avec mkdirsync avant de créer le fichier
 
 ## [v0.2.14] - 03-12-2023

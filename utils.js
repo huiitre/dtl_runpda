@@ -15,7 +15,7 @@ module.exports = {
       ${chalk.bold(chalk.magenta.bold(changelog))}
 
       Mise à jour disponible ${current} -> ${chalk.green.bold(latest)}
-      Exécutez ${chalk.blue.bold('npm i -g dtl_runpda')} pour mettre à jour
+      Exécutez ${chalk.blue.bold('npm i -g dtl_runpda')} ou ${chalk.blue.bold('run --update')} pour mettre à jour le package.
     `;
 
     const options = {
@@ -99,5 +99,12 @@ module.exports = {
       console.log(err)
       return false
     }
+  },
+
+  //* affiche la version en cours (si pas d'update nécessaire)
+  showCurrentVersion: (version, CHANGELOG) => {
+    console.log('')
+    console.log(chalk.green.bold(version))
+    console.log(chalk.magenta.bold(CHANGELOG))
   }
 }

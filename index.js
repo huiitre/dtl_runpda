@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
 const utils = require('./utils')
+const cli = require('./cli-commands')
 const { version } = require('./package.json')
 const functions = require('./functions')
 const fs = require('fs');
 const chalk = require('chalk');
 const path = require('path');
-const os = require('os')
+const os = require('os');
 
 const init = async() => {
   //* on lance le serveur adb
@@ -105,10 +106,8 @@ const init = async() => {
         case 'version':
         case 'VERSION':
           //* on affiche la version classique seulement si on ne nécessite pas de mise à jour, sinon ça fait doublon et c'est moche
-          if (!REQUIRE_UPDATE) {
-            console.log(chalk.green.bold(version))
-            console.log(chalk.magenta.bold(CHANGELOG))
-          }
+          if (!REQUIRE_UPDATE)
+            utils.showCurrentVersion(version, CHANGELOG)
           break;
 
         case 'h':
@@ -163,6 +162,11 @@ const init = async() => {
           const pdaSelected = await functions.testReadline(DEFAULT_PDA)
           console.log("%c index.js #54 || pdaSelected : ", 'background:red;color:#fff;font-weight:bold;', pdaSelected);
           break;
+
+      case 'update':
+        await cli.updatePackage()
+        utils.showCurrentVersion(version, CHANGELOG)
+        break;
 
         default:
           break;

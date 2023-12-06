@@ -45,6 +45,14 @@ module.exports = {
     })
   },
 
+  //* update l'application
+  updatePackage: () => {
+    return new Promise(async resolve => {
+      await utils.execCommand(`npm i -g dtl_runpda`)
+      resolve(true)
+    })
+  }
+
   //* date de première installation
   /* getPdaFirstInstallEM: (pda) => {
     return new Promise(resolve => {

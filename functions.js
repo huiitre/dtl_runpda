@@ -1,5 +1,5 @@
 const readline = require('readline');
-const commands = require('./commands')
+const cli = require('./cli-commands')
 const utils = require('./utils')
 const Table = require('cli-table');
 const chalk = require('chalk')
@@ -36,7 +36,7 @@ module.exports = {
 
   //* affiche la liste des PDA
   displayPdaList: async() => {
-    const data = await commands.getPdaList()
+    const data = await cli.getPdaList()
     let pdaList = data.split('\n')
     pdaList = pdaList.filter(item => {
       if (!utils.isStringEmpty(item))
@@ -58,12 +58,12 @@ module.exports = {
     //* Récupération des informations pour chaque pda
     for (const item of pdaList) {
       const data = await Promise.all([
-        commands.getPdaModel(item),
-        commands.getPdaSerialNumber(item),
-        commands.getPdaEMVersion(item),
-        commands.getPdaAndroidVersion(item),
-        // commands.getPdaFirstInstallEM(item),
-        // commands.getPdaLastUpdateEM(item),
+        cli.getPdaModel(item),
+        cli.getPdaSerialNumber(item),
+        cli.getPdaEMVersion(item),
+        cli.getPdaAndroidVersion(item),
+        // cli.getPdaFirstInstallEM(item),
+        // cli.getPdaLastUpdateEM(item),
       ]);
       const cleanedData = data.map(item => item.replace(/[\r\n]+/g, ''));
       table.push(cleanedData);
