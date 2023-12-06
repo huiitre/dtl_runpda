@@ -1,6 +1,9 @@
 # Changelog
 
-## [v0.2.16] - 06-12-2023 latest
+## [v0.2.17] - 06-12-2023 latest
+- FIX : Ajout du fichier `cli-commands.js` dans le package.json
+
+## [v0.2.16] - 06-12-2023
 - Ajout d'une commande `run --update` afin d'update le package plus facilement
 - Refactorisation d'une partie du code (commands.js -> cli-commands.js)
 
