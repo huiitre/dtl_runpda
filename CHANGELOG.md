@@ -1,5 +1,7 @@
 # Changelog
 
+## [v0.2.18] - xx-12-2023
+
 ## [v0.2.17] - 06-12-2023 latest
 - FIX : Ajout du fichier `cli-commands.js` dans le package.json
 

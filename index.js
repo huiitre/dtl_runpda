@@ -1,6 +1,4 @@
-#!/usr/bin/env node
-
-const utils = require('./utils')
+/* const utils = require('./utils')
 const cli = require('./cli-commands')
 const { version } = require('./package.json')
 const functions = require('./functions')
@@ -8,10 +6,36 @@ const fs = require('fs');
 const chalk = require('chalk');
 const path = require('path');
 const os = require('os');
+const inquirer = require('inquirer'); */
+import * as utils from './utils.js';
+import * as cli from './cli-commands.js';
+/* import * as packageJson from './package.json';
+const { version } = packageJson; */
+import * as functions from './functions.js';
+import * as fs from 'fs';
+import chalk from 'chalk';
+import * as path from 'path';
+import * as os from 'os';
 
 const init = async() => {
+  let ADB_INSTALLED = false
+
   //* on lance le serveur adb
-  await utils.execCommand(`adb start-server`)
+  try {
+    await utils.execCommand(`adb start-server`)
+    ADB_INSTALLED = true
+  } catch(err) {
+    console.log('')
+    console.log(console.log(chalk.bold.red(`ADB n'est pas installé sur votre système.`)))
+    ADB_INSTALLED = false
+  }
+
+
+  //* récupération de la version actuelle
+  const packageJsonPath = './package.json'
+  const packageJsonString = fs.readFileSync(packageJsonPath, 'utf-8')
+  const packageJson = JSON.parse(packageJsonString)
+  const version = packageJson.version
 
   //* récupération des config
   //* chemin absolu vers le module pour créer le fichier json
@@ -85,6 +109,7 @@ const init = async() => {
   const args = process.argv.slice(2)
 
   if (args.length == 0) {
+    console.log("%c index.js #110 || icfghfghi", 'background:blue;color:#fff;font-weight:bold;');
     try {
       const result = await utils.execCommand(`adb devices -l`)
     } catch(err) {
@@ -100,67 +125,67 @@ const init = async() => {
       const command = args[0].replace(/^[-]+/, '')
 
       //* La liste des commandes disponibles
-      switch (command) {
+      switch (command.toLowerCase()) {
         case 'v':
-        case 'V':
         case 'version':
-        case 'VERSION':
           //* on affiche la version classique seulement si on ne nécessite pas de mise à jour, sinon ça fait doublon et c'est moche
           if (!REQUIRE_UPDATE)
             utils.showCurrentVersion(version, CHANGELOG)
           break;
 
         case 'h':
-        case 'H':
         case 'help':
-        case 'HELP':
           console.log("%c index.js #39 || HELP", 'background:blue;color:#fff;font-weight:bold;');
           break;
         
         case 'd':
-        case 'D':
         case 'default':
-        case 'DEFAULT':
         case 'defaut':
-        case 'DEFAUT':
           functions.changeDefaultPda(DEFAULT_PDA, config, (args[1] || null))
           break;
 
         case 'c':
-        case 'C':
         case 'clear':
-        case 'CLEAR':
           console.log("%c index.js #39 || CLEAR APP", 'background:blue;color:#fff;font-weight:bold;');
           break;
           
         case 'u':
-        case 'U':
         case 'uninstall':
-        case 'UNINSTALL':
-          console.log("%c index.js #39 || UNINSTALL APP", 'background:blue;color:#fff;font-weight:bold;');
+          functions.uninstallEasyMobile(args[1], DEFAULT_PDA)
           break;
           
         case 'e':
-        case 'E':
         case 'export':
-        case 'EXPORT':
           console.log("%c index.js #39 || EXPORT BASE PDA", 'background:blue;color:#fff;font-weight:bold;');
           break;
 
         case 'l':
-        case 'L':
         case 'list':
-        case 'LIST':
-          functions.displayPdaList()
+          if (ADB_INSTALLED)
+            functions.displayPdaList()
           break;
       
         case 't':
-        case 'T':
         case 'test':
-        case 'TEST':
           console.log("%c index.js #46 || TEST", 'background:blue;color:#fff;font-weight:bold;');
           const pdaSelected = await functions.testReadline(DEFAULT_PDA)
           console.log("%c index.js #54 || pdaSelected : ", 'background:red;color:#fff;font-weight:bold;', pdaSelected);
+          break;
+
+        case 'git':
+          console.log("%c index.js #46 || GIT ", 'background:blue;color:#fff;font-weight:bold;');
+          break;
+
+        case 'svn':
+          console.log("%c index.js #154 || SVN", 'background:blue;color:#fff;font-weight:bold;');
+          /**
+           * Récupération des modifications : svn diff
+           *  - récupérer le path complet du fichier (en y incluant ./) depuis la clé "Index:"
+           *  - voir pour coloriser les lignes (--- en rouge et +++ en vert, et pareil pour les - et +)
+           * Installer et utiliser electron pour l'affichage de la diff
+           */
+
+          
           break;
 
       case 'update':
