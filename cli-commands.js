@@ -59,7 +59,7 @@ const cli = {
             result.push(pda)
           }
 
-          utils.pdaList
+          utils.pdaList = result
 
           resolve(result)
         })
@@ -112,6 +112,32 @@ const cli = {
       await utils.execCommand(`npm i -g dtl_runpda`)
       resolve(true)
     })
+  },
+
+  //* compile l'app sur un PDA
+  runPda: (serialNumber) => {
+    return new Promise(resolve => {
+      const childProcess = exec(`cordova run android --target=${serialNumber}`, (err, stdout, stderr) => {
+        if (err) {
+          const errorMessage = stderr ? stderr.toString().trim() : 'Erreur inconnue';
+          resolve(errorMessage);
+        } else {
+          resolve(stdout);
+        }
+      });
+  
+      // Capturer la sortie standard en continu
+      childProcess.stdout.on('data', (data) => {
+        const output = data.toString().trim();
+        console.log(output); // Afficher la sortie en continu
+      });
+  
+      // Capturer la sortie d'erreur en continu
+      childProcess.stderr.on('data', (data) => {
+        const errorOutput = data.toString().trim();
+        console.error(errorOutput); // Afficher la sortie d'erreur en continu
+      });
+    });
   }
 }
 

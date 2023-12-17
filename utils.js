@@ -10,9 +10,10 @@ import chalk from 'chalk';
 import boxen from 'boxen';
 import { exec } from 'child_process';
 import readline from 'readline';
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import inquirer from 'inquirer';
 
 //! ne pas importer cli-commands pour éviter la référence circulaire entre les deux fichiers
 
@@ -188,6 +189,69 @@ const utils = {
     const packageJson = JSON.parse(packageJsonString)
     const version = packageJson.version
     return version
+  },
+
+  //* permet de sélectionner un élèment dans un tableau dynamiquement
+  selectValueIntoArray: async(array) => {
+    const question = {
+      type: 'list',
+      name: 'selectedPDA',
+      message: 'Sélectionner un PDA',
+      choices: array
+    }
+    return inquirer.prompt(question).then((answers) => answers.selectedPDA);
+  },
+
+  //* permet de sélectionner un élèment dans un tableau d'objets dynamiquement
+  selectValueIntoArrayObjets: async(array, props) => {
+    //* les propriétés à afficher
+    //? name: le nom de la colonne à afficher dans la question
+    //? prop: le nom de la propriété de l'objet dont on va afficher la valeur dans la ligne
+    const propsToDisplay = props.propsToDisplay
+
+    //* la question à poser à l'utilisateur
+    let questionString = props.question
+
+    //* on va générer un nouveau tableau qui sera en fait notre affichage, en fonction des props qu'on a demandé à afficher, séparés par un tiret -
+    const tempArray = array.map(item => {
+      return propsToDisplay.map(prop => item[prop.prop]).join(' - ');
+    })
+
+    questionString += ` (${propsToDisplay.map(prop => prop.name).join(' - ')})`
+
+    const question = {
+      type: 'list',
+      name: 'returnValue',
+      message: questionString,
+      choices: tempArray
+    }
+    return inquirer.prompt(question).then((answers) => {
+      //* on va retourner l'objet sélectionner depuis les valeurs qu'on a en retour
+      const selectedItemIndex = tempArray.indexOf(answers.returnValue)
+      return array[selectedItemIndex]
+    });
+
+    /* const questions = [
+      {
+        type: 'table',
+        name: 'selectedItem',
+        message: 'Sélectionner un objet:',
+        columns: [
+          { name: 'model', alignment: 'left' },
+          { name: 'serialNumber', alignment: 'left' },
+          { name: 'emVersion', alignment: 'left' },
+          { name: 'androidVersion', alignment: 'left' },
+        ],
+        rows: array.map((item) => [item.model, item.serialNumber, item.emVersion, item.androidVersion]),
+      },
+    ]
+
+    inquirer.prompt(questions).then((answers) => {
+      console.log("%c utils.js #224 || answers :", 'background:red;color:#fff;font-weight:bold;', answers);
+      const selectedItemIndex = answers.selectedItem[0];
+      const selectedItem = array[selectedItemIndex];
+      return selectedItem
+    }) */
   }
 }
 
