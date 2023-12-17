@@ -4,12 +4,13 @@ const utils = require('./utils')
 const Table = require('cli-table');
 const chalk = require('chalk'); */
 import readline from 'readline';
-import * as cli from './cli-commands.js';
-import * as utils from './utils.js';
+import cli from './cli-commands.js';
+import utils from './utils.js';
 import Table from 'cli-table';
 import chalk from 'chalk';
+import boxen from 'boxen';
 
-
+//! TEST
 export const testReadline = (defaultPda) => {
   return new Promise(async(resolve, reject) => {
     /* const rl = readline.createInterface({
@@ -39,7 +40,86 @@ export const testReadline = (defaultPda) => {
   })
 }
 
-//* affiche la liste des PDA
+const fn = {
+  //* check si une mise à jour est disponible (en fonction de plusieurs paramètres)
+  checkUpdate: async() => {
+    //* date de la dernière vérification d'une mise à jour
+    const lastCheckUpdate = new Date(utils.getConfigValue('LAST_CHECK_UPDATE'))
+    //* temps (en heure) avant la prochaine vérification d'une mise à jour
+    const timeBeforeCheckUpdate = utils.getConfigValue('TIME_BEFORE_CHECK_UPDATE')
+    //* flag pour dire si on vérifie ou non qu'une mise à jour est disponible
+    const requireUpdate = utils.getConfigValue('REQUIRE_UPDATE')
+
+    //* date now
+    const dateNow = new Date()
+
+    //* prochaine vérification
+    const nextCheckMaj = new Date(lastCheckUpdate.getTime() + timeBeforeCheckUpdate * 60 * 60 * 1000)
+
+    //* si la date est dépassé ou qu'un update est déjà requis, on check la mise à jour jsuqu'à qu'il la fasse enfin
+    if (dateNow > nextCheckMaj || requireUpdate) {
+
+      //* on met à jour la date du dernier check
+      utils.updateConfig('LAST_CHECK_UPDATE', dateNow)
+
+      const latestVersion = await cli.getLatestVersion()
+      const currentVersion = utils.getCurrentVersion()
+
+      await Promise.all([
+        utils.updateConfig('CURRENT_VERSION', currentVersion),
+        utils.updateConfig('LATEST_VERSION', latestVersion)
+      ])
+
+      //* si la version en cours est différente de la dernière version
+      if (currentVersion != latestVersion) {
+        await utils.updateConfig('REQUIRE_UPDATE', true)
+        return true
+      } else {
+        await utils.updateConfig('REQUIRE_UPDATE', false)
+        return false
+      }
+    }
+  },
+
+  //* affiche la version en cours
+  displayCurrentVersion: async() => {
+    const currentVersion = utils.getConfigValue('CURRENT_VERSION')
+    const changelog = utils.getConfigValue('CHANGELOG')
+
+    console.log('')
+    console.log(chalk.green.bold(currentVersion))
+    console.log(chalk.magenta.bold(changelog))
+  },
+
+  //* Affichage personnalisé dans le cas où une mise à jour serait disponible
+  displayUpdatePackage: async() => {
+    const currentVersion = utils.getConfigValue('CURRENT_VERSION')
+    const latestVersion = utils.getConfigValue('LATEST_VERSION')
+    const changelog = utils.getConfigValue('CHANGELOG')
+
+    const packageName = 'DTL_RUNPDA'
+    const message = `
+      ${chalk.bold(packageName)}
+      ${chalk.bold(chalk.magenta.bold(changelog))}
+
+      Mise à jour disponible ${currentVersion} -> ${chalk.green.bold(latestVersion)}
+      Exécutez ${chalk.blue.bold('npm i -g dtl_runpda')} ou ${chalk.blue.bold('run --update')} pour mettre à jour le package.
+    `;
+
+    const options = {
+      padding: { top: 0, right: 4, bottom: 0, left: 1 },
+      margin: { top: 1, right: 0, bottom: 1, left: 1 },
+      borderStyle: 'round',
+      borderColor: 'yellow',
+      align: 'center'
+    }
+    console.log(boxen(message, options))
+  }
+}
+
+export default fn
+
+//! affiche la liste des PDA
 export const displayPdaList = async() => {
   let pdaList = await cli.getPdaList()
 
@@ -117,9 +197,10 @@ export const uninstallEasyMobile = async(args, defaultPda) => {
   if (args != null && args.length > 0) {
     currentPda = args
   }
-  //* sinon on prend le pda par défaut
-  else if (defaultPda != null && defaultPda.length > 0) {
-    currentPda = defaultPda
+  //* sinon on demande
+  else {
+    const pdaSelected = await utils.getUserInput(`Sur quel PDA souhaitez-vous désinstaller EasyMobile ?`, defaultPda)
+    currentPda = pdaSelected
   }
 
   //* callback qui désinstalle le pda
@@ -131,10 +212,10 @@ export const uninstallEasyMobile = async(args, defaultPda) => {
   currentPda = currentPda.toLowerCase().trim()
 
   //* liste filtré des pda qui correspondent à ce qu'on a demandé (dans le cas où il y aurait 2 modèles identiques)
-  let pdaList = await module.exports.getPdaSelected(currentPda)
+  let pdaList = await getPdaSelected(currentPda)
 
   //* pda est un tableau, si le tableau ne possède qu'une ligne, on check si em est installé et ensuite on désinstalle
-  if (pdaList.length == 1) {
+  /* if (pdaList.length == 1) {
     console.log("%c functions.js #133 || DANS LE IF", 'background:blue;color:#fff;font-weight:bold;');
     const isInstalled = await cli.checkEmInstalled(pdaList)
     console.log("%c functions.js #140 || isInstalled : ", 'background:red;color:#fff;font-weight:bold;', isInstalled);
@@ -150,7 +231,7 @@ export const uninstallEasyMobile = async(args, defaultPda) => {
     console.log('')
     console.log(chalk.bold.red(`Le pda ${currentPda} n'a pas été trouvé.`))
     return
-  }
+  } */
 }
 
 //* retourne le pda sélectionné si c'est le cas, ou un tableau si il en existe plusieurs

@@ -1,5 +1,6 @@
 /* const utils = require('./utils') */
 import * as utils from './utils.js';
+import { exec } from 'child_process';
 
 /**
  * Fonctions qui exécutent des commandes dans le terminal
@@ -7,21 +8,44 @@ import * as utils from './utils.js';
  * Penser à reformater la donnée ici (en tableau/objet) si nécessaire
  */
 
+const cli = {
+  //* Récupère la dernière version en cours du package NPM
+  getLatestVersion: () => {
+    return new Promise(resolve => {
+      exec(`npm show dtl_runpda version`, (err, stdout) => {
+        resolve(stdout.trim())
+      })
+    })
+  }
+}
+
+export default cli
+
+//* check si adb est installé
+export const isAdbInstalled = () => {
+  return new Promise((resolve, reject) => {
+    exec(`adb version`, 
+    (error, stdout, stderr) => {
+      if (error || stderr)
+        reject(true)
+      resolve(true)
+    })
+  })
+}
+
 
 //* retourne la liste des pda
 export const getPdaList = () => {
   return new Promise(async resolve => {
-    try {
-      const data = await utils.execCommand(`adb devices -l | sed '1d' | awk '/device/{print $1}`)
-      let pdaList = data.split('\n')
-      pdaList = pdaList.filter(item => {
-        if (!utils.isStringEmpty(item))
-          return item
+      exec(`adb devices -l | sed '1d' | awk '/device/{print $1}`, 
+      (error, stdout, stderr) => {
+        let pdaList = stdout.split('\n')
+        pdaList = pdaList.filter(item => {
+          if (!utils.isStringEmpty(item))
+            return item
+        })
+        resolve(pdaList)
       })
-      resolve(pdaList)
-    } catch(err) {
-      // throw new Error(`Erreur lors de la récupération des PDA`)
-    }
   })
 }
 
@@ -71,7 +95,6 @@ export const updatePackage = () => {
 
 //* regarde si l'app easymobile est installée ou non
 export const checkEmInstalled = (deviceList) => {
-  console.log("%c cli-commands.js #69 || deviceList : ", 'background:red;color:#fff;font-weight:bold;', deviceList);
   return new Promise(async resolve => {
     //* pour chaque pda dans la liste, on va retourner uniquement les pda où easymobile est installé
     const data = []
