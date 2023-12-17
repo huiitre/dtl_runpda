@@ -1,4 +1,4 @@
-//* Fonctions
+//* fonctions
 import fn from './functions.js';
 
 const commands = [
