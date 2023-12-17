@@ -44,6 +44,13 @@ const commands = [
     requireAdb: false
   },
   {
+    name: 'Clear EM',
+    description: `Vide l'app EM du PDA sélectionné`,
+    args: ['c', 'clear'],
+    func: (args) => fn.displayClearEM(args),
+    requireAdb: false
+  },
+  {
     name: `Centre d'aide`,
     description: `Affiche l'aide et la liste des commandes disponibles`,
     args: ['h', 'help'],

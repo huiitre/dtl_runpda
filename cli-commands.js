@@ -138,7 +138,34 @@ const cli = {
         console.error(errorOutput); // Afficher la sortie d'erreur en continu
       });
     });
-  }
+  },
+
+  //* clear EM du PDA
+  clearEM: (serialNumber) => {
+    return new Promise(async resolve => {
+      exec(`adb -s ${serialNumber} shell pm clear net.distrilog.easymobile`, (err, stdout) => {
+        resolve(true)
+      })
+    })
+  },
+
+  //* lance l'app easymobile du PDA
+  startEM: (serialNumber) => {
+    return new Promise(async resolve => {
+      exec(`adb -s ${serialNumber} shell am start -n net.distrilog.easymobile/.MainActivity`, (err, stdout) => {
+        resolve(true)
+      })
+    })
+  },
+
+  //* désinstalle l'app easymobile du PDA
+  uninstallEM: (serialNumber) => {
+    return new Promise(async resolve => {
+      exec(`adb -s ${serialNumber} uninstall net.distrilog.easymobile`, (err, stdout) => {
+        resolve(true)
+      })
+    })
+  },
 }
 
 export default cli
