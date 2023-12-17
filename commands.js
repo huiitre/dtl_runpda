@@ -58,6 +58,13 @@ const commands = [
     requireAdb: true
   },
   {
+    name: 'Build APK',
+    description: `Build un APK release ou debug`,
+    args: ['b', 'build'],
+    func: (args) => fn.displayBuildApk(args),
+    requireAdb: true
+  },
+  {
     name: `Centre d'aide`,
     description: `Affiche l'aide et la liste des commandes disponibles`,
     args: ['h', 'help'],

@@ -149,6 +149,38 @@ const cli = {
     });
   },
 
+  //* Build un apk (release / debug)
+  buildApk: (type) => {
+    return new Promise(resolve => {
+      let command = ''
+      if (type === 'release')
+        command = '--release "--" --packageType=apk'
+      else
+        command = '--debug'
+
+      const childProcess = exec(`cordova build android ${command}`, (err, stdout, stderr) => {
+        if (err) {
+          const errorMessage = stderr ? stderr.toString().trim() : 'Erreur inconnue';
+          resolve(errorMessage);
+        } else {
+          resolve(stdout);
+        }
+      });
+  
+      // Capturer la sortie standard en continu
+      childProcess.stdout.on('data', (data) => {
+        const output = data.toString().trim();
+        console.log(output); // Afficher la sortie en continu
+      });
+  
+      // Capturer la sortie d'erreur en continu
+      childProcess.stderr.on('data', (data) => {
+        const errorOutput = data.toString().trim();
+        console.error(errorOutput); // Afficher la sortie d'erreur en continu
+      });
+    });
+  },
+
   //* clear EM du PDA
   clearEM: (serialNumber) => {
     return new Promise(async resolve => {

@@ -350,6 +350,12 @@ const fn = {
     } else {
       callback(pdaSelected[0])
     }
+  },
+
+  //* permet de build un apk debug ou release (au choix)
+  displayBuildApk: async() => {
+    const buildSelected = await utils.selectValueIntoArray(['debug', 'release'])
+    await cli.buildApk(buildSelected)
   }
 }
 
