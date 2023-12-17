@@ -50,9 +50,13 @@ const init = async() => {
   if (adbIsNotInstalled) {
     //* on déclare un flag qui nous servira pour certaines commandes
     utils.adbIsInstalled = false
-    //* on affiche le message d'erreur
-    console.log('')
-    console.log(chalk.bold.red(adbIsNotInstalled))
+    
+    //* on affiche un message d'erreur seulement si la commande a besoin d'adb pour fonctionner
+    if (matchCommand.requireAdb) {
+      //* on affiche le message d'avertissement
+      console.log('')
+      console.log(chalk.italic.red(`${adbIsNotInstalled}`))
+    }
   }
 
   if (matchCommand)

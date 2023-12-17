@@ -43,9 +43,9 @@ const utils = {
       rl.question(question, (value) => {
         initialValue = value.trim();
 
-        if (this.isStringEmpty(initialValue) && !this.isStringEmpty(defaultValue))
+        if (utils.isStringEmpty(initialValue) && !utils.isStringEmpty(defaultValue))
           initialValue = defaultValue.trim()
-        else if (this.isStringEmpty(initialValue) && this.isStringEmpty(defaultValue))
+        else if (utils.isStringEmpty(initialValue) && utils.isStringEmpty(defaultValue))
           resolve(false)
     
         rl.close();
