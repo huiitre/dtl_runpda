@@ -58,6 +58,13 @@ const commands = [
     requireAdb: true
   },
   {
+    name: 'Export BDD EM',
+    description: `Extrait la base de donnée de EM du PDA vers le dossier de configuration du package`,
+    args: ['e', 'export'],
+    func: (args) => fn.displayExportEMBDD(args),
+    requireAdb: true
+  },
+  {
     name: 'Build APK',
     description: `Build un APK release ou debug`,
     args: ['b', 'build'],

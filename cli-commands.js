@@ -207,40 +207,27 @@ const cli = {
       })
     })
   },
+
+  //* récupère le nom du fichier sqlite de easymobile
+  getDatabaseFileNameEasymobile: (serialNumber) => {
+    return new Promise(async resolve => {
+      exec(`adb -s ${serialNumber} shell "run-as net.distrilog.easymobile ls app_webview/Default/databases/file__0 | grep -v '-'"`, (err, stdout) => {
+        resolve(stdout.trim())
+      })
+    })
+  },
+
+  //* extrait la base de donnée
+  extractDatabase: (serialNumber, filename, pdaDir) => {
+    return new Promise(async resolve => {
+      exec(`adb -s ${serialNumber} exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/${filename} > ${pdaDir}\\${filename}`, (err, stdout) => {
+        if (err)
+          resolve(err)
+
+        resolve(stdout.trim())
+      })
+    })
+  }
 }
 
 export default cli
-
-//* regarde si l'app easymobile est installée ou non
-export const checkEmInstalled = (deviceList) => {
-  return new Promise(async resolve => {
-    //* pour chaque pda dans la liste, on va retourner uniquement les pda où easymobile est installé
-    const data = []
-    for (const item of deviceList) {
-      const serial = item.serial
-      try {
-        const isInstalled = await utils.execCommand(`adb -s ${serial} shell pm list packages | grep net.distrilog.easymobile 2> nul`)
-        console.log("%c cli-commands.js #76 || item : ", 'background:red;color:#fff;font-weight:bold;', item);
-        console.log("%c cli-commands.js #76 || isInstalled : ", 'background:red;color:#fff;font-weight:bold;', isInstalled);
-      } catch(err) {
-      }
-    }
-    resolve(true)
-  })
-}
-
-//* date de première installation
-/* export const getPdaFirstInstallEM = (pda) => {
-  return new Promise(resolve => {
-    const data = utils.execCommand(`adb -s ${pda} shell dumpsys package net.distrilog.easymobile | grep firstInstallTime | sed 's/.*firstInstallTime=//;s/[" ]//g' | sed 's/\(....-..-..\)\(.*\)/\x01 \x02/' || null`)
-    resolve(data)
-  } ) 
-} */
-
-//* date de première installation
-/* export const getPdaLastUpdateEM = (pda) => {
-  return new Promise(resolve => {
-    const data = utils.execCommand(`adb -s ${pda} shell dumpsys package net.distrilog.easymobile | grep lastUpdateTime | sed 's/.*lastUpdateTime=//;s/[" ]//g' | sed 's/\(....-..-..\)\(.*\)/\x01 \x02/' || null`)
-    resolve(data)
-  })
-} */

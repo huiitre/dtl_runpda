@@ -140,6 +140,13 @@ const utils = {
       utils.config = JSON.parse(jsonFile)
       console.log(chalk.italic(`Note : Création du fichier ${chalk.bold('config.json')}. Chemin d'accès : ${chalk.bold(jsonPath)}`))
     }
+
+    //* création du dossier database si il n'existe pas encore
+    const databaseDir = path.join(configDir, 'database')
+    if (!fs.existsSync(databaseDir)) {
+      fs.mkdirSync(databaseDir)
+      console.log(chalk.italic(`Note : Création du dossier ${chalk.bold('database')}. Chemin d'accès : ${chalk.bold(databaseDir)}`))
+    }
   },
 
   //* Récupère la valeur (ou autre propriété demandé) d'une configuration depuis utils.config

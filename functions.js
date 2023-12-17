@@ -10,6 +10,8 @@ import Table from 'cli-table';
 import chalk from 'chalk';
 import boxen from 'boxen';
 import commands from './commands.js';
+import fs from 'fs';
+import path from 'path';
 
 const fn = {
   //* check si une mise à jour est disponible (en fonction de plusieurs paramètres)
@@ -187,48 +189,13 @@ const fn = {
       pdaToBuild = await utils.getUserInput(`Veuillez cibler le PDA`, utils.getConfigValue('DEFAULT_PDA'))
     }
     
-    //* on est sur du modèle, on va maintenant le chercher dans la liste des pda disponibles
-    //* on récupère la liste des pda
-    const pdaList = await cli.getPdaList()
+    const pdaSelected = await fn.targetPda(pdaToBuild)
 
-    const callback = async(serialNumber) => {
+    if (pdaSelected != null) {
       console.log('')
-      console.log(chalk.green(`Lancement de la compilation du PDA ${chalk.bold(pdaSelected[0].model)} - ${chalk.bold(serialNumber)} en cours ...`))
+      console.log(chalk.green(`Lancement de la compilation du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} en cours ...`))
       console.log('')
-      cli.runPda(serialNumber)
-    }
-
-    if (pdaList.length === 0) {
-      console.log('')
-      console.log(chalk.red(`Aucun appareil n'a été trouvé`))
-      return
-    }
-    
-    //* on récupère le ou les pda qui correspondent au modèle qu'on a demandé
-    const pdaSelected = pdaList.filter(pda => pda.model.toLowerCase() == pdaToBuild.toLowerCase())
-
-    if (pdaSelected.length === 0) {
-      console.log('')
-      console.log(chalk.red(`Le PDA sélectionné ${chalk.bold(pdaToBuild)} n'a pas été trouvé`))
-      return
-    }
-
-    //* si on a trouvé plus d'un PDA
-    if (pdaSelected.length > 1) {
-      const objectSelected = await utils.selectValueIntoArrayObjets(pdaSelected, {
-        propsToDisplay: [
-          { name: 'Model', prop: 'model' },
-          { name: 'Serial number', prop: 'serialNumber' },
-          { name: 'EM version', prop: 'emVersion' },
-          { name: 'Android version', prop: 'androidVersion' }
-        ],
-        question: 'Sélectionner un PDA'
-      })
-
-      //* on a notre objet sélectionné, on va donc build avec ça
-      callback(objectSelected.serialNumber)
-    } else {
-      callback(pdaSelected[0].serialNumber)
+      cli.runPda(pdaSelected.serialNumber)
     }
   },
 
@@ -242,53 +209,19 @@ const fn = {
       pdaToClear = await utils.getUserInput(`Veuillez cibler le PDA`, utils.getConfigValue('DEFAULT_PDA'))
     }
 
-    //* on récupère la liste des pda
-    const pdaList = await cli.getPdaList()
+    const pdaSelected = await fn.targetPda(pdaToClear)
 
-    const callback = async(serialNumber) => {
+    console.log("%c functions.js #247 || pdaSelected : ", 'background:red;color:#fff;font-weight:bold;', pdaSelected);
+
+    if (pdaSelected != null) {
       console.log('')
-      console.log(chalk.blue(`Clear du PDA ${chalk.bold(pdaSelected[0].model)} - ${chalk.bold(serialNumber)} en cours ...`))
-      await cli.clearEM(serialNumber)
-      console.log(chalk.green(`Clear du PDA ${chalk.bold(pdaSelected[0].model)} - ${chalk.bold(serialNumber)} effectué !`))
+      console.log(chalk.blue(`Clear du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} en cours ...`))
+      await cli.clearEM(pdaSelected.serialNumber)
+      console.log(chalk.green(`Clear du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} effectué !`))
       console.log('')
-      console.log(chalk.blue(`Lancement de l'application du PDA ${chalk.bold(pdaSelected[0].model)} - ${chalk.bold(serialNumber)} en cours ...`))
-      await cli.startEM(serialNumber)
-      console.log(chalk.green(`Lancement de l'application du PDA ${chalk.bold(pdaSelected[0].model)} - ${chalk.bold(serialNumber)} effectué !`))
-    }
-
-    //* on lance la recherche
-    //TODO a partir d'ici il y a du doublon entre la compilation/clear/uninstalle, voir pour refactoriser ça plus tard
-    if (pdaList.length === 0) {
-      console.log('')
-      console.log(chalk.red(`Aucun appareil n'a été trouvé`))
-      return
-    }
-
-    //* on récupère le ou les pda qui correspondent au modèle qu'on a demandé
-    const pdaSelected = pdaList.filter(pda => pda.model.toLowerCase() == pdaToClear.toLowerCase())
-
-    if (pdaSelected.length === 0) {
-      console.log('')
-      console.log(chalk.red(`Le PDA sélectionné ${chalk.bold(pdaToClear)} n'a pas été trouvé`))
-      return
-    }
-
-    //* si on a trouvé plus d'un PDA
-    if (pdaSelected.length > 1) {
-      const objectSelected = await utils.selectValueIntoArrayObjets(pdaSelected, {
-        propsToDisplay: [
-          { name: 'Model', prop: 'model' },
-          { name: 'Serial number', prop: 'serialNumber' },
-          { name: 'EM version', prop: 'emVersion' },
-          { name: 'Android version', prop: 'androidVersion' }
-        ],
-        question: 'Sélectionner un PDA'
-      })
-
-      //* on a notre objet sélectionné, on va donc build avec ça
-      callback(objectSelected.serialNumber)
-    } else {
-      callback(pdaSelected[0].serialNumber)
+      console.log(chalk.blue(`Lancement de l'application du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} en cours ...`))
+      await cli.startEM(pdaSelected.serialNumber)
+      console.log(chalk.green(`Lancement de l'application du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} effectué !`))
     }
   },
 
@@ -302,35 +235,92 @@ const fn = {
       pdaToUninstall = await utils.getUserInput(`Veuillez cibler le PDA`, utils.getConfigValue('DEFAULT_PDA'))
     }
 
-    //* on récupère la liste des pda
-    const pdaList = await cli.getPdaList()
+    const pdaSelected = await fn.targetPda(pdaToUninstall)
 
-    const callback = async(obj) => {
+    if (pdaSelected != null) {
       console.log('')
-      if (obj.emVersion) {
-        console.log(chalk.blue(`Désinstallation de l'application du PDA ${chalk.bold(obj.model)} - ${chalk.bold(obj.serialNumber)} en cours ...`))
-        await cli.uninstallEM(obj.serialNumber)
-        console.log(chalk.green(`Désinstallation de l'application du PDA ${chalk.bold(obj.model)} - ${chalk.bold(obj.serialNumber)} effectué !`))
+      if (pdaSelected.emVersion) {
+        console.log(chalk.blue(`Désinstallation de l'application du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} en cours ...`))
+        await cli.uninstallEM(pdaSelected.serialNumber)
+        console.log(chalk.green(`Désinstallation de l'application du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} effectué !`))
       } else {
-        console.log(chalk.red(`L'application EM n'est pas installé sur le PDA ${chalk.bold(obj.model)} - ${chalk.bold(obj.serialNumber)}`))
+        console.log(chalk.red(`L'application EM n'est pas installé sur le PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)}`))
       }
     }
+  },
+
+  //* export la base de donnée easymobile du pda sélectionné
+  displayExportEMBDD: async(args) => {
+    //* on récupère le pda sur lequel on va lancer la recherche
+    let pdaToTreatment = ''
+    if (args[0])
+      pdaToTreatment = args[0]
+    else {
+      pdaToTreatment = await utils.getUserInput(`Veuillez cibler le PDA`, utils.getConfigValue('DEFAULT_PDA'))
+    }
+
+    const pdaSelected = await fn.targetPda(pdaToTreatment)
+
+    if (pdaSelected != null) {
+      console.log('')
+      if (pdaSelected.emVersion) {
+        //* on récupère le nom du fichier sqlite
+        const fileName = await cli.getDatabaseFileNameEasymobile(pdaSelected.serialNumber)
+
+        if (utils.isStringEmpty(fileName)) {
+          console.log('')
+          console.log(chalk.red(`La base de donnée du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} n'a pas été trouvé`))
+          return
+        }
+
+        const databaseName = `${pdaSelected.model}_${pdaSelected.serialNumber}`
+
+        //* on check si le dossier du pda a été créé ou non
+        const appDir = path.join(utils.getConfigValue('APP_DIR'))
+        const databaseDir = path.join(appDir, 'database')
+        const pdaDir = path.join(databaseDir, pdaSelected.model.toUpperCase())
+
+        //* si le dossier n'est pas créé, on le crée
+        if (!fs.existsSync(pdaDir))
+          fs.mkdirSync(pdaDir)
+
+        //* on extrait la base pour la coller dans le dossier
+        await cli.extractDatabase(pdaSelected.serialNumber, databaseName, pdaDir)
+
+        console.log(chalk.green(`La base de donnée du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} a été exporté avec succès !`))
+        console.log(chalk.blue(`Chemin : ${chalk.bold(`${pdaDir}\\${databaseName}`)}`))
+      } else {
+        console.log(chalk.red(`L'application EM n'est pas installé sur le PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)}`))
+      }
+    }
+  },
+
+  //* permet de build un apk debug ou release (au choix)
+  displayBuildApk: async() => {
+    const buildSelected = await utils.selectValueIntoArray(['debug', 'release'])
+    await cli.buildApk(buildSelected)
+  },
+
+  //* fonction qui cible un pda
+  targetPda: async(pdaToTreatment) => {
+    //* on récupère la liste des pda
+    const pdaList = await cli.getPdaList()
 
     //* on lance la recherche
     //TODO a partir d'ici il y a du doublon entre la compilation/clear/uninstalle, voir pour refactoriser ça plus tard
     if (pdaList.length === 0) {
       console.log('')
       console.log(chalk.red(`Aucun appareil n'a été trouvé`))
-      return
+      return null
     }
 
     //* on récupère le ou les pda qui correspondent au modèle qu'on a demandé
-    const pdaSelected = pdaList.filter(pda => pda.model.toLowerCase() == pdaToUninstall.toLowerCase())
+    const pdaSelected = pdaList.filter(pda => pda.model.toLowerCase() == pdaToTreatment.toLowerCase())
 
     if (pdaSelected.length === 0) {
       console.log('')
-      console.log(chalk.red(`Le PDA sélectionné ${chalk.bold(pdaToUninstall)} n'a pas été trouvé`))
-      return
+      console.log(chalk.red(`Le PDA sélectionné ${chalk.bold(pdaToTreatment)} n'a pas été trouvé`))
+      return null
     }
 
     //* si on a trouvé plus d'un PDA
@@ -346,73 +336,11 @@ const fn = {
       })
 
       //* on a notre objet sélectionné, on va donc build avec ça
-      callback(objectSelected)
+      return objectSelected
     } else {
-      callback(pdaSelected[0])
+      return pdaSelected[0]
     }
   },
-
-  //* permet de build un apk debug ou release (au choix)
-  displayBuildApk: async() => {
-    const buildSelected = await utils.selectValueIntoArray(['debug', 'release'])
-    await cli.buildApk(buildSelected)
-  }
 }
 
 export default fn
-
-
-//* Désinstalle EasyMobile
-export const uninstallEasyMobile = async(args, defaultPda) => {
-  //* on récupère la liste des pda
-  const deviceList = await cli.getPdaList()
-
-  //* si aucuns pda n'est branché
-  if (deviceList.length == 0) {
-    console.log('')
-    console.log(chalk.bold.red(`Aucun appareil n'a été trouvé.`))
-    return false
-  }
-
-  let currentPda = ''
-
-  //* est-ce qu'on a donné un argument
-  if (args != null && args.length > 0) {
-    currentPda = args
-  }
-  //* sinon on demande
-  else {
-    const pdaSelected = await utils.getUserInput(`Sur quel PDA souhaitez-vous désinstaller EasyMobile ?`, defaultPda)
-    currentPda = pdaSelected
-  }
-
-  //* callback qui désinstalle le pda
-  const callBackUninstall = (pdaToUninstall) => {
-    console.log(chalk.bold.green(`Désinstallation de EasyMobile du PDA ${pdaToUninstall.model}`))
-  }
-
-  //* le pda demandé nettoyé
-  currentPda = currentPda.toLowerCase().trim()
-
-  //* liste filtré des pda qui correspondent à ce qu'on a demandé (dans le cas où il y aurait 2 modèles identiques)
-  let pdaList = await getPdaSelected(currentPda)
-
-  //* pda est un tableau, si le tableau ne possède qu'une ligne, on check si em est installé et ensuite on désinstalle
-  /* if (pdaList.length == 1) {
-    console.log("%c functions.js #133 || DANS LE IF", 'background:blue;color:#fff;font-weight:bold;');
-    const isInstalled = await cli.checkEmInstalled(pdaList)
-    console.log("%c functions.js #140 || isInstalled : ", 'background:red;color:#fff;font-weight:bold;', isInstalled);
-  }
-  //* si le tableau possède plus d'une ligne, on donne le choix à l'utilisateur sur quel pda il souhaite build
-  else if (pdaList.length > 1) {
-    console.log("%c functions.js #143 || DANS LE ELSE IF", 'background:blue;color:#fff;font-weight:bold;');
-    const isInstalled = await cli.checkEmInstalled(pdaList)
-    console.log("%c functions.js #140 || isInstalled : ", 'background:red;color:#fff;font-weight:bold;', isInstalled);
-  }
-  //* si le tableau est vide, on retourne une erreur
-  else {
-    console.log('')
-    console.log(chalk.bold.red(`Le pda ${currentPda} n'a pas été trouvé.`))
-    return
-  } */
-}
