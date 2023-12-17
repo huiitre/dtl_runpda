@@ -30,7 +30,7 @@ const commands = [
     name: 'PDA par défaut',
     description: 'Change le modèle du PDA qui sera sélectionné par défaut',
     args: ['d', 'default', 'defaut'],
-    func: () => fn.displayChangeDefaultPda(),
+    func: (args) => fn.displayChangeDefaultPda(args),
   },
 ]
 

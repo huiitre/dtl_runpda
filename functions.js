@@ -142,35 +142,41 @@ const fn = {
     console.log('')
     console.log(chalk.green.bold('Liste des PDA disponibles : '))
     console.log(table.toString());
+  },
+
+  //* Change le PDA par défaut
+  displayChangeDefaultPda: async(args) => {
+    //* récupération de l'argument
+    let newPda = args[0]
+
+    //* récupération de l'ancien pda par défaut
+    let oldDefaultPda = utils.getConfigValue('DEFAULT_PDA')
+
+    //* callback d'affichage
+    const callback = () => {
+      utils.updateConfig('DEFAULT_PDA', newPda)
+      console.log('')
+      console.log(`Le PDA par défaut a été changé par ${chalk.green.bold(newPda)} (anciennement ${chalk.red.bold(oldDefaultPda)})`)
+    }
+
+    try {
+      if (newPda != null) {
+        callback()  
+      } else {
+        console.log('')
+        newPda = await utils.getUserInput(chalk.bold(`Veuillez inscrire le nouveau PDA à utiliser par défaut`), oldDefaultPda)
+
+        callback()
+      }
+
+    } catch(err) {
+      console.log(`ERROR : ${err}`)
+    }
   }
 }
 
 export default fn
 
-//* Change le PDA par défaut
-export const changeDefaultPda = async(defaultPda, config, args) => {
-  try {
-    if (args != null) {
-      utils.updateConfig(config, 'DEFAULT_PDA', args)
-      
-      console.log('')
-
-      console.log(`Le PDA par défaut a été changé par ${chalk.green.bold(args)} (anciennement ${chalk.red.bold(defaultPda)})`)
-    } else {
-      console.log('')
-      const pda = await utils.getUserInput(chalk.bold(`Veuillez inscrire le nouveau PDA à utiliser par défaut`), defaultPda)
-
-      utils.updateConfig(config, 'DEFAULT_PDA', pda)
-      
-      console.log('')
-
-      console.log(`Le PDA par défaut a été changé par ${chalk.green.bold(pda)} (anciennement ${chalk.red.bold(defaultPda)})`)
-    }
-
-  } catch(err) {
-    console.log(`ERROR : ${err}`)
-  }
-}
 
 //* Désinstalle EasyMobile
 export const uninstallEasyMobile = async(args, defaultPda) => {
