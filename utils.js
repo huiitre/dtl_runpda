@@ -213,65 +213,7 @@ const utils = {
       const selectedItemIndex = tempArray.indexOf(answers.returnValue)
       return array[selectedItemIndex]
     });
-
-    /* const questions = [
-      {
-        type: 'table',
-        name: 'selectedItem',
-        message: 'Sélectionner un objet:',
-        columns: [
-          { name: 'model', alignment: 'left' },
-          { name: 'serialNumber', alignment: 'left' },
-          { name: 'emVersion', alignment: 'left' },
-          { name: 'androidVersion', alignment: 'left' },
-        ],
-        rows: array.map((item) => [item.model, item.serialNumber, item.emVersion, item.androidVersion]),
-      },
-    ]
-
-    inquirer.prompt(questions).then((answers) => {
-      console.log("%c utils.js #224 || answers :", 'background:red;color:#fff;font-weight:bold;', answers);
-      const selectedItemIndex = answers.selectedItem[0];
-      const selectedItem = array[selectedItemIndex];
-      return selectedItem
-    }) */
   }
 }
 
 export default utils
-
-//* exécute une commande et retourne une promesse
-/* export const execCommand = (command) => {
-  return new Promise((resolve, reject) => {
-    const child = exec(`${command}`)
-
-    let stdout = "";
-    let stderr = "";
-
-    //* Écoute l'événement data du processus enfant pour la sortie standard
-    child.stdout.on("data", (data) => {
-      stdout += data;
-    });
-
-    //* Écoute l'événement data du processus enfant pour la sortie d'erreur
-    child.stderr.on("data", (data) => {
-      stderr += data;
-    });
-
-    //* Écoute l'événement error du processus enfant
-    child.on("error", (err) => {
-      reject(err);
-    });
-
-    //* Écoute l'événement exit du processus enfant
-    child.on("exit", (code) => {
-      if (code !== 0) {
-        //* S'il y a une sortie d'erreur, la rejeter avec la sortie d'erreur
-        reject(stderr || code);
-      } else {
-        //* Sinon, résoudre avec la sortie standard
-        resolve(stdout);
-      }
-    });
-  });
-}; */

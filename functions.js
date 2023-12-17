@@ -293,8 +293,63 @@ const fn = {
   },
 
   //* désinstallation de easymobile sur le PDA
-  displayUninstallEM: () => {
-    console.log("%c functions.js #297 || displayUninstallEM", 'background:blue;color:#fff;font-weight:bold;');
+  displayUninstallEM: async(args) => {
+    //* on récupère le pda sur lequel on va lancer la recherche
+    let pdaToUninstall = ''
+    if (args[0])
+      pdaToUninstall = args[0]
+    else {
+      pdaToUninstall = await utils.getUserInput(`Veuillez cibler le PDA`, utils.getConfigValue('DEFAULT_PDA'))
+    }
+
+    //* on récupère la liste des pda
+    const pdaList = await cli.getPdaList()
+
+    const callback = async(obj) => {
+      console.log('')
+      if (obj.emVersion) {
+        console.log(chalk.blue(`Désinstallation de l'application du PDA ${chalk.bold(obj.model)} - ${chalk.bold(obj.serialNumber)} en cours ...`))
+        await cli.uninstallEM(obj.serialNumber)
+        console.log(chalk.green(`Désinstallation de l'application du PDA ${chalk.bold(obj.model)} - ${chalk.bold(obj.serialNumber)} effectué !`))
+      } else {
+        console.log(chalk.red(`L'application EM n'est pas installé sur le PDA ${chalk.bold(obj.model)} - ${chalk.bold(obj.serialNumber)}`))
+      }
+    }
+
+    //* on lance la recherche
+    //TODO a partir d'ici il y a du doublon entre la compilation/clear/uninstalle, voir pour refactoriser ça plus tard
+    if (pdaList.length === 0) {
+      console.log('')
+      console.log(chalk.red(`Aucun appareil n'a été trouvé`))
+      return
+    }
+
+    //* on récupère le ou les pda qui correspondent au modèle qu'on a demandé
+    const pdaSelected = pdaList.filter(pda => pda.model.toLowerCase() == pdaToUninstall.toLowerCase())
+
+    if (pdaSelected.length === 0) {
+      console.log('')
+      console.log(chalk.red(`Le PDA sélectionné ${chalk.bold(pdaToUninstall)} n'a pas été trouvé`))
+      return
+    }
+
+    //* si on a trouvé plus d'un PDA
+    if (pdaSelected.length > 1) {
+      const objectSelected = await utils.selectValueIntoArrayObjets(pdaSelected, {
+        propsToDisplay: [
+          { name: 'Model', prop: 'model' },
+          { name: 'Serial number', prop: 'serialNumber' },
+          { name: 'EM version', prop: 'emVersion' },
+          { name: 'Android version', prop: 'androidVersion' }
+        ],
+        question: 'Sélectionner un PDA'
+      })
+
+      //* on a notre objet sélectionné, on va donc build avec ça
+      callback(objectSelected)
+    } else {
+      callback(pdaSelected[0])
+    }
   }
 }
 
