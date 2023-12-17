@@ -34,7 +34,7 @@ const fn = {
       utils.updateConfig('LAST_CHECK_UPDATE', dateNow)
 
       const latestVersion = await cli.getLatestVersion()
-      const currentVersion = utils.getCurrentVersion()
+      const currentVersion = await cli.getCurrentVersion()
 
       await Promise.all([
         utils.updateConfig('CURRENT_VERSION', currentVersion),
@@ -290,6 +290,11 @@ const fn = {
     } else {
       callback(pdaSelected[0].serialNumber)
     }
+  },
+
+  //* désinstallation de easymobile sur le PDA
+  displayUninstallEM: () => {
+    console.log("%c functions.js #297 || displayUninstallEM", 'background:blue;color:#fff;font-weight:bold;');
   }
 }
 

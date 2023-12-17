@@ -1,11 +1,3 @@
-/* const chalk = require('chalk')
-const boxen = require('boxen')
-const { exec } = require('child_process');
-const readline = require('readline');
-const fs = require('fs');
-const os = require('os')
-const path = require('path'); */
-
 import chalk from 'chalk';
 import boxen from 'boxen';
 import { exec } from 'child_process';
@@ -180,15 +172,6 @@ const utils = {
       } else
         reject(`La configuration ${chalk.bold(key)} n'existe pas`)
     })
-  },
-
-  //* Récupère la version actuelle du package NPM
-  getCurrentVersion: () => {
-    const packageJsonPath = './package.json'
-    const packageJsonString = fs.readFileSync(packageJsonPath, 'utf-8')
-    const packageJson = JSON.parse(packageJsonString)
-    const version = packageJson.version
-    return version
   },
 
   //* permet de sélectionner un élèment dans un tableau dynamiquement

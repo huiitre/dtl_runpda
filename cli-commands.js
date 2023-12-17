@@ -30,6 +30,15 @@ const cli = {
     })
   },
 
+  //* Récupère la dernière version en cours du package NPM
+  getCurrentVersion: () => {
+    return new Promise(resolve => {
+      exec(`npm list -g --depth=0 dtl_runpda | grep 'dtl_runpda@' | awk '{ print $2 }' | sed 's/^dtl_runpda@//'`, (err, stdout) => {
+        resolve(stdout.trim())
+      })
+    })
+  },
+
   //* retourne la liste des pda
   getPdaList: () => {
     return new Promise(resolve => {

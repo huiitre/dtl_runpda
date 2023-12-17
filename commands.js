@@ -48,7 +48,14 @@ const commands = [
     description: `Vide l'app EM du PDA sélectionné`,
     args: ['c', 'clear'],
     func: (args) => fn.displayClearEM(args),
-    requireAdb: false
+    requireAdb: true
+  },
+  {
+    name: 'Désinstallation EM',
+    description: `Désinstalle l'app EM du PDA sélectionné`,
+    args: ['u', 'uninstall'],
+    func: (args) => fn.displayUninstallEM(args),
+    requireAdb: true
   },
   {
     name: `Centre d'aide`,
