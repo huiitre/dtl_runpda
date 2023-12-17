@@ -1,8 +1,12 @@
 # Changelog
 
-## [v0.2.18] - xx-12-2023
+## [v1.0.0] - 17-12-2023
+- Mise en place des différentes commandes pour une première release
 
-## [v0.2.17] - 06-12-2023 latest
+## [v0.2.18] - 17-12-2023
+- Test des différentes commandes pour une première release
+
+## [v0.2.17] - 06-12-2023
 - FIX : Ajout du fichier `cli-commands.js` dans le package.json
 
 ## [v0.2.16] - 06-12-2023
