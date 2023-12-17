@@ -9,6 +9,7 @@ import utils from './utils.js';
 import Table from 'cli-table';
 import chalk from 'chalk';
 import boxen from 'boxen';
+import commands from './commands.js';
 
 //! TEST
 export const testReadline = (defaultPda) => {
@@ -172,6 +173,35 @@ const fn = {
     } catch(err) {
       console.log(`ERROR : ${err}`)
     }
+  },
+
+  //* Affiche la liste des commandes avec éventuellement d'autres informations
+  displayHelpCenter: () => {
+    const table = new Table()
+    table.push([
+      chalk.bold(`Nom`),
+      chalk.bold(`Commandes (lowerCase)`),
+      chalk.bold(`Description`),
+      chalk.bold(`Nécessite ADB`),
+    ])
+
+    //* on parcours la liste des commandes
+    for (const command of commands) {
+      table.push([
+        command.name,
+        command.args.map(arg => `-${arg}`).join(', '),
+        command.description,
+        command.requireAdb ? 'Oui' : 'Non'
+      ])
+    }
+
+    console.log('')
+    console.log(`Liste des commandes disponibles : `)
+    console.log(table.toString())
+
+    //* affichage d'infos supplémentaires
+    console.log('')
+    console.log(chalk.italic(`Note : Toutes les commandes doivent être taper avec un ou plusieurs tirets au départ, en majuscule comme en minuscule`))
   }
 }
 

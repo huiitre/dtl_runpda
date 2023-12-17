@@ -40,7 +40,7 @@ const init = async() => {
   const mainCommand = args[0].replace(/^[-]+/, '')
 
   //* est-ce qu'elle a match
-  const matchCommand = commands.find(command => command.args.includes(mainCommand))
+  let matchCommand = commands.find(command => command.args.includes(mainCommand))
 
   //* récupération des autres arguments si il y en a
   const otherArgs = args.slice(1)
@@ -52,7 +52,7 @@ const init = async() => {
     utils.adbIsInstalled = false
     
     //* on affiche un message d'erreur seulement si la commande a besoin d'adb pour fonctionner
-    if (matchCommand.requireAdb) {
+    if (matchCommand?.requireAdb) {
       //* on affiche le message d'avertissement
       console.log('')
       console.log(chalk.italic.red(`${adbIsNotInstalled}`))
@@ -64,7 +64,7 @@ const init = async() => {
   else {
     console.log('')
     console.log(`La commande ${chalk.bold.red(args[0])} est introuvable`)
-    //TODO affichage du composant HELP pour afficher la liste des commandes disponibles
+    fn.displayHelpCenter()
   }
 
 }
