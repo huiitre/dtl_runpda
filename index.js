@@ -10,7 +10,7 @@ import chalk from 'chalk';
 import utils from './utils.js';
 
 //* Commandes cli
-import * as cli from './cli-commands.js';
+import cli from './cli-commands.js';
 
 //* Fonctions
 import fn from './functions.js';
@@ -44,6 +44,16 @@ const init = async() => {
 
   //* récupération des autres arguments si il y en a
   const otherArgs = args.slice(1)
+
+  //* on check (et pour l'instant on affiche) si adb est installé
+  const adbIsNotInstalled = await cli.isAdbInstalled()
+  if (adbIsNotInstalled) {
+    //* on déclare un flag qui nous servira pour certaines commandes
+    utils.adbIsInstalled = false
+    //* on affiche le message d'erreur
+    console.log('')
+    console.log(chalk.bold.red(adbIsNotInstalled))
+  }
 
   if (matchCommand)
     matchCommand.func(otherArgs)

@@ -20,6 +20,12 @@ const utils = {
   //* objet config
   config: {},
 
+  //* liste des pda
+  pdaList: [],
+
+  //* est-ce que adb est installé
+  adbIsInstalled: true,
+
   //* check si une variable est une chaine de caractère vide ou non
   isStringEmpty: (value) => {
     return typeof value === 'string' && value.trim() === '';
@@ -58,6 +64,7 @@ const utils = {
     const configDir = path.join(os.homedir(), 'dtl_runpda');
     const jsonPath = path.join(configDir, 'config.json')
 
+    //* est-ce que le fichier existe
     if (fs.existsSync(jsonPath)) {
       try {
         const jsonFile = fs.readFileSync(jsonPath, 'utf-8')
@@ -65,6 +72,7 @@ const utils = {
       } catch(err) {
         console.log(chalk.bold(chalk.red(`Erreur lors de la récupération de la configuration : ${err}`)))
       }
+    //* le fichier n'existe pas, on va le créer avec des valeurs par défaut
     } else {
       let initialConfig = {
         "APP_DIR": {
@@ -128,10 +136,12 @@ const utils = {
           "editable": true
         }
       }
+      //* si le dossier n'existe pas, on le crée
       if (!fs.existsSync(configDir)) {
         fs.mkdirSync(configDir)
         console.log(chalk.italic(`Note : Création du dossier ${chalk.bold('dtl_runpda')}. Chemin d'accès : ${chalk.bold(configDir)}`))
       }
+      //* on crée le fichier config.json à la racine du dossier
       fs.writeFileSync(jsonPath, JSON.stringify(initialConfig, null, 2), 'utf-8');
       const jsonFile = fs.readFileSync(jsonPath, 'utf-8')
       utils.config = JSON.parse(jsonFile)

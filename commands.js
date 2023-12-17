@@ -1,6 +1,12 @@
 //* fonctions
 import fn from './functions.js';
 
+//* Commandes cli
+import cli from './cli-commands.js';
+
+//* Utils
+import utils from './utils.js';
+
 const commands = [
   /* {
     name: '',
@@ -12,7 +18,7 @@ const commands = [
     name: 'Liste des PDA',
     description: 'Affiche la liste des PDA connectés sur le PC',
     args: ['l', 'list'],
-    func: () => fn.displayPdaList(),
+    func: () => utils.adbIsInstalled && fn.displayPdaList(),
   },
   {
     name: 'Version',

@@ -1,5 +1,5 @@
 /* const utils = require('./utils') */
-import * as utils from './utils.js';
+import utils from './utils.js';
 import { exec } from 'child_process';
 
 /**
@@ -9,6 +9,18 @@ import { exec } from 'child_process';
  */
 
 const cli = {
+  //* check si adb est installé
+  isAdbInstalled: () => {
+    return new Promise((resolve, reject) => {
+      exec(`adb version`, 
+      (error, stdout, stderr) => {
+        if (error || stderr)
+          resolve(`ADB n'est pas installé sur votre système`)
+        resolve(false)
+      })
+    })
+  },
+
   //* Récupère la dernière version en cours du package NPM
   getLatestVersion: () => {
     return new Promise(resolve => {
@@ -16,82 +28,94 @@ const cli = {
         resolve(stdout.trim())
       })
     })
+  },
+
+  //* retourne la liste des pda
+  getPdaList: () => {
+    return new Promise(resolve => {
+        exec(`adb devices -l | sed '1d' | awk '/device/{print $1}`, 
+        async(error, stdout, stderr) => {
+          let pdaList = stdout.split('\n')
+          pdaList = pdaList.filter(item => {
+            if (!utils.isStringEmpty(item))
+              return item
+          })
+
+          const result = []
+          for (const item of pdaList) {
+            let pda = {}
+            const data = await Promise.all([
+              cli.getPdaModel(item),
+              cli.getPdaSerialNumber(item),
+              cli.getPdaEMVersion(item),
+              cli.getPdaAndroidVersion(item),
+            ])
+            const cleanedData = data.map(item => item.replace(/[\r\n]+/g, ''))
+            pda.model = cleanedData[0]
+            pda.serialNumber = cleanedData[1]
+            pda.emVersion = cleanedData[2]
+            pda.androidVersion = cleanedData[3]
+
+            result.push(pda)
+          }
+
+          utils.pdaList
+
+          resolve(result)
+        })
+    })
+  },
+
+  //* modèle du pda
+  getPdaModel: (pda) => {
+    return new Promise(async resolve => {
+      exec(`adb -s ${pda} shell getprop ro.product.model | tr -d '\r' || echo "null"`, (err, stdout) => {
+        const data = stdout.replace(/[\r\n]+/g, '')
+        resolve(data.trim())
+      })
+    })
+  },
+
+  //* numéro de série
+  getPdaSerialNumber: (pda) => {
+    return new Promise(async resolve => {
+      exec(`adb -s ${pda} shell getprop ro.serialno | tr -d '\r' || echo "null")`, (err, stdout) => {
+        const data = stdout.replace(/[\r\n]+/g, '')
+        resolve(data.trim())
+      })
+    })
+  },
+
+  //* version easymobile
+  getPdaEMVersion: (pda) => {
+    return new Promise(async resolve => {
+      exec(`adb -s ${pda} shell dumpsys package net.distrilog.easymobile | grep versionName | sed 's/.*versionName=//;s/[" ]//g'`, (err, stdout) => {
+        const data = stdout.replace(/[\r\n]+/g, '')
+        resolve(data.trim())
+      })
+    })
+  },
+
+  //* version android du pda
+  getPdaAndroidVersion: (pda) => {
+    return new Promise(async resolve => {
+      exec(`adb -s ${pda} shell getprop ro.build.version.release`, (err, stdout) => {
+        const data = stdout.replace(/[\r\n]+/g, '')
+        resolve(data.trim())
+      })
+    })
+  },
+
+  //* update l'application
+  updatePackage: () => {
+    return new Promise(async resolve => {
+      await utils.execCommand(`npm i -g dtl_runpda`)
+      resolve(true)
+    })
   }
 }
 
 export default cli
-
-//* check si adb est installé
-export const isAdbInstalled = () => {
-  return new Promise((resolve, reject) => {
-    exec(`adb version`, 
-    (error, stdout, stderr) => {
-      if (error || stderr)
-        reject(true)
-      resolve(true)
-    })
-  })
-}
-
-
-//* retourne la liste des pda
-export const getPdaList = () => {
-  return new Promise(async resolve => {
-      exec(`adb devices -l | sed '1d' | awk '/device/{print $1}`, 
-      (error, stdout, stderr) => {
-        let pdaList = stdout.split('\n')
-        pdaList = pdaList.filter(item => {
-          if (!utils.isStringEmpty(item))
-            return item
-        })
-        resolve(pdaList)
-      })
-  })
-}
-
-//* modèle du pda
-export const getPdaModel = (pda) => {
-  return new Promise(async resolve => {
-    let data = await utils.execCommand(`adb -s ${pda} shell getprop ro.product.model | tr -d '\r' || echo "null"`)
-    data = data.replace(/[\r\n]+/g, '')
-    resolve(data)
-  })
-}
-
-//* numéro de série
-export const getPdaSerialNumber = (pda) => {
-  return new Promise(async resolve => {
-    let data = await utils.execCommand(`adb -s ${pda} shell getprop ro.serialno | tr -d '\r' || echo "null")`)
-    data = data.replace(/[\r\n]+/g, '')
-    resolve(data)
-  })
-}
-
-//* version easymobile
-export const getPdaEMVersion = (pda) => {
-  return new Promise(async resolve => {
-    let data = await utils.execCommand(`adb -s ${pda} shell dumpsys package net.distrilog.easymobile | grep versionName | sed 's/.*versionName=//;s/[" ]//g'`)
-    data = data.replace(/[\r\n]+/g, '')
-    resolve(data)
-  })
-}
-
-//* version android du pda
-export const getPdaAndroidVersion = (pda) => {
-  return new Promise(async resolve => {
-    let data = await utils.execCommand(`adb -s ${pda} shell getprop ro.build.version.release`)
-    data = data.replace(/[\r\n]+/g, '')
-    resolve(data)
-  })
-}
-
-//* update l'application
-export const updatePackage = () => {
-  return new Promise(async resolve => {
-    await utils.execCommand(`npm i -g dtl_runpda`)
-    resolve(true)
-  })
-}
 
 //* regarde si l'app easymobile est installée ou non
 export const checkEmInstalled = (deviceList) => {

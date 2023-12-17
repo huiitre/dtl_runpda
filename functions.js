@@ -114,45 +114,38 @@ const fn = {
       align: 'center'
     }
     console.log(boxen(message, options))
+  },
+
+  //* affiche la liste des PDA
+  displayPdaList: async() => {
+    let pdaList = await cli.getPdaList()
+
+    const table = new Table()
+    table.push(
+      [
+        chalk.bold('Model'),
+        chalk.bold('Serial number'),
+        chalk.bold('EM version'),
+        chalk.bold('Android version')/* ,
+        'EM First install',
+        'EM Last update' */
+      ]
+    );
+
+    //* Récupération des informations pour chaque pda
+    for (const item of pdaList) {
+      const data = []
+      data.push(item.model, item.serialNumber, item.emVersion, item.androidVersion)
+      table.push(data)
+    }
+
+    console.log('')
+    console.log(chalk.green.bold('Liste des PDA disponibles : '))
+    console.log(table.toString());
   }
 }
 
 export default fn
-
-//! affiche la liste des PDA
-export const displayPdaList = async() => {
-  let pdaList = await cli.getPdaList()
-
-  const table = new Table()
-  table.push(
-    [
-      chalk.bold('Model'),
-      chalk.bold('Serial number'),
-      chalk.bold('EM version'),
-      chalk.bold('Android version')/* ,
-      'EM First install',
-      'EM Last update' */
-    ]
-  );
-
-  //* Récupération des informations pour chaque pda
-  for (const item of pdaList) {
-    const data = await Promise.all([
-      cli.getPdaModel(item),
-      cli.getPdaSerialNumber(item),
-      cli.getPdaEMVersion(item),
-      cli.getPdaAndroidVersion(item),
-      // cli.getPdaFirstInstallEM(item),
-      // cli.getPdaLastUpdateEM(item),
-    ]);
-    const cleanedData = data.map(item => item.replace(/[\r\n]+/g, ''));
-    table.push(cleanedData);
-  }
-
-  console.log('')
-  console.log(chalk.green.bold('Liste des PDA disponibles : '))
-  console.log(table.toString());
-}
 
 //* Change le PDA par défaut
 export const changeDefaultPda = async(defaultPda, config, args) => {
