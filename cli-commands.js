@@ -1,6 +1,7 @@
 /* const utils = require('./utils') */
 import utils from './utils.js';
 import { exec } from 'child_process';
+import { spawn } from 'child_process';
 
 /**
  * Fonctions qui exécutent des commandes dans le terminal
@@ -218,12 +219,17 @@ const cli = {
   },
 
   //* extrait la base de donnée
-  extractDatabase: (serialNumber, filename, pdaDir) => {
-    return new Promise(async resolve => {
-      exec(`adb -s ${serialNumber} exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/${filename} > ${pdaDir}\\${filename}`, (err, stdout) => {
-        if (err)
-          resolve(err)
+  extractDatabase: (serialNumber, filename, pdaDir, databaseRename) => {
+    return new Promise(async (resolve, reject) => {
+      const command = `adb -s ${serialNumber} exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/${filename} > ${pdaDir}\\${databaseRename}`
 
+      exec(command, { shell: true }, (err, stdout, stderr) => {
+        if (err) {
+          reject(err)
+        }
+        if (stderr) {
+          reject(stderr)
+        }
         resolve(stdout.trim())
       })
     })

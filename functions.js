@@ -273,22 +273,35 @@ const fn = {
           return
         }
 
-        const databaseName = `${pdaSelected.model}_${pdaSelected.serialNumber}`
+        try {
+          const databaseName = `${pdaSelected.model}_${pdaSelected.serialNumber}`
 
-        //* on check si le dossier du pda a été créé ou non
-        const appDir = path.join(utils.getConfigValue('APP_DIR'))
-        const databaseDir = path.join(appDir, 'database')
-        const pdaDir = path.join(databaseDir, pdaSelected.model.toUpperCase())
+          //* on check si le dossier du pda a été créé ou non
+          const appDir = path.join(utils.getConfigValue('APP_DIR'))
+          const databaseDir = path.join(appDir, 'database')
+          const pdaDir = path.join(databaseDir, pdaSelected.model.toUpperCase())
 
-        //* si le dossier n'est pas créé, on le crée
-        if (!fs.existsSync(pdaDir))
-          fs.mkdirSync(pdaDir)
+          //* si le dossier n'est pas créé, on le crée
+          if (!fs.existsSync(pdaDir)) {
+            fs.mkdirSync(pdaDir)
+          }
 
-        //* on extrait la base pour la coller dans le dossier
-        await cli.extractDatabase(pdaSelected.serialNumber, databaseName, pdaDir)
+          //* on supprime l'ancienne base de donnée
+          /* const deleteFileDir = path.join(pdaDir, databaseName)
+          if (fs.existsSync(deleteFileDir)) {
+            console.log(chalk.blue(`Suppression du fichier existant ...`))
+            
+          } */
 
-        console.log(chalk.green(`La base de donnée du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} a été exporté avec succès !`))
-        console.log(chalk.blue(`Chemin : ${chalk.bold(`${pdaDir}\\${databaseName}`)}`))
+          //* on extrait la base pour la coller dans le dossier
+          console.log(chalk.blue(`Récupération de la base de donnée depuis le PDA ...`))
+          await cli.extractDatabase(pdaSelected.serialNumber, fileName, pdaDir, databaseName)
+
+          console.log(chalk.green(`La base de donnée du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} a été exporté avec succès !`))
+          console.log(chalk.blue(`Chemin : ${chalk.bold(`${pdaDir}\\${databaseName}`)}`))
+        } catch(error) {
+          console.log(chalk.red(`Erreur : ${error}`))
+        }
       } else {
         console.log(chalk.red(`L'application EM n'est pas installé sur le PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)}`))
       }
