@@ -56,7 +56,7 @@ const fn = {
 
   //* affiche la version en cours
   displayCurrentVersion: async() => {
-    const currentVersion = utils.getConfigValue('CURRENT_VERSION')
+    const currentVersion = await cli.getCurrentVersion()
     const changelog = utils.getConfigValue('CHANGELOG')
 
     console.log('')
@@ -354,7 +354,7 @@ const fn = {
   },
 
   //* met à jour le package
-  displayUpdatePackage: async() => {
+  cmdUpdatePackage: async() => {
     const requireUpdate = utils.getConfigValue('REQUIRE_UPDATE')
     if (requireUpdate)
       await cli.updateLatestVersion()

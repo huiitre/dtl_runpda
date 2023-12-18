@@ -82,7 +82,7 @@ const commands = [
     name: `Update package`,
     description: `Update le package avec la dernière version`,
     args: ['update'],
-    func: () => fn.displayUpdatePackage(),
+    func: () => fn.cmdUpdatePackage(),
     requireAdb: false
   },
 ]
