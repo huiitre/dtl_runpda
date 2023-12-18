@@ -286,19 +286,17 @@ const fn = {
             fs.mkdirSync(pdaDir)
           }
 
-          //* on supprime l'ancienne base de donnée
-          /* const deleteFileDir = path.join(pdaDir, databaseName)
-          if (fs.existsSync(deleteFileDir)) {
-            console.log(chalk.blue(`Suppression du fichier existant ...`))
-            
-          } */
+          console.log(chalk.yellow(`Le module est actuellement en maintenance. Une commande a été généré afin de récupérer la base de donnée du PDA sélectionné en collant simplement la ligne dans un invité de commande gitbash (shell).`));
+          console.log('')
+          const command = `adb -s ${pdaSelected.serialNumber} exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/${fileName} > "${pdaDir}\\${databaseName}"`
+          console.log(chalk.blue.bold(command))
 
           //* on extrait la base pour la coller dans le dossier
-          console.log(chalk.blue(`Récupération de la base de donnée depuis le PDA ...`))
-          await cli.extractDatabase(pdaSelected.serialNumber, fileName, pdaDir, databaseName)
+          // console.log(chalk.blue(`Récupération de la base de donnée depuis le PDA ...`))
+          // await cli.extractDatabase(pdaSelected.serialNumber, fileName, pdaDir, databaseName)
 
-          console.log(chalk.green(`La base de donnée du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} a été exporté avec succès !`))
-          console.log(chalk.blue(`Chemin : ${chalk.bold(`${pdaDir}\\${databaseName}`)}`))
+          // console.log(chalk.green(`La base de donnée du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} a été exporté avec succès !`))
+          // console.log(chalk.blue(`Chemin : ${chalk.bold(`${pdaDir}\\${databaseName}`)}`))
         } catch(error) {
           console.log(chalk.red(`Erreur : ${error}`))
         }
@@ -354,6 +352,15 @@ const fn = {
       return pdaSelected[0]
     }
   },
+
+  //* met à jour le package
+  displayUpdatePackage: async() => {
+    const requireUpdate = utils.getConfigValue('REQUIRE_UPDATE')
+    if (requireUpdate)
+      await cli.updateLatestVersion()
+
+    console.log(chalk.blue('Aucune mise à jour disponible'))
+  }
 }
 
 export default fn

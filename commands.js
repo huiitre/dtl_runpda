@@ -78,6 +78,13 @@ const commands = [
     func: () => fn.displayHelpCenter(),
     requireAdb: false
   },
+  {
+    name: `Update package`,
+    description: `Update le package avec la dernière version`,
+    args: ['update'],
+    func: () => fn.displayUpdatePackage(),
+    requireAdb: false
+  },
 ]
 
 export default commands

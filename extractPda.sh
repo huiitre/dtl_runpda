@@ -3,11 +3,11 @@
 # Fonction pour construire la commande
 build_command() {
   serial_number=$1
-  package_name=$2
-  database_path=$3
-  file_name=$4
+  file_name=$3
+  pdaDir=$2
+  databaseRename=$4
 
-  command="adb -s $serial_number exec-out run-as $package_name cat app_webview/Default/databases/$database_path/$file_name"
+  command="adb -s $serial_number exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/$file_name > "${pdaDir}\\${databaseRename}""
   echo "$command"
 }
 

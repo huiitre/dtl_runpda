@@ -31,6 +31,15 @@ const cli = {
     })
   },
 
+  //* met à jour le package
+  updateLatestVersion: () => {
+    return new Promise(resolve => {
+      exec(`npm i -g dtl_runpda@latest`, (err, stdout) => {
+        resolve(stdout.trim())
+      })
+    })
+  },
+
   //* Récupère la dernière version en cours du package NPM
   getCurrentVersion: () => {
     return new Promise(resolve => {
@@ -219,9 +228,9 @@ const cli = {
   },
 
   //* extrait la base de donnée
-  extractDatabase: (serialNumber, filename, pdaDir, databaseRename) => {
-    return new Promise(async (resolve, reject) => {
-      const command = `adb -s ${serialNumber} exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/${filename} > ${pdaDir}\\${databaseRename}`
+  extractDatabase: async(serialNumber, filename, pdaDir, databaseRename) => {
+    /* return new Promise(async (resolve, reject) => {
+      const command = `adb -s ${serialNumber} exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/${filename} > "${pdaDir}\\${databaseRename}"`
 
       exec(command, { shell: true }, (err, stdout, stderr) => {
         if (err) {
@@ -232,7 +241,42 @@ const cli = {
         }
         resolve(stdout.trim())
       })
-    })
+    }) */
+
+    /* const filePath = `${pdaDir}\\${databaseRename}`;
+
+    try {
+      // Supprimer le fichier avec rimraf (force la suppression)
+      await new Promise((rimrafResolve, rimrafReject) => {
+        rimraf(filePath, (rimrafError) => {
+          if (rimrafError) {
+            rimrafReject(rimrafError);
+          } else {
+            rimrafResolve();
+          }
+        });
+      });
+    } catch (rimrafError) {
+      console.error('Erreur lors de la suppression forcée du fichier :', rimrafError);
+    }
+
+    // Construction de la commande
+    const command = `adb -s ${serialNumber} exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/${filename} > "${filePath}"`;
+
+    // Exécution de la commande
+    return new Promise((resolve, reject) => {
+      exec(command, { shell: true }, (err, stdout, stderr) => {
+        if (err) {
+          reject(err);
+        }
+
+        if (stderr) {
+          reject(stderr);
+        }
+
+        resolve(stdout.trim());
+      });
+    }); */
   }
 }
 
