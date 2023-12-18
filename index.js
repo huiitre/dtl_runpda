@@ -40,6 +40,9 @@ const init = async() => {
   if (adbIsNotInstalled) {
     //* on déclare un flag qui nous servira pour certaines commandes
     utils.adbIsInstalled = false
+  } else {
+    //* on lance le serveur
+    await cli.adbStartServer()
   }
 
   //* récupération des arguments

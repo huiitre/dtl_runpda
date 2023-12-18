@@ -104,6 +104,15 @@ const cli = {
     })
   },
 
+  //* lance le serveur adb
+  adbStartServer: async() => {
+    return new Promise(async resolve => {
+      exec(`adb devices`, (err, stdout) => {
+        resolve(true)
+      })
+    })
+  },
+
   //* modèle du pda
   getPdaModel: (pda) => {
     return new Promise(async resolve => {
