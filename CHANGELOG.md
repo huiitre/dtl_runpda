@@ -1,6 +1,9 @@
 # Changelog
 
-## [v1.0.3] - 18-12-2023 latest
+## [v1.0.4] - 18-12-2023 latest
+- CORRECTIF nom de la fonction qui est appelé lorsqu'on fait un --update était identique à celle qu'on appelait pour afficher la maj disponible, du coup ça faisait automatiquement la mise à jour
+
+## [v1.0.3] - 18-12-2023
 - FIX CHANGELOG
 - Test de la commande --update
 ## [v1.0.2] - 18-12-2023
