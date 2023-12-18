@@ -1,7 +1,6 @@
 /* const utils = require('./utils') */
 import utils from './utils.js';
 import { exec } from 'child_process';
-import { spawn } from 'child_process';
 
 /**
  * Fonctions qui exécutent des commandes dans le terminal
@@ -42,11 +41,22 @@ const cli = {
 
   //* Récupère la dernière version en cours du package NPM
   getCurrentVersion: () => {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
+      exec('npm list -g dtl_runpda', (err, stdout) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        const version = stdout.trim().split('@')[1]
+        resolve(version);
+      });
+    });
+
+    /* return new Promise(resolve => {
       exec(`npm list -g --depth=0 dtl_runpda | grep 'dtl_runpda@' | awk '{ print $2 }' | sed 's/^dtl_runpda@//'`, (err, stdout) => {
         resolve(stdout.trim())
       })
-    })
+    }) */
   },
 
   //* retourne la liste des pda
