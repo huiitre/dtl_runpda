@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.0.1] - 18-12-2023 latest
+- ROLLBACK - Module extract pda génère un lien à coller dans l'invité de commande en attendant un correctif
+- Ajout de la commande --update afin de faire un npm i -g dtl_runpda@latest pour mettre à jour
+
 ## [v1.0.0] - 17-12-2023
 - Mise en place des différentes commandes pour une première release
 
