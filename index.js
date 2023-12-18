@@ -25,6 +25,9 @@ const init = async() => {
   //* récupération de la configuration de l'utilisateur, la crée si elle n'existe pas
   utils.createConfigUser()
 
+  //* Message d'avertissement si l'utilisateur utilise powershell ou cmd.exe
+  utils.checkTerminal()
+
   //* check si une version est disponible
   const requireUpdate = await fn.checkUpdate()
 

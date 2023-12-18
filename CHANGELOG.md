@@ -6,6 +6,7 @@
 ### [v1.1.0] - xx-12-2023
 - CORRECTIF - Modification de la commande qui récupère la liste des PDA en adb devices -l car posait soucis pour l'invit de cmd windows
 - Ajout dans le changelog du numéro de version majeure
+- Ajout d'une vérification du terminal utilisé et affiche un message d'erreur si ce dernier n'est pas GitBash
 
 ### [v1.0.5] - 18-12-2023
 - CORRECTIF au niveau de la récupération de la version actuelle depuis un terminal NON SHELL

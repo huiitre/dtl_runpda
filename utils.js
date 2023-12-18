@@ -149,6 +149,14 @@ const utils = {
     }
   },
 
+  //* check le terminal utilisé et retourne un message d'avertissement si ce dernier n'est pas shell
+  checkTerminal: () => {
+    const isShell = process.env.SHELL
+    if (!isShell) {
+      console.log(chalk.yellow(`Vous n'utilisez pas un terminal GitBash, certaines fonctionnalitées risquent de ne pas fonctionner correctement`))
+    }
+  },
+
   //* Récupère la valeur (ou autre propriété demandé) d'une configuration depuis utils.config
   getConfigValue: (key, propName = 'value') => {
     const config = utils.config
