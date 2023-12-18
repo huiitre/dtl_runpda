@@ -1,9 +1,11 @@
 # Changelog
 
-## [v1.0.2] - 18-12-2023 latest
+## [v1.0.3] - 18-12-2023 latest
+- FIX CHANGELOG
+- Test de la commande --update
+## [v1.0.2] - 18-12-2023
 - ROLLBACK - Module extract pda génère un lien à coller dans l'invité de commande en attendant un correctif
 - Ajout de la commande --update afin de faire un npm i -g dtl_runpda@latest pour mettre à jour
-
 
 ## [v1.0.1] - 18-12-2023
 - ROLLBACK - Module extract pda génère un lien à coller dans l'invité de commande en attendant un correctif
