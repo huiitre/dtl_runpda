@@ -24,15 +24,7 @@ Taper `npm link`
 Pour annuler `npm unlink`
 si l'annulation ne fonctionne pas, simplement faire `npm uninstall -g dtl_runpda`
 
-## Liste des commandes
+## Choses à faire
 
-| Commande (lowerCase) | Description | Nécessite ADB | Etat |
-|---|---|---|---|
-| -h -help | Affiche la liste des commandes et informations utiles au bon fonctionnement du package | NON | V |
-| -l -list | Affiche la liste des PDA connectés | OUI | V |
-| -v -version | Affiche le numéro de version et le lien vers le changelog | NON | V |
-| -d -default | Permet de changer le PDA par défaut | NON | V |
-| -c -clear | Clear l'application EM du PDA | OUI | V |
-| -u -uninstall | Désinstalle l'app EM du PDA | OUI | V |
-| -b -build | Génère un apk (--debug / --release) debug par défaut sans compiler sur un PDA | ? | X |
-| -e -export | Export la base de donnée EM du PDA vers le dossier du package | OUI | X |
+- Corriger le module d'export de la BDD du PDA
+- Ajouter une commande `run --config` afin de pouvoir modifier n'importe quel paramètre via la syntaxe `run --config param1=newValue param2=newValue`
