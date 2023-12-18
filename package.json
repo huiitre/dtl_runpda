@@ -5,6 +5,7 @@
   "description": "Outils de développement pour la mobilité EASYWEB",
   "main": "index.js",
   "files": [
+    "extractPda.sh",
     "commands.js",
     "config",
     "CHANGELOG.md",
