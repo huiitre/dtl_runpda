@@ -1,6 +1,6 @@
 # Changelog
 
-## [v1.0.5] - 18-12-2023 latest
+## [v1.0.5] - 18-12-2023
 - CORRECTIF au niveau de la récupération de la version actuelle depuis un terminal NON SHELL
 
 ## [v1.0.4] - 18-12-2023
