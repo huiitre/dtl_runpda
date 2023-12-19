@@ -1,4 +1,4 @@
-# RUN PDA SHELL
+# DTL_RUNPDA
 
   
 
@@ -31,8 +31,14 @@
 - [Utilisation de la base de donnée exportée avec DBeaver](#utilisation-de-la-base-de-donnée-exportée-avec-dbeaver)
 
 ## Installation
-Note : Un dossier nommé **database** est nécessaire à la racine du dossier, si il n'y est pas lors du clone, vous devez le créer manuellement afin que les bases de données puissent se stocker lors de l'exportation.
-### Avec tools-bash
+Pour installer le package
+`npm install -g dtl_runpda@latest`
+
+Note : Le *-g* est important, le package nécessite d'être installé globalement.
+
+Lors de la première installation, un dossier *dtl_runpda* est créé dans C:/User/{utilisateur}/, avec à l'intérieur le nécessaire au bon fonctionnement de l'application.
+La configuration initiale de l'application est stocké dans un fichier *config.json*, merci de ne pas le modifier sauf si vous savez ce que vous faites. Ce fichier est regénéré après chaque installation/update du package
+<!-- ### Avec tools-bash
 En ayant cloné au préalable de repository [Tools-bash](https://github.com/huiitre/tools-bash) et en l'ayant installé correctement, il vous suffit d'insérer cette ligne au début du fichier *cordova.js* afin d'importer la fonction run :
 ```bash
 # todo Importation de la fonction RUN
@@ -48,10 +54,10 @@ then
 	source c:/run-pda-shell/run.sh
 fi
 ```
-Bien penser à changer le chemin menant à votre script run.
+Bien penser à changer le chemin menant à votre script run. -->
 
 ## Liste des commandes
-Note : La fonction *run* peut aussi être appelée en majuscule, pour le peu que vous ayez également importé l'alias (disponible à la fin du fichier *run.sh*) : 
+Note : La fonction *run* peut aussi être appelée en majuscule, pour le peu que vous ayez créé un alias comme ceci : 
 ```bash
 # todo alias run to RUN
 alias RUN='run'
@@ -85,7 +91,7 @@ run -V
 run -version
 run -VERSION
 ```
-Module en cours de développement, est censé afficher un versioning du script en y renseignant les différents changements apportés.
+Affiche la version en cours avec le lien vers le changelog.
 ### default
 Commandes : 
 ```bash
@@ -129,6 +135,12 @@ run -BUILD
 ```
 Permet de générer un build APK qu'il soit DEBUG ou RELEASE.
 Ne nécessite pas de PDA de branché car il n'installe pas l'apk dans un PDA, il le compile seulement.
+### update
+Commandes : 
+```bash
+run -update
+```
+Met à jour l'application plus rapidement qu'en utilisant une commande NPM.
 ### export
 Commandes : 
 ```bash
@@ -137,8 +149,6 @@ run -E
 run -export
 run -EXPORT
 ```
-
-Note : Pour que l'export fonctionne, il est nécessaire d'avoir un dossier nommé *database* à la racine du projet, sinon les écritures ne pourront pas se faire. Veuillez donc bien à vérifier si ce dossier existe après le clone, si ce n'est pas le cas vous devrez le créer manuellement, le reste se fera tout seul.
 
 Permet d'exporter la base de donnée de l'application EM du PDA sélectionné.
 Le module va créer (si ce n'est pas déjà fait) un dossier du nom du modèle du PDA (exemple CT45, EDA52) et va ensuite y insérer le fichier BDD qui a été copié depuis le PDA, en le renomant sous cette forme : **MODELE_SERIALNUMBER**.
@@ -162,7 +172,7 @@ On va gérer pour l'instant l'importation du fichier depuis le logiciel DBeaver.
 
 2. Sélectionnez SQLite puis cliquez sur **Suivant** en bas de la fenêtre.
 
-3. On clique sur **Open** et on va chercher notre fichier de BDD dans le dossier /database/...
+3. On clique sur **Open** et on va chercher notre fichier de BDD dans le dossier C:/User/${userName}/dtl_runpda/database/...
 Puis on clique sur **Terminer** en bas.
 ![dbeaver2](./img/dbeaver2.png)
 
