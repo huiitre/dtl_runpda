@@ -71,61 +71,61 @@ const utils = {
         "APP_DIR": {
           "value": configDir,
           "is_visible": true,
-          "description": "",
+          "description": "Chemin vers le dossier de config dtl_runpda",
           "editable": false
         },
         "CONFIGFILE_DIR": {
           "value": jsonPath,
           "is_visible": true,
-          "description": "",
+          "description": "Chemin du fichier config.json à la racine de dtl_runpda",
           "editable": false
         },
         "CHANGELOG": {
           "value": "https://github.com/huiitre/run-pda-shell/blob/master/CHANGELOG.md",
           "is_visible": false,
-          "description": "",
+          "description": "Lien vers le CHANGELOG des versions",
           "editable": false
         },
         "PDALIST": {
           "value": [],
           "is_visible": false,
-          "description": "",
+          "description": "Liste des PDA disponibles en USB",
           "editable": false
         },
         "DEFAULT_PDA": {
           "value": "ct60",
           "is_visible": false,
-          "description": "",
+          "description": "PDA par défaut configuré (depuis la commande --default)",
           "editable": true
         },
         "TIME_BEFORE_CHECK_UPDATE": {
-          "value": 1,
+          "value": 8,
           "is_visible": false,
-          "description": "",
+          "description": "Temps (en heures) avant de rechercher une nouvelle mise à jour",
           "editable": true
         },
         "REQUIRE_UPDATE": {
           "value": false,
           "is_visible": false,
-          "description": "",
+          "description": "Flag pour dire si on doit rechercher une mise à jour ou non",
           "editable": true
         },
         "CURRENT_VERSION": {
           "value": null,
           "is_visible": false,
-          "description": "",
+          "description": "Version courante de l'application",
           "editable": true
         },
         "LATEST_VERSION": {
           "value": null,
           "is_visible": false,
-          "description": "",
+          "description": "Dernière version en cours de l'application depuis npm",
           "editable": true
         },
         "LAST_CHECK_UPDATE": {
           "value": null,
           "is_visible": false,
-          "description": "",
+          "description": "Date de la dernière recherche d'une mise à jour",
           "editable": true
         }
       }
