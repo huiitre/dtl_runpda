@@ -1,4 +1,4 @@
-import { existsSync, unlinkSync } from 'fs';
+import { existsSync, mkdirSync, unlinkSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 
@@ -21,4 +21,13 @@ try {
   }
 } catch (error) {
   console.error('Erreur lors de la suppression du fichier config.json :', error);
+}
+
+const logDir = join(configDir, 'log')
+
+try {
+  if (!existsSync(logDir))
+    mkdirSync(logDir)
+} catch(err) {
+  console.error(`Erreur lors de la création du dossier log à la racine de dtl_runpda`)
 }

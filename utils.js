@@ -6,6 +6,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import inquirer from 'inquirer';
+import debug from './DebugManager.js';
 
 //! ne pas importer cli-commands pour éviter la référence circulaire entre les deux fichiers
 
@@ -52,6 +53,10 @@ const utils = {
 
   //* Crée la config utilisateur, si elle existe on l'extrait et on la place dans utils.config
   createConfigUser: () => {
+    debug.log({
+      label: 'createConfigUser',
+      level: 0
+    })
     //* récupération des config
     //* chemin absolu vers le module pour créer le fichier json
     const configDir = path.join(os.homedir(), 'dtl_runpda');
@@ -67,66 +72,88 @@ const utils = {
       }
     //* le fichier n'existe pas, on va le créer avec des valeurs par défaut
     } else {
+      /**
+       * is_visible : Peut être visible depuis l'affichage des configurations (--config)
+       * editable : Peut être modifié par l'utilisateur depuis --config
+       * app_editable : Peut être modifié par l'application
+       */
       let initialConfig = {
         "APP_DIR": {
           "value": configDir,
           "is_visible": true,
           "description": "Chemin vers le dossier de config dtl_runpda",
+          "app_editable": false,
           "editable": false
         },
         "CONFIGFILE_DIR": {
           "value": jsonPath,
           "is_visible": true,
           "description": "Chemin du fichier config.json à la racine de dtl_runpda",
+          "app_editable": false,
           "editable": false
         },
         "CHANGELOG": {
           "value": "https://github.com/huiitre/run-pda-shell/blob/master/CHANGELOG.md",
           "is_visible": false,
           "description": "Lien vers le CHANGELOG des versions",
+          "app_editable": false,
           "editable": false
         },
         "PDALIST": {
           "value": [],
           "is_visible": false,
           "description": "Liste des PDA disponibles en USB",
+          "app_editable": false,
           "editable": false
         },
         "DEFAULT_PDA": {
           "value": "ct60",
           "is_visible": false,
           "description": "PDA par défaut configuré (depuis la commande --default)",
-          "editable": true
+          "app_editable": true,
+          "editable": false
         },
         "TIME_BEFORE_CHECK_UPDATE": {
           "value": 8,
           "is_visible": false,
           "description": "Temps (en heures) avant de rechercher une nouvelle mise à jour",
-          "editable": true
+          "app_editable": true,
+          "editable": false
         },
         "REQUIRE_UPDATE": {
           "value": false,
           "is_visible": false,
           "description": "Flag pour dire si on doit rechercher une mise à jour ou non",
-          "editable": true
+          "app_editable": true,
+          "editable": false
         },
         "CURRENT_VERSION": {
           "value": null,
           "is_visible": false,
           "description": "Version courante de l'application",
-          "editable": true
+          "app_editable": true,
+          "editable": false
         },
         "LATEST_VERSION": {
           "value": null,
           "is_visible": false,
           "description": "Dernière version en cours de l'application depuis npm",
-          "editable": true
+          "app_editable": true,
+          "editable": false
         },
         "LAST_CHECK_UPDATE": {
           "value": null,
           "is_visible": false,
           "description": "Date de la dernière recherche d'une mise à jour",
-          "editable": true
+          "app_editable": true,
+          "editable": false
+        },
+        "DEBUG_LEVEL": {
+          "value": null,
+          "is_visible": true,
+          "description": "Niveau de debug de l'application",
+          "app_editable": true,
+          "editable": false
         }
       }
       //* si le dossier n'existe pas, on le crée
@@ -174,7 +201,7 @@ const utils = {
       //* est-ce que cette configuration existe
       if (utils.config.hasOwnProperty(key)) {
         //* est-ce qu'on a le droit de la modifier
-        if (utils.config[key].hasOwnProperty('editable') && utils.config[key].editable === true) {
+        if (utils.config[key].hasOwnProperty('app_editable') && utils.config[key].app_editable === true) {
           utils.config[key].value = value
           //* on récupère le chemin du fichier config.json
           const jsonPath = utils.config['CONFIGFILE_DIR'].value

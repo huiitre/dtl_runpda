@@ -8,6 +8,7 @@
 - AJOUT - Ajout dans le changelog du numéro de version majeure
 - CORRECTIF - Ajout d'une vérification du terminal utilisé et affiche un message d'erreur si ce dernier n'est pas GitBash
 - CORRECTIF - Ajout d'une fonction qui lance le serveur adb (adb start-server) au début du script
+- CORRECTIF - Mise à jour du README
 
 ### [v1.0.5] - 18-12-2023
 - CORRECTIF au niveau de la récupération de la version actuelle depuis un terminal NON SHELL

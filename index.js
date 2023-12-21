@@ -21,6 +21,8 @@ import fn from './functions.js';
 //* Commandes
 import commands from './commands.js';
 
+import debug from './DebugManager.js';
+
 const init = async() => {
   //* récupération de la configuration de l'utilisateur, la crée si elle n'existe pas
   utils.createConfigUser()

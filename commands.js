@@ -7,6 +7,9 @@ import cli from './cli-commands.js';
 //* Utils
 import utils from './utils.js';
 
+//* debug
+import debug from './DebugManager.js';
+
 const commands = [
   /* {
     name: ``,
