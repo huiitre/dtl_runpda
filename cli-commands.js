@@ -1,7 +1,6 @@
 /* const utils = require('./utils') */
 import utils from './utils.js';
 import { exec } from 'child_process';
-import debug from './DebugManager.js';
 
 /**
  * Fonctions qui exécutent des commandes dans le terminal

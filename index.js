@@ -21,9 +21,18 @@ import fn from './functions.js';
 //* Commandes
 import commands from './commands.js';
 
-import debug from './DebugManager.js';
+process.on('exit', () => {
+  utils.log({
+    label: '========== FIN DU SCRIPT =========='
+  })
+  utils.writeLog()
+})
 
-const init = async() => {
+const app = async() => {
+  utils.log({
+    label: '========== DEBUT DU SCRIPT =========='
+  })
+
   //* récupération de la configuration de l'utilisateur, la crée si elle n'existe pas
   utils.createConfigUser()
 
@@ -89,4 +98,4 @@ const init = async() => {
   }
 }
 
-init()
+app()

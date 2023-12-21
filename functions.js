@@ -12,7 +12,6 @@ import boxen from 'boxen';
 import commands from './commands.js';
 import fs from 'fs';
 import path from 'path';
-import debug from './DebugManager.js';
 
 const fn = {
   //* check si une mise à jour est disponible (en fonction de plusieurs paramètres)
