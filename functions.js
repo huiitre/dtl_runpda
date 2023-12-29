@@ -350,7 +350,7 @@ const fn = {
 
   //* permet de build un apk debug ou release (au choix)
   displayBuildApk: async() => {
-    const buildSelected = await utils.selectValueIntoArray(['debug', 'release'])
+    const buildSelected = await utils.selectValueIntoArray(['debug'])
     await cli.buildApk(buildSelected)
   },
 
