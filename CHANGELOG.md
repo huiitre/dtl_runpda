@@ -3,7 +3,7 @@
 ---
 ## Version 1.x.x
 
-### [v1.1.0] - xx-12-2023
+### [v1.1.0] - 29-12-2023
 - CORRECTIF - Modification de la commande qui récupère la liste des PDA en adb devices -l car posait soucis pour l'invit de cmd windows
 - AJOUT - Ajout dans le changelog du numéro de version majeure
 - CORRECTIF - Ajout d'une vérification du terminal utilisé et affiche un message d'erreur si ce dernier n'est pas GitBash
@@ -12,7 +12,7 @@
 - AJOUT - Ajout d'un système de log dans l'application, il n'y a pour l'instant pas de logs de partout et la gestion du niveau de log est limité
 - CORRECTIF - Actuellement le build d'un apk release n'est pas géré, donc on le retire de la liste des choix lors de la commande "run -b"
 
-### [v1.0.5] - 18-12-2023
+### [v1.0.5] - 18-12-2023 stable
 - CORRECTIF au niveau de la récupération de la version actuelle depuis un terminal NON SHELL
 
 ### [v1.0.4] - 18-12-2023
