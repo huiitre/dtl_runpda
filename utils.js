@@ -193,7 +193,7 @@ const utils = {
       utils.log({
         label: `Création du fichier config.json et lecture de ce dernier`,
         value: jsonFile,
-        level: 0
+        level: 1
       })
       console.log(chalk.italic(`Note : Création du fichier ${chalk.bold('config.json')}. Chemin d'accès : ${chalk.bold(jsonPath)}`))
     }
@@ -224,13 +224,25 @@ const utils = {
   //* check le terminal utilisé et retourne un message d'avertissement si ce dernier n'est pas shell
   checkTerminal: () => {
     utils.log({
-      label: 'checkTerminal'
+      label: `checkTerminal`,
+      value: ``,
+      level: 0
     })
 
     const isShell = process.env.SHELL
     if (!isShell) {
       console.log(chalk.yellow(`Vous n'utilisez pas un terminal GitBash, certaines fonctionnalitées risquent de ne pas fonctionner correctement`))
     }
+    utils.log({
+      label: `isShell`,
+      value: isShell,
+      level: 0
+    })
+    utils.log({
+      label: `fin checkTerminal`,
+      value: ``,
+      level: 0
+    })
   },
 
   //* Récupère la valeur (ou autre propriété demandé) d'une configuration depuis utils.config
@@ -312,6 +324,9 @@ const utils = {
   log: (props) => {
     const { label, value = '', level = 0 } = props
 
+    if (utils.getConfigValue('DEBUG_LEVEL') < level)
+      return
+
     let log = ''
 
     let date = new Date();
@@ -336,6 +351,8 @@ const utils = {
     log += `\nLabel : ${label}\n`
     if (value.length > 0)
       log += `Value : ${value}`
+
+    log += '\n'
 
     utils.logs.push(log)
   },

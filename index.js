@@ -39,15 +39,20 @@ const app = async() => {
   //* Message d'avertissement si l'utilisateur utilise powershell ou cmd.exe
   utils.checkTerminal()
 
+  const [ requireUpdate, adbIsNotInstalled ] = await Promise.all([
+    fn.checkUpdate(),
+    cli.isAdbInstalled()
+  ])
+
   //* check si une version est disponible
-  const requireUpdate = await fn.checkUpdate()
+  // const requireUpdate = await fn.checkUpdate()
 
   //* affichage du message de mise à jour si nécessaire
   if (requireUpdate)
     fn.displayUpdatePackage()
 
   //* on check (et pour l'instant on affiche) si adb est installé
-  const adbIsNotInstalled = await cli.isAdbInstalled()
+  // const adbIsNotInstalled = await cli.isAdbInstalled()
   if (adbIsNotInstalled) {
     //* on déclare un flag qui nous servira pour certaines commandes
     utils.adbIsInstalled = false

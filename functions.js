@@ -16,21 +16,51 @@ import path from 'path';
 const fn = {
   //* check si une mise à jour est disponible (en fonction de plusieurs paramètres)
   checkUpdate: async() => {
+    utils.log({
+      label: `checkUpdate`,
+      value: ``,
+      level: 0
+    })
     //* date de la dernière vérification d'une mise à jour
     const lastCheckUpdate = new Date(utils.getConfigValue('LAST_CHECK_UPDATE'))
+    utils.log({
+      label: `lastCheckUpdate`,
+      value: lastCheckUpdate,
+      level: 1
+    })
     //* temps (en heure) avant la prochaine vérification d'une mise à jour
     const timeBeforeCheckUpdate = utils.getConfigValue('TIME_BEFORE_CHECK_UPDATE')
+    utils.log({
+      label: `timeBeforeCheckUpdate`,
+      value: timeBeforeCheckUpdate,
+      level: 1
+    })
     //* flag pour dire si on vérifie ou non qu'une mise à jour est disponible
     const requireUpdate = utils.getConfigValue('REQUIRE_UPDATE')
+    utils.log({
+      label: `requireUpdate`,
+      value: requireUpdate,
+      level: 1
+    })
 
     //* date now
     const dateNow = new Date()
 
     //* prochaine vérification
     const nextCheckMaj = new Date(lastCheckUpdate.getTime() + timeBeforeCheckUpdate * 60 * 60 * 1000)
+    utils.log({
+      label: `nextCheckMaj`,
+      value: nextCheckMaj,
+      level: 1
+    })
 
     //* si la date est dépassé ou qu'un update est déjà requis, on check la mise à jour jsuqu'à qu'il la fasse enfin
     if (dateNow > nextCheckMaj || requireUpdate) {
+      utils.log({
+        label: `La date est dépassé ou requireUpdate est true, on check la maj.requireUpdate`,
+        value: requireUpdate,
+        level: 0
+      })
       console.log('')
       console.log(chalk.blue(`Recherche d'une mise à jour ...`))
 
@@ -56,6 +86,11 @@ const fn = {
         return false
       }
     }
+    utils.log({
+      label: `fin checkUpdate`,
+      value: ``,
+      level: 0
+    })
   },
 
   //* affiche la version en cours
