@@ -21,22 +21,44 @@ import fn from './functions.js';
 //* Commandes
 import commands from './commands.js';
 
-const init = async() => {
+process.on('exit', () => {
+  utils.log({
+    label: '========== FIN DU SCRIPT =========='
+  })
+  utils.writeLog()
+})
+
+const app = async() => {
+  utils.log({
+    label: '========== DEBUT DU SCRIPT =========='
+  })
+
   //* récupération de la configuration de l'utilisateur, la crée si elle n'existe pas
   utils.createConfigUser()
 
+  //* Message d'avertissement si l'utilisateur utilise powershell ou cmd.exe
+  utils.checkTerminal()
+
+  const [ requireUpdate, adbIsNotInstalled ] = await Promise.all([
+    fn.checkUpdate(),
+    cli.isAdbInstalled()
+  ])
+
   //* check si une version est disponible
-  const requireUpdate = await fn.checkUpdate()
+  // const requireUpdate = await fn.checkUpdate()
 
   //* affichage du message de mise à jour si nécessaire
   if (requireUpdate)
     fn.displayUpdatePackage()
 
   //* on check (et pour l'instant on affiche) si adb est installé
-  const adbIsNotInstalled = await cli.isAdbInstalled()
+  // const adbIsNotInstalled = await cli.isAdbInstalled()
   if (adbIsNotInstalled) {
     //* on déclare un flag qui nous servira pour certaines commandes
     utils.adbIsInstalled = false
+  } else {
+    //* on lance le serveur
+    await cli.adbStartServer()
   }
 
   //* récupération des arguments
@@ -81,4 +103,4 @@ const init = async() => {
   }
 }
 
-init()
+app()

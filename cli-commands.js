@@ -61,14 +61,23 @@ const cli = {
 
   //* retourne la liste des pda
   getPdaList: () => {
-    return new Promise(resolve => {
-        exec(`adb devices -l | sed '1d' | awk '/device/{print $1}`, 
+    return new Promise((resolve, reject) => {
+        exec(`adb devices -l`, 
         async(error, stdout, stderr) => {
-          let pdaList = stdout.split('\n')
-          pdaList = pdaList.filter(item => {
-            if (!utils.isStringEmpty(item))
-              return item
-          })
+          if (stderr)
+            reject(stderr)
+
+          if (error)
+            reject(error)
+
+          const lines = stdout.split('\n')
+
+          const pdaList = lines
+            .map(line => {
+              const match = line.match(/^\s*([\S]+)/);
+              return match ? match[1] : null;
+            })
+            .filter(serialNumber => serialNumber !== null && serialNumber !== 'List');
 
           const result = []
           for (const item of pdaList) {
@@ -92,6 +101,15 @@ const cli = {
 
           resolve(result)
         })
+    })
+  },
+
+  //* lance le serveur adb
+  adbStartServer: async() => {
+    return new Promise(async resolve => {
+      exec(`adb devices`, (err, stdout) => {
+        resolve(true)
+      })
     })
   },
 

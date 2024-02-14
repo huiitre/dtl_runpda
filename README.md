@@ -6,31 +6,10 @@
 
 - [Installation](#installation)
 
-	- [Avec Tools-bash](#avec-tools-bash)
-
-	- [Sans Tools-bash](#sans-tools-bash)
-
-- [Liste des commandes](#liste-des-commandes)
-
-	- [help](#help)
-
-	- [list](#list)
-
-	- [version](#version)
-
-	- [default](#default)
-
-	- [clear](#clear)
-
-	- [uninstall](#uninstall)
-
-	- [build](#build)
-
-	- [export](#export)
-
 - [Utilisation de la base de donnée exportée avec DBeaver](#utilisation-de-la-base-de-donnée-exportée-avec-dbeaver)
 
 ## Installation
+<<<<<<< HEAD
 Pour installer le package
 `npm install -g dtl_runpda@latest`
 
@@ -156,6 +135,7 @@ Le module va créer (si ce n'est pas déjà fait) un dossier du nom du modèle d
 Ce qui permet d'avoir une base de donnée stockée en local PAR pda et non par modèle.
 
 ![file_export](./img/file_export.png)
+L'installation se fait dorénavant avec la commande npm install -g dtl_runpda ou run --update.
 
 ## Utilisation de la base de donnée exportée avec DBeaver
 Le but du module d'export de base de donnée est multiple.

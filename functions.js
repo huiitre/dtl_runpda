@@ -16,27 +16,61 @@ import path from 'path';
 const fn = {
   //* check si une mise à jour est disponible (en fonction de plusieurs paramètres)
   checkUpdate: async() => {
+    utils.log({
+      label: `checkUpdate`,
+      value: ``,
+      level: 0
+    })
     //* date de la dernière vérification d'une mise à jour
     const lastCheckUpdate = new Date(utils.getConfigValue('LAST_CHECK_UPDATE'))
+    utils.log({
+      label: `lastCheckUpdate`,
+      value: lastCheckUpdate,
+      level: 1
+    })
     //* temps (en heure) avant la prochaine vérification d'une mise à jour
     const timeBeforeCheckUpdate = utils.getConfigValue('TIME_BEFORE_CHECK_UPDATE')
+    utils.log({
+      label: `timeBeforeCheckUpdate`,
+      value: timeBeforeCheckUpdate,
+      level: 1
+    })
     //* flag pour dire si on vérifie ou non qu'une mise à jour est disponible
     const requireUpdate = utils.getConfigValue('REQUIRE_UPDATE')
+    utils.log({
+      label: `requireUpdate`,
+      value: requireUpdate,
+      level: 1
+    })
 
     //* date now
     const dateNow = new Date()
 
     //* prochaine vérification
     const nextCheckMaj = new Date(lastCheckUpdate.getTime() + timeBeforeCheckUpdate * 60 * 60 * 1000)
+    utils.log({
+      label: `nextCheckMaj`,
+      value: nextCheckMaj,
+      level: 1
+    })
 
     //* si la date est dépassé ou qu'un update est déjà requis, on check la mise à jour jsuqu'à qu'il la fasse enfin
     if (dateNow > nextCheckMaj || requireUpdate) {
+      utils.log({
+        label: `La date est dépassé ou requireUpdate est true, on check la maj.requireUpdate`,
+        value: requireUpdate,
+        level: 0
+      })
+      console.log('')
+      console.log(chalk.blue(`Recherche d'une mise à jour ...`))
 
       //* on met à jour la date du dernier check
       utils.updateConfig('LAST_CHECK_UPDATE', dateNow)
 
-      const latestVersion = await cli.getLatestVersion()
-      const currentVersion = await cli.getCurrentVersion()
+      const [ latestVersion, currentVersion ] = await Promise.all([
+        cli.getLatestVersion(),
+        cli.getCurrentVersion()
+      ])
 
       await Promise.all([
         utils.updateConfig('CURRENT_VERSION', currentVersion),
@@ -52,6 +86,11 @@ const fn = {
         return false
       }
     }
+    utils.log({
+      label: `fin checkUpdate`,
+      value: ``,
+      level: 0
+    })
   },
 
   //* affiche la version en cours
@@ -91,7 +130,12 @@ const fn = {
 
   //* affiche la liste des PDA
   displayPdaList: async() => {
-    let pdaList = await cli.getPdaList()
+    let pdaList = []
+    try {
+      pdaList = await cli.getPdaList()
+    } catch(err) {
+      console.log('error : ' + err)
+    }
 
     const table = new Table()
     table.push(
@@ -211,8 +255,6 @@ const fn = {
 
     const pdaSelected = await fn.targetPda(pdaToClear)
 
-    console.log("%c functions.js #247 || pdaSelected : ", 'background:red;color:#fff;font-weight:bold;', pdaSelected);
-
     if (pdaSelected != null) {
       console.log('')
       console.log(chalk.blue(`Clear du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} en cours ...`))
@@ -308,17 +350,21 @@ const fn = {
 
   //* permet de build un apk debug ou release (au choix)
   displayBuildApk: async() => {
-    const buildSelected = await utils.selectValueIntoArray(['debug', 'release'])
+    const buildSelected = await utils.selectValueIntoArray(['debug'])
     await cli.buildApk(buildSelected)
   },
 
   //* fonction qui cible un pda
   targetPda: async(pdaToTreatment) => {
     //* on récupère la liste des pda
-    const pdaList = await cli.getPdaList()
+    let pdaList = []
+    try {
+      pdaList = await cli.getPdaList()
+    } catch(err) {
+
+    }
 
     //* on lance la recherche
-    //TODO a partir d'ici il y a du doublon entre la compilation/clear/uninstalle, voir pour refactoriser ça plus tard
     if (pdaList.length === 0) {
       console.log('')
       console.log(chalk.red(`Aucun appareil n'a été trouvé`))
