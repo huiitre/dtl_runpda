@@ -1,6 +1,6 @@
 /* const utils = require('./utils') */
 import utils from './utils.js';
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 
 /**
  * Fonctions qui exécutent des commandes dans le terminal
@@ -225,6 +225,28 @@ const cli = {
       exec(`adb -s ${serialNumber} shell pm clear net.distrilog.easymobile`, (err, stdout) => {
         resolve(true)
       })
+    })
+  },
+
+  //* clear EM du PDA
+  execScrcpy: (serialNumber) => {
+    console.log("%c cli-commands.js #233 || execScrcpy", 'background:blue;color:#fff;font-weight:bold;');
+    return new Promise(async resolve => {
+      const child = spawn('lib/scrcpy/scrcpy.exe', ['-s', '23252B47C3'], { detached: true });
+      child.stdout.on('data', (data) => {
+        console.log(data.toString());
+        resolve()
+      });
+
+      child.stderr.on('data', (data) => {
+        console.error(data.toString());
+        resolve()
+      });
+
+      child.on('close', (code) => {
+        console.log(`Le processus enfant a été fermé avec le code ${code}`);
+        resolve()
+      });
     })
   },
 

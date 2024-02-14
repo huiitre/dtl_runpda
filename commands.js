@@ -88,8 +88,8 @@ const commands = [
   {
     name: `Stream PDA`,
     description: `Lance un stream du PDA sélectionné`,
-    args: ['update'],
-    func: async () => await fn.launchStreamPda(args),
+    args: ['show'],
+    func: async (args) => await fn.launchStreamPda(args),
     requireAdb: true
   },
 ]

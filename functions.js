@@ -15,9 +15,21 @@ import path from 'path';
 
 const fn = {
   //* lance un stream du pda sélectionné avec l'exécutable 
-  launchStreamPda: (args) => {
-    console.log("%c functions.js #19 || launchStreamPda", 'background:blue;color:#fff;font-weight:bold;');
-    console.log("%c functions.js #20 || args : ", 'background:red;color:#fff;font-weight:bold;', args);
+  launchStreamPda: async(args) => {
+    //* on récupère le pda sur lequel on va lancer la recherche
+    let pdaToStream = ''
+    if (args[0])
+      pdaToStream = args[0]
+    else {
+      pdaToStream = await utils.getUserInput(`Veuillez cibler le PDA`, utils.getConfigValue('DEFAULT_PDA'))
+    }
+
+    const pdaSelected = await fn.targetPda(pdaToStream)
+
+    if (pdaSelected != null) {
+      console.log('')
+      await cli.execScrcpy(pdaToStream.serialNumber)
+    }
   },
 
   //* check si une mise à jour est disponible (en fonction de plusieurs paramètres)

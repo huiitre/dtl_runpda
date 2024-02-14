@@ -2,6 +2,8 @@
 
 ---
 ## Version 1.x.x
+### [v1.2.0] - 14-02-2023
+- AJOUT - Ajout de la commande -show afin d'exécuter scrcpy.exe qui ouvrira une fenêtre du pda sélectionné
 
 ### [v1.1.0] - 29-12-2023
 - CORRECTIF - Modification de la commande qui récupère la liste des PDA en adb devices -l car posait soucis pour l'invit de cmd windows
