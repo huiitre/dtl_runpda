@@ -14,6 +14,12 @@ import fs from 'fs';
 import path from 'path';
 
 const fn = {
+  //* lance un stream du pda sélectionné avec l'exécutable 
+  launchStreamPda: (args) => {
+    console.log("%c functions.js #19 || launchStreamPda", 'background:blue;color:#fff;font-weight:bold;');
+    console.log("%c functions.js #20 || args : ", 'background:red;color:#fff;font-weight:bold;', args);
+  },
+
   //* check si une mise à jour est disponible (en fonction de plusieurs paramètres)
   checkUpdate: async() => {
     utils.log({

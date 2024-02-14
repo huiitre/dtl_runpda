@@ -85,6 +85,13 @@ const commands = [
     func: async () => await fn.cmdUpdatePackage(),
     requireAdb: false
   },
+  {
+    name: `Stream PDA`,
+    description: `Lance un stream du PDA sélectionné`,
+    args: ['update'],
+    func: async () => await fn.launchStreamPda(args),
+    requireAdb: true
+  },
 ]
 
 export default commands

@@ -16,7 +16,8 @@
     "functions.js",
     "cli-commands.js",
     ".npmignore",
-    ".gitignore"
+    ".gitignore",
+    "lib"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
