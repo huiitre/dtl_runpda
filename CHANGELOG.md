@@ -2,6 +2,11 @@
 
 ---
 ## Version 1.x.x
+
+### [v1.2.1] - 14-02-2023
+- CORRECTIF - Récupération du path global de NPM via la commande "npm root -g" afin d'exécuter la librairie scrcpy
+
+
 ### [v1.2.0] - 14-02-2023
 - AJOUT - Ajout de la commande -show afin d'exécuter scrcpy.exe qui ouvrira une fenêtre du pda sélectionné
 
