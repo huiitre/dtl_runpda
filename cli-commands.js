@@ -1,6 +1,7 @@
 /* const utils = require('./utils') */
 import utils from './utils.js';
-import { exec, spawn } from 'child_process';
+import { exec, spawn, execSync } from 'child_process';
+import path from 'path';
 
 /**
  * Fonctions qui exécutent des commandes dans le terminal
@@ -230,9 +231,10 @@ const cli = {
 
   //* clear EM du PDA
   execScrcpy: (serialNumber) => {
-    console.log("%c cli-commands.js #233 || execScrcpy", 'background:blue;color:#fff;font-weight:bold;');
     return new Promise(async resolve => {
-      const child = spawn('lib/scrcpy/scrcpy.exe', ['-s', '23252B47C3'], { detached: true });
+      const globalPath = execSync(`npm root -g`).toString().trim()
+      const executablePath = path.join(globalPath, 'dtl_runpda', 'lib', 'scrcpy', 'scrcpy.exe')
+      const child = spawn(`${executablePath}`, ['-s', serialNumber], { detached: true });
       child.stdout.on('data', (data) => {
         console.log(data.toString());
         resolve()

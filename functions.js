@@ -28,7 +28,7 @@ const fn = {
 
     if (pdaSelected != null) {
       console.log('')
-      await cli.execScrcpy(pdaToStream.serialNumber)
+      await cli.execScrcpy(pdaSelected.serialNumber)
     }
   },
 
