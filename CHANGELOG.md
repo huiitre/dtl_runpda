@@ -3,9 +3,33 @@
 ---
 ## Version 1.x.x
 
+### [v1.3.0] - 09-05-2024
+- CORRECTIF - Compatibilité de certaines commandes avec d'autres terminaux comme CMD ou Windows PowerShell
+- AJOUT - Fichier release.js qui permet de créer en une commande une release ou une pré-release
+- AJOUT - Fichier prerelease_to_release.js qui permet de passer une version pre-release en release sur git et de publier la version sur NPM
+
+### [v1.2.34] - 09-05-2024
+- TEST - Test final pré-release puis release
+
+### [v1.2.33] - 09-05-2024
+- CORRECTIF - Lors du passage de pré-release à rélease, on venait modifier le nom du tag en retirant le "v" devant 
+
+### [v1.2.32] - 09-05-2024
+- AJOUT - Test de la pré-release puis de la release sur NPM 
+
+### [v1.2.31] - 09-05-2024
+- AJOUT - Test de la release 
+
+### [v1.2.30] - 09-05-2024
+- AJOUT - Mise en place du fichier changelog.js, paufinage du fichier release.js et création du fichier prerelease_to_release.js, début du développement
+
+### [v1.2.29] - 09-05-2024
+- CORRECTIF - Compatibilité de certaines commandes avec d'autres terminaux comme CMD ou Windows PowerShell
+- AJOUT - Fichier release2.sh (en test) qui permettra de créer/push automatiquement les tags release/pré-release
+
 ### [1.2.2] - 09-05-2024
 - CORRECTIF - Compatibilité de certaines commandes avec d'autres terminaux comme CMD ou Windows PowerShell
- - AJOUT - Fichier release2.sh (en test) qui permettra de créer/push automatiquement les tags release/pré-release
+- AJOUT - Fichier release2.sh (en test) qui permettra de créer/push automatiquement les tags release/pré-release
 
 ### [v1.2.1] - 14-02-2023
 - CORRECTIF - Récupération du path global de NPM via la commande "npm root -g" afin d'exécuter la librairie scrcpy
