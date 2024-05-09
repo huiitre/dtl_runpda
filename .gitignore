@@ -3,3 +3,6 @@ config.cfg
 config.json
 node_modules/
 github_token.txt
+res.json
+res2.json
+err.json

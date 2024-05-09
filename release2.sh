@@ -38,13 +38,6 @@ release_data='{
   "prerelease": '$is_prerelease'
 }'
 
-if [ "$is_prerelease" = false ]; then
-  run_command_with_delay "npm version $numero_de_version" && \
-  run_command_with_delay "git push" && \
-  run_command_with_delay "git push --tags" && \
-  run_command_with_delay "npm publish"
-fi
-
 # call ajax
 response=$(curl -X POST \
   -H "Authorization: token $access_token" \
@@ -54,8 +47,7 @@ response=$(curl -X POST \
 
 # réponse
 if [[ "$response" =~ .*"html_url".* ]]; then
-    echo "La release de la version $version_number a été créée avec succès."
-  fi
+  echo "La release de la version $version_number a été créée avec succès."
 else
   echo "Erreur lors de la création de la release pour la version $version_number."
   echo "Réponse de l'API GitHub : $response"
