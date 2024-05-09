@@ -3,6 +3,18 @@
 import { readFileSync, writeFileSync } from 'fs'
 import axios from 'axios'
 
+const execShellCommand = (cmd) => {
+  return new Promise((resolve, reject) => {
+    exec(cmd, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(stdout ? stdout : stderr);
+    });
+  });
+};
+
 const [ version_number ] = process.argv.slice(2)
 
 if (!version_number) {
@@ -10,16 +22,16 @@ if (!version_number) {
   process.exit(1)
 }
 
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const repo_owner = 'huiitre'
 const repo_name = 'dtl_runpda'
 const access_token = readFileSync('./github_token.txt', 'utf-8')
 
-const api_url = `https://api.github.com/repos/${repo_owner}/${repo_name}/releases/tags/${version_number}`;
-
-const getPreRelease = () => {
+const getPreRelease = (tag) => {
   console.log("%c release.js #20 || getPreRelease", 'background:blue;color:#fff;font-weight:bold;');
   return new Promise((resolve, reject) => {
-    axios.get(`${api_url}`, {
+    axios.get(`https://api.github.com/repos/${repo_owner}/${repo_name}/releases/tags/${tag}`, {
       headers: {
         Authorization: `token ${access_token}`
       }
@@ -27,7 +39,11 @@ const getPreRelease = () => {
     .then(data => {
       resolve(data)
     })
-    .catch(err => reject(err))
+    .catch(err => {
+      if (err.response.status == '404')
+        reject(`Le tag ${tag} n'existe pas`)
+      reject(err)
+    })
   })
 }
 
@@ -53,23 +69,46 @@ const updatePreReleaseToRelease = (releaseId) => {
   })
 }
 
+const createNpmTag = async (tag) => {
+  console.log("%c release.js #21 || createNpmTag", 'background:blue;color:#fff;font-weight:bold;');
+  try {
+    // Créer le tag et incrémenter la version dans package.json
+    await execShellCommand(`npm version ${tag}`);
+
+    // Push des modifications dans le package.json
+    await execShellCommand('git push');
+
+    // Push du tag créé
+    await execShellCommand(`git push origin v${tag}`);
+
+    // Publication sur npm
+    await execShellCommand('npm publish');
+
+    return true
+  } catch (error) {
+    console.error('Une erreur est survenue lors de l\'exécution des commandes :', error);
+    throw error
+  }
+}
+
 (async() => {
   try {
-    const { data } = await getPreRelease()
+    const { data } = await getPreRelease(`v${version_number}`)
     writeFileSync('res.json', JSON.stringify(data))
 
     const releaseId = data.id
+    console.log("%c prerelease_to_release.js #96 || releaseId : ", 'background:red;color:#fff;font-weight:bold;', releaseId);
     const isPrerelease = data.prerelease
+    console.log("%c prerelease_to_release.js #98 || isPrerelease : ", 'background:red;color:#fff;font-weight:bold;', isPrerelease);
 
     if (!isPrerelease) {
-      console.log(`Le tag ${version_number} n'est pas une pré-release`)
-      return
+      throw (`Le tag ${version_number} n'est pas une pré-release`)
     }
 
-    console.log("%c release.js #62 || releaseId : ", 'background:red;color:#fff;font-weight:bold;', releaseId);
+    /* console.log("%c release.js #62 || releaseId : ", 'background:red;color:#fff;font-weight:bold;', releaseId);
 
     const { data: data2 } = await updatePreReleaseToRelease(releaseId)
-    writeFileSync('res2.json', JSON.stringify(data2))
+    writeFileSync('res2.json', JSON.stringify(data2)) */
 
   } catch(err) {
     console.log(err.toString())
