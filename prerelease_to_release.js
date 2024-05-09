@@ -52,7 +52,7 @@ const updatePreReleaseToRelease = (releaseId) => {
   console.log("%c release.js #35 || updatePreReleaseToRelease", 'background:blue;color:#fff;font-weight:bold;');
   return new Promise((resolve, reject) => {
     const release_data = {
-      tag_name: version_number,
+      tag_name: `v${version_number}`,
       name: `Release ${version_number}`,
       prerelease: false,
       make_latest: true
