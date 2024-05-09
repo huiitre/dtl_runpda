@@ -30,7 +30,6 @@ const repo_name = 'dtl_runpda'
 const access_token = readFileSync('./github_token.txt', 'utf-8')
 
 const getPreRelease = (tag) => {
-  console.log("%c release.js #20 || getPreRelease", 'background:blue;color:#fff;font-weight:bold;');
   return new Promise((resolve, reject) => {
     axios.get(`https://api.github.com/repos/${repo_owner}/${repo_name}/releases/tags/${tag}`, {
       headers: {
@@ -49,7 +48,6 @@ const getPreRelease = (tag) => {
 }
 
 const updatePreReleaseToRelease = (releaseId) => {
-  console.log("%c release.js #35 || updatePreReleaseToRelease", 'background:blue;color:#fff;font-weight:bold;');
   return new Promise((resolve, reject) => {
     const release_data = {
       tag_name: `v${version_number}`,
@@ -71,7 +69,6 @@ const updatePreReleaseToRelease = (releaseId) => {
 }
 
 const createNpmTag = async (tag) => {
-  console.log("%c release.js #21 || createNpmTag", 'background:blue;color:#fff;font-weight:bold;');
   try {
     // Créer le tag et incrémenter la version dans package.json
     await execShellCommand(`npm version ${tag}`);
