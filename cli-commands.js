@@ -117,7 +117,7 @@ const cli = {
   //* modèle du pda
   getPdaModel: (pda) => {
     return new Promise(async resolve => {
-      exec(`adb -s ${pda} shell getprop ro.product.model | tr -d '\r' || echo "null"`, (err, stdout) => {
+      exec(`adb -s ${pda} shell getprop ro.product.model`, (err, stdout) => {
         const data = stdout.replace(/[\r\n]+/g, '')
         resolve(data.trim())
       })
@@ -127,19 +127,30 @@ const cli = {
   //* numéro de série
   getPdaSerialNumber: (pda) => {
     return new Promise(async resolve => {
-      exec(`adb -s ${pda} shell getprop ro.serialno | tr -d '\r' || echo "null")`, (err, stdout) => {
+      exec(`adb -s ${pda} shell getprop ro.serialno`, (err, stdout) => {
         const data = stdout.replace(/[\r\n]+/g, '')
         resolve(data.trim())
       })
     })
   },
-
   //* version easymobile
   getPdaEMVersion: (pda) => {
     return new Promise(async resolve => {
-      exec(`adb -s ${pda} shell dumpsys package net.distrilog.easymobile | grep versionName | sed 's/.*versionName=//;s/[" ]//g'`, (err, stdout) => {
-        const data = stdout.replace(/[\r\n]+/g, '')
-        resolve(data.trim())
+      exec(`adb -s ${pda} shell dumpsys package net.distrilog.easymobile`, (err, stdout) => {
+        if (err) {
+          resolve(null)
+        }
+
+        const lines = stdout.split('\n')
+        let versionName = null
+        
+        for (const line of lines) {
+          if (line.includes('versionName=')) {
+            versionName = line.split('versionName=')[1].trim()
+            break;
+          }
+        }
+        resolve(versionName.trim())
       })
     })
   },
@@ -229,7 +240,7 @@ const cli = {
     })
   },
 
-  //* clear EM du PDA
+  //* lance la fenêtre du pda sur le pc
   execScrcpy: (serialNumber) => {
     return new Promise(async resolve => {
       const globalPath = execSync(`npm root -g`).toString().trim()
