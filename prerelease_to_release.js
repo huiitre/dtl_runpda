@@ -104,8 +104,8 @@ const createNpmTag = async (tag) => {
     }
 
     //* on push le tag sur npm
-    /* const result = await createNpmTag(version_number)
-    writeFileSync('res.json', JSON.stringify(result)) */
+    const result = await createNpmTag(version_number)
+    writeFileSync('res.json', JSON.stringify(result))
 
     await delay(5000)
 
