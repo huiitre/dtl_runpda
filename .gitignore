@@ -2,3 +2,4 @@ config.cfg
 /database/*
 config.json
 node_modules/
+github_token.txt
