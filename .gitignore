@@ -1,3 +1,4 @@
 config.cfg
 /database/*
 config.json
+node_modules/
