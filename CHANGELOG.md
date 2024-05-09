@@ -3,7 +3,7 @@
 ---
 ## Version 1.x.x
 
-### [v1.2.2] - 09-05-2024
+### [1.2.2] - 09-05-2024
 - CORRECTIF - Compatibilité de certaines commandes avec d'autres terminaux comme CMD ou Windows PowerShell
  - AJOUT - Fichier release2.sh (en test) qui permettra de créer/push automatiquement les tags release/pré-release
 
