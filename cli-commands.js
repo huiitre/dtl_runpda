@@ -281,6 +281,7 @@ const cli = {
 
   //* extrait la base de donnée
   extractDatabase: async(serialNumber, filename, pdaDir, databaseRename) => {
+    
     /* return new Promise(async (resolve, reject) => {
       const command = `adb -s ${serialNumber} exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/${filename} > "${pdaDir}\\${databaseRename}"`
 
