@@ -79,7 +79,7 @@ const createNpmTag = async (tag) => {
     await execShellCommand('git push');
 
     // Push du tag créé
-    await execShellCommand(`git push origin v${tag}`);
+    // await execShellCommand(`git push origin v${tag}`);
 
     // Publication sur npm
     await execShellCommand('npm publish');
@@ -97,18 +97,21 @@ const createNpmTag = async (tag) => {
     writeFileSync('res.json', JSON.stringify(data))
 
     const releaseId = data.id
-    console.log("%c prerelease_to_release.js #96 || releaseId : ", 'background:red;color:#fff;font-weight:bold;', releaseId);
     const isPrerelease = data.prerelease
-    console.log("%c prerelease_to_release.js #98 || isPrerelease : ", 'background:red;color:#fff;font-weight:bold;', isPrerelease);
 
     if (!isPrerelease) {
       throw (`Le tag ${version_number} n'est pas une pré-release`)
     }
 
-    /* console.log("%c release.js #62 || releaseId : ", 'background:red;color:#fff;font-weight:bold;', releaseId);
+    //* on push le tag sur npm
+    /* const result = await createNpmTag(version_number)
+    writeFileSync('res.json', JSON.stringify(result)) */
 
+    await delay(5000)
+
+    //* on update le tag sur git
     const { data: data2 } = await updatePreReleaseToRelease(releaseId)
-    writeFileSync('res2.json', JSON.stringify(data2)) */
+    writeFileSync('res2.json', JSON.stringify(data2))
 
   } catch(err) {
     console.log(err.toString())
