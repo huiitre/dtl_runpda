@@ -29,6 +29,10 @@ Taper `npm link`
 Pour annuler `npm unlink`
 si l'annulation ne fonctionne pas, simplement faire `npm uninstall -g dtl_runpda`
 
+## Exécution du programme avec powershell
+Si ça plante, taper cette commande : 
+- Set-ExecutionPolicy RemoteSigned -Scope Process
+
 ## Choses à faire
 
 - Corriger le module d'export de la BDD du PDA

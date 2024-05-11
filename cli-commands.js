@@ -292,55 +292,15 @@ const cli = {
 
   //* extrait la base de donnée
   extractDatabase: async(serialNumber, filename, pdaDir, databaseRename) => {
-    
-    /* return new Promise(async (resolve, reject) => {
-      const command = `adb -s ${serialNumber} exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/${filename} > "${pdaDir}\\${databaseRename}"`
-
-      exec(command, { shell: true }, (err, stdout, stderr) => {
-        if (err) {
-          reject(err)
-        }
-        if (stderr) {
-          reject(stderr)
-        }
-        resolve(stdout.trim())
-      })
-    }) */
-
-    /* const filePath = `${pdaDir}\\${databaseRename}`;
-
-    try {
-      // Supprimer le fichier avec rimraf (force la suppression)
-      await new Promise((rimrafResolve, rimrafReject) => {
-        rimraf(filePath, (rimrafError) => {
-          if (rimrafError) {
-            rimrafReject(rimrafError);
-          } else {
-            rimrafResolve();
-          }
-        });
-      });
-    } catch (rimrafError) {
-      console.error('Erreur lors de la suppression forcée du fichier :', rimrafError);
-    }
-
-    // Construction de la commande
-    const command = `adb -s ${serialNumber} exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/${filename} > "${filePath}"`;
-
-    // Exécution de la commande
     return new Promise((resolve, reject) => {
-      exec(command, { shell: true }, (err, stdout, stderr) => {
-        if (err) {
-          reject(err);
-        }
-
-        if (stderr) {
-          reject(stderr);
-        }
-
-        resolve(stdout.trim());
+      exec(`java -jar AdbCommand.jar ${serialNumber} ${filename} ${pdaDir} ${databaseRename}`, (error, stdout, stderr) => {
+        if (stderr)
+            reject(stderr)
+        if (error)
+          reject(`${error}`)
+        resolve(`${stdout}`)
       });
-    }); */
+    })
   }
 }
 
