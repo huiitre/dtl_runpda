@@ -3,6 +3,9 @@
 ---
 ## Version 1.x.x
 
+### [v1.3.1] - 11-05-2024
+- CORRECTIF - Ajout d'un fichier .jar pour extraire la BDD du PDA avec la commande run -e
+
 ### [v1.3.0] - 09-05-2024
 - CORRECTIF - Compatibilité de certaines commandes avec d'autres terminaux comme CMD ou Windows PowerShell
 - AJOUT - Fichier release.js qui permet de créer en une commande une release ou une pré-release
