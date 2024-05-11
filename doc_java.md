@@ -8,3 +8,8 @@ Ca crée un fichier toto.class qu'il faudra compiler en fichier jar
 - jar cf AdbCommand.jar AdbCommand.class
 Sinon cette commande a l'air de mieux fonctionner pour ajouter le fichier manifest
 - jar cfm AdbCommand.jar Manifest.txt AdbCommand.class
+
+Pour dev un fichier java, il suffit de le transformer en MonFicher.class
+- javac MonFichier.java
+Puis de l'exécuter 
+- java MonFichier

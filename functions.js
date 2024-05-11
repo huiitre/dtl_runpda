@@ -347,9 +347,15 @@ const fn = {
           }
 
           /* console.log(chalk.yellow(`Le module est actuellement en maintenance. Une commande a été généré afin de récupérer la base de donnée du PDA sélectionné en collant simplement la ligne dans un invité de commande gitbash (shell).`));
-          console.log('')
+          console.log('') */
           const command = `adb -s ${pdaSelected.serialNumber} exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/${fileName} > "${pdaDir}\\${databaseName}"`
-          console.log(chalk.blue.bold(command)) */
+          // console.log(chalk.blue.bold(command))
+
+          utils.log({
+            label: `Extraction de la bdd avec la commande adb suivante : `,
+            value: `${command}`,
+            level: 0
+          })
 
           //* on extrait la base pour la coller dans le dossier
           console.log(chalk.blue(`Récupération de la base de donnée depuis le PDA ${pdaSelected.model} ...`))
