@@ -293,7 +293,10 @@ const cli = {
   //* extrait la base de donnée
   extractDatabase: async(serialNumber, filename, pdaDir, databaseRename) => {
     return new Promise((resolve, reject) => {
-      exec(`java -jar AdbCommand.jar ${serialNumber} ${filename} ${pdaDir} ${databaseRename}`, (error, stdout, stderr) => {
+      //* on récupère le chemin de l'app dans npm
+      const npmDir = utils.getConfigValue('NPM_APP_DIR')
+
+      exec(`java -jar ${npmDir}\\AdbCommand.jar ${serialNumber} ${filename} ${pdaDir} ${databaseRename}`, (error, stdout, stderr) => {
         if (stderr)
             reject(stderr)
         if (error)
