@@ -48,16 +48,11 @@ const cli = {
           reject(err);
           return;
         }
-        const version = stdout.trim().split('@')[1]
+        const match = stdout.match(/dtl_runpda@(\d+\.\d+\.\d+)/);
+        const version = match ? match[1] : 'Inconnu'
         resolve(version);
       });
     });
-
-    /* return new Promise(resolve => {
-      exec(`npm list -g --depth=0 dtl_runpda | grep 'dtl_runpda@' | awk '{ print $2 }' | sed 's/^dtl_runpda@//'`, (err, stdout) => {
-        resolve(stdout.trim())
-      })
-    }) */
   },
 
   //* retourne la liste des pda

@@ -1,4 +1,8 @@
 export const changelog = {
+  'v1.3.3': `### [v1.3.3] - 11-05-2024
+  - CORRECTIF - Correctif du numéro de version courant quand on est en version de développement
+  `,
+
   'v1.3.2': `### [v1.3.2] - 11-05-2024
   - CORRECTIF - Ajout d'une config NPM_APP_DIR afin de récupérer le chemin dans lequel l'app est installé afin de récupérer le fichier .jar
   - CORRECTIF - Dans la fonction Log, correction d'une erreur avec value.length
