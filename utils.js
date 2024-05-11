@@ -52,7 +52,7 @@ const utils = {
   },
 
   //* Crée la config utilisateur, si elle existe on l'extrait et on la place dans utils.config
-  createConfigUser: () => {
+  createConfigUser: async() => {
     utils.log({
       label: 'createConfigUser'
     })
@@ -92,6 +92,20 @@ const utils = {
         value: ``,
         level: 0
       })
+
+      //* récupération du dossier npm dans lequel est installé dtl_runpda
+      const getModulePath = () => {
+        return new Promise((resolve, reject) => {
+          exec(`npm root -g`, (err, stdout) => {
+            if (err)
+              resolve(err)
+            resolve(`${stdout.trim()}\\dtl_runpda`)
+          })
+        })
+      }
+      let npmDir = ''
+      npmDir = await getModulePath()
+
       /**
        * is_visible : Peut être visible depuis l'affichage des configurations (--config)
        * editable : Peut être modifié par l'utilisateur depuis --config
@@ -109,6 +123,13 @@ const utils = {
           "value": jsonPath,
           "is_visible": true,
           "description": "Chemin du fichier config.json à la racine de dtl_runpda",
+          "app_editable": false,
+          "editable": false
+        },
+        "NPM_APP_DIR": {
+          "value": npmDir,
+          "is_visible": true,
+          "description": "Chemin du dossier dtl_runpda installé globalement via NPM",
           "app_editable": false,
           "editable": false
         },
@@ -219,6 +240,7 @@ const utils = {
       value: ``,
       level: 0
     })
+    Promise.resolve(true)
   },
 
   //* check le terminal utilisé et retourne un message d'avertissement si ce dernier n'est pas shell
@@ -349,7 +371,7 @@ const utils = {
     }
 
     log += `\nLabel : ${label}\n`
-    if (value.length > 0)
+    if (value?.length > 0)
       log += `Value : ${value}`
 
     log += '\n'

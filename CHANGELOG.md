@@ -3,6 +3,10 @@
 ---
 ## Version 1.x.x
 
+### [v1.3.2] - 11-05-2024
+- CORRECTIF - Ajout d'une config NPM_APP_DIR afin de récupérer le chemin dans lequel l'app est installé afin de récupérer le fichier .jar
+- CORRECTIF - Dans la fonction Log, correction d'une erreur avec value.length
+
 ### [v1.3.1] - 11-05-2024
 - CORRECTIF - Ajout d'un fichier .jar pour extraire la BDD du PDA avec la commande run -e
 

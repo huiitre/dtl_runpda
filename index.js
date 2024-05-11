@@ -34,7 +34,7 @@ const app = async() => {
   })
 
   //* récupération de la configuration de l'utilisateur, la crée si elle n'existe pas
-  utils.createConfigUser()
+  await utils.createConfigUser()
 
   //* Message d'avertissement si l'utilisateur utilise powershell ou cmd.exe
   utils.checkTerminal()
