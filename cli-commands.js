@@ -291,7 +291,7 @@ const cli = {
       //* on récupère le chemin de l'app dans npm
       const npmDir = utils.getConfigValue('NPM_APP_DIR')
 
-      exec(`java -jar ${npmDir}\\AdbCommand.jar ${serialNumber} ${filename} ${pdaDir} ${databaseRename}`, (error, stdout, stderr) => {
+      exec(`lib\\jre1.8.0_411\\bin\\java.exe -jar ${npmDir}\\AdbCommand.jar ${serialNumber} ${filename} ${pdaDir} ${databaseRename}`, (error, stdout, stderr) => {
         if (stderr)
             reject(stderr)
         if (error)

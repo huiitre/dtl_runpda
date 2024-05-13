@@ -1,4 +1,9 @@
 export const changelog = {
+  'v1.3.4': `### [v1.3.4] - 13-05-2024
+  - CORRECTIF - Ajout du JRE jre1.8.0_411 dans le projet pour lire directement le fichier .jar
+  - CORRECTIF - Recompilation du .jar AdbCommand en java 8 au lieu de java 11 car impossible de trouver le JRE en java 11
+  `,
+
   'v1.3.3': `### [v1.3.3] - 11-05-2024
   - CORRECTIF - Correctif du numéro de version courant quand on est en version de développement
   `,

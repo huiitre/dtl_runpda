@@ -13,3 +13,8 @@ Pour dev un fichier java, il suffit de le transformer en MonFicher.class
 - javac MonFichier.java
 Puis de l'exécuter 
 - java MonFichier
+
+Si javac ne fonctionne pas, il faut ajouter cette ligne dans la variable d'environnement PATH
+- C:\Program Files\Java\jdk1.8.0_201\bin
+
+C'est la version avec laquelle on va créer le .jar, donc il ne faut pas qu'elle soit au dessus de java 8 car dans le package on utilise le jre de java 8 pour exécuter le .jar, si on compile avec une version au dessus on ne pourra pas lire le fichier avec notre JRE actuel.

@@ -333,23 +333,23 @@ const fn = {
           return
         }
 
+        const databaseName = `${pdaSelected.model}_${pdaSelected.serialNumber}`
+
+        //* on check si le dossier du pda a été créé ou non
+        const appDir = path.join(utils.getConfigValue('APP_DIR'))
+        const databaseDir = path.join(appDir, 'database')
+        const pdaDir = path.join(databaseDir, pdaSelected.model.toUpperCase())
+
+        /* console.log(chalk.yellow(`Le module est actuellement en maintenance. Une commande a été généré afin de récupérer la base de donnée du PDA sélectionné en collant simplement la ligne dans un invité de commande gitbash (shell).`));
+        console.log('') */
+        const command = `adb -s ${pdaSelected.serialNumber} exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/${fileName} > "${pdaDir}\\${databaseName}"`
+        // console.log(chalk.blue.bold(command))
+
         try {
-          const databaseName = `${pdaSelected.model}_${pdaSelected.serialNumber}`
-
-          //* on check si le dossier du pda a été créé ou non
-          const appDir = path.join(utils.getConfigValue('APP_DIR'))
-          const databaseDir = path.join(appDir, 'database')
-          const pdaDir = path.join(databaseDir, pdaSelected.model.toUpperCase())
-
           //* si le dossier n'est pas créé, on le crée
           if (!fs.existsSync(pdaDir)) {
             fs.mkdirSync(pdaDir)
           }
-
-          /* console.log(chalk.yellow(`Le module est actuellement en maintenance. Une commande a été généré afin de récupérer la base de donnée du PDA sélectionné en collant simplement la ligne dans un invité de commande gitbash (shell).`));
-          console.log('') */
-          const command = `adb -s ${pdaSelected.serialNumber} exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/${fileName} > "${pdaDir}\\${databaseName}"`
-          // console.log(chalk.blue.bold(command))
 
           utils.log({
             label: `Extraction de la bdd avec la commande adb suivante : `,
@@ -365,6 +365,11 @@ const fn = {
           console.log(chalk.blue(`Chemin : ${chalk.bold(`${pdaDir}\\${databaseName}`)}`))
 
         } catch(error) {
+          console.log(chalk.red.bold(`Erreur lors de l'extraction de la base de donnée.`))
+          console.log('')
+          console.log(chalk.blue.bold(`Commande exécuté : `))
+          console.log(chalk.blue.bold(command))
+          console.log('')
           console.log(chalk.red(`Erreur : ${error}`))
         }
       } else {
