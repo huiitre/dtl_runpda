@@ -238,8 +238,8 @@ const cli = {
   //* lance la fenêtre du pda sur le pc
   execScrcpy: (serialNumber) => {
     return new Promise(async resolve => {
-      const globalPath = execSync(`npm root -g`).toString().trim()
-      const executablePath = path.join(globalPath, 'dtl_runpda', 'lib', 'scrcpy', 'scrcpy.exe')
+      const npmDir = utils.getConfigValue('NPM_APP_DIR')
+      const executablePath = path.join(npmDir, 'lib', 'scrcpy', 'scrcpy.exe')
       const child = spawn(`${executablePath}`, ['-s', serialNumber], { detached: true });
       child.stdout.on('data', (data) => {
         console.log(data.toString());
@@ -291,7 +291,7 @@ const cli = {
       //* on récupère le chemin de l'app dans npm
       const npmDir = utils.getConfigValue('NPM_APP_DIR')
 
-      exec(`lib\\jre1.8.0_411\\bin\\java.exe -jar ${npmDir}\\AdbCommand.jar ${serialNumber} ${filename} ${pdaDir} ${databaseRename}`, (error, stdout, stderr) => {
+      exec(`${npmDir}\\lib\\jre1.8.0_411\\bin\\java.exe -jar ${npmDir}\\AdbCommand.jar ${serialNumber} ${filename} ${pdaDir} ${databaseRename}`, (error, stdout, stderr) => {
         if (stderr)
             reject(stderr)
         if (error)
