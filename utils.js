@@ -155,7 +155,7 @@ const utils = {
           "editable": true
         },
         "TIME_BEFORE_CHECK_UPDATE": {
-          "value": 8,
+          "value": 4,
           "is_visible": true,
           "description": "Temps (en heures) avant de rechercher une nouvelle mise à jour",
           "app_editable": true,

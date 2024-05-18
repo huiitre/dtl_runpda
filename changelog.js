@@ -1,4 +1,9 @@
 export const changelog = {
+  'v1.3.8': `### [v1.3.8] - 18-05-2024
+  - CORRECTIF - On vérifie plus si la dernière version est différente de celle actuelle mais plutôt si la version actuelle est inférieure à la dernière version
+  - CORRECTIF - On passe de 8h à 4h le temps entre deux recherche de version (TIME_BEFORE_CHECK_UPDATE)
+  `,
+
   'v1.3.7': `### [v1.3.7] - 18-05-2024
   - MODIFICATION - Lors d'une pré release depuis le fichier de release, ajout de cette dernière sur NPM afin de pouvoir l'installer également
   - MODIFICATION - Lors d'une modification de pré release vers une release, on ne publie plus sur npm vu que c'est censé être déjà fait via la création de la pré-release

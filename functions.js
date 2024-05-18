@@ -96,7 +96,7 @@ const fn = {
       ])
 
       //* si la version en cours est différente de la dernière version
-      if (currentVersion != latestVersion) {
+      if (currentVersion < latestVersion) {
         await utils.updateConfig('REQUIRE_UPDATE', true)
         return true
       } else {
@@ -433,7 +433,6 @@ const fn = {
   cmdUpdatePackage: async() => {
     const requireUpdate = utils.getConfigValue('REQUIRE_UPDATE')
     const latestVersion = utils.getConfigValue('LATEST_VERSION')
-    console.log("%c functions.js #436 || latestVersion : ", 'background:red;color:#fff;font-weight:bold;', latestVersion);
     if (requireUpdate)
       await cli.updateLatestVersion(latestVersion)
 
