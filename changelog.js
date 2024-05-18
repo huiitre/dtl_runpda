@@ -1,4 +1,9 @@
 export const changelog = {
+  'v1.3.7': `### [v1.3.7] - 18-05-2024
+  - MODIFICATION - Lors d'une pré release depuis le fichier de release, ajout de cette dernière sur NPM afin de pouvoir l'installer également
+  - MODIFICATION - Lors d'une modification de pré release vers une release, on ne publie plus sur npm vu que c'est censé être déjà fait via la création de la pré-release
+  `,
+
   'v1.3.6': `### [v1.3.6] - 18-05-2024
   - CORRECTIF - Correction de la question quand on fait run -b pour sélectionner un type de build
   - MODIFICATION - On récupère dorénavant la dernière version depuis le tag release de git, ce qui permet de déployer sur npm une pré-release sans qu'elle soit installée. On privilégie donc une installation via run --update ou npm install -g dtl_runpda@<tag_name> plutôt que simplement npm install -g dtl_runpda/dtl_runpda@latest

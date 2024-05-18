@@ -106,10 +106,8 @@ const createRelease = ({ tag, changelog }) => {
     if (!changelogToVersion)
       throw(`Le changelog pour la version v${version_number} est vide`)
 
-    if (!isPrerelease) {
-      const result = await createNpmTag(version_number)
-      // writeFileSync('res.json', JSON.stringify(result))
-    }
+    const result = await createNpmTag(version_number)
+    // writeFileSync('res.json', JSON.stringify(result))
 
     await delay(5000);
 
