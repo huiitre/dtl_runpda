@@ -86,7 +86,7 @@ const fn = {
       utils.updateConfig('LAST_CHECK_UPDATE', dateNow)
 
       const [ latestVersion, currentVersion ] = await Promise.all([
-        cli.getLatestVersion(),
+        cli.getLatestVersionFromGit(),
         cli.getCurrentVersion()
       ])
 
@@ -133,7 +133,7 @@ const fn = {
       ${chalk.bold(chalk.magenta.bold(changelog))}
 
       Mise à jour disponible ${currentVersion} -> ${chalk.green.bold(latestVersion)}
-      Exécutez ${chalk.blue.bold('npm i -g dtl_runpda')} ou ${chalk.blue.bold('run --update')} pour mettre à jour le package.
+      Exécutez ${chalk.blue.bold(`npm i -g dtl_runpda@${latestVersion}`)} ou ${chalk.blue.bold('run --update')} pour mettre à jour le package.
     `;
 
     const options = {
@@ -380,7 +380,7 @@ const fn = {
 
   //* permet de build un apk debug ou release (au choix)
   displayBuildApk: async() => {
-    const buildSelected = await utils.selectValueIntoArray(['debug'])
+    const buildSelected = await utils.selectValueIntoArray(['debug'], 'Sélectionner un type de build', 'selectBuildType')
     await cli.buildApk(buildSelected)
   },
 
@@ -432,8 +432,10 @@ const fn = {
   //* met à jour le package
   cmdUpdatePackage: async() => {
     const requireUpdate = utils.getConfigValue('REQUIRE_UPDATE')
+    const latestVersion = utils.getConfigValue('LATEST_VERSION')
+    console.log("%c functions.js #436 || latestVersion : ", 'background:red;color:#fff;font-weight:bold;', latestVersion);
     if (requireUpdate)
-      await cli.updateLatestVersion()
+      await cli.updateLatestVersion(latestVersion)
 
     console.log(chalk.blue('Aucune mise à jour disponible'))
   }

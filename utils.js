@@ -300,11 +300,11 @@ const utils = {
   },
 
   //* permet de sélectionner un élèment dans un tableau dynamiquement
-  selectValueIntoArray: async(array) => {
+  selectValueIntoArray: async(array, quest = 'Sélectionner un PDA', name = 'selectedPDA') => {
     const question = {
       type: 'list',
-      name: 'selectedPDA',
-      message: 'Sélectionner un PDA',
+      name: name,
+      message: quest,
       choices: array
     }
     return inquirer.prompt(question).then((answers) => answers.selectedPDA);

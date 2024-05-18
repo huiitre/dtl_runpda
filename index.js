@@ -64,6 +64,11 @@ const app = async() => {
   //* récupération des arguments
   const args = process.argv.slice(2)
 
+  utils.log({
+    label: 'Arguments : ',
+    value: args
+  })
+
   //* si pas d'arguments ou alors premier argument commençant pas par un tiret --, on compile
   if (args.length === 0 || !args[0].startsWith('-')) {
     if (adbIsNotInstalled) {

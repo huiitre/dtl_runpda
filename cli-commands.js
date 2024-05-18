@@ -2,6 +2,7 @@
 import utils from './utils.js';
 import { exec, spawn, execSync } from 'child_process';
 import path from 'path';
+import axios from 'axios'
 
 /**
  * Fonctions qui exécutent des commandes dans le terminal
@@ -31,10 +32,28 @@ const cli = {
     })
   },
 
+  getLatestVersionFromGit: () => {
+    return new Promise(async(resolve, reject) => {
+      try {
+        const { data } = await axios.get(`https://api.github.com/repos/huiitre/dtl_runpda/releases/latest`)
+        let version = data.tag_name
+        if (version.startsWith('v'))
+            version = version.slice(1)
+        resolve(version)
+      } catch(err) {
+        console.log("%c cli-commands.js #39 || ERROR : ", 'background:red;color:#fff;font-weight:bold;', err);
+        utils.log({
+          label: 'getLatestVersionFromGit',
+          value: err
+        })
+      }
+    })
+  },
+
   //* met à jour le package
-  updateLatestVersion: () => {
+  updateLatestVersion: (tag) => {
     return new Promise(resolve => {
-      exec(`npm i -g dtl_runpda@latest`, (err, stdout) => {
+      exec(`npm i -g dtl_runpda@${tag}`, (err, stdout) => {
         resolve(stdout.trim())
       })
     })

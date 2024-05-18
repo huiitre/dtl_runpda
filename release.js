@@ -77,10 +77,10 @@ const createRelease = ({ tag, changelog }) => {
   return new Promise((resolve, reject) => {
     const releaseData = {
       tag_name: tag,
-      name: `Release ${tag}`,
-      body: `${changelog}`, // Ajoutez une description si nécessaire
+      name: `${tag}`,
+      body: `${changelog}`,
       draft: false,
-      prerelease: isPrerelease // Assurez-vous que c'est false si vous ne voulez pas une pre-release
+      prerelease: isPrerelease
     };
 
     axios.post(`https://api.github.com/repos/${repo_owner}/${repo_name}/releases`, releaseData, {

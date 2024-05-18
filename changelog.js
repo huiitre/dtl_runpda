@@ -1,4 +1,9 @@
 export const changelog = {
+  'v1.3.6': `### [v1.3.6] - 18-05-2024
+  - CORRECTIF - Correction de la question quand on fait run -b pour sélectionner un type de build
+  - MODIFICATION - On récupère dorénavant la dernière version depuis le tag release de git, ce qui permet de déployer sur npm une pré-release sans qu'elle soit installée. On privilégie donc une installation via run --update ou npm install -g dtl_runpda@<tag_name> plutôt que simplement npm install -g dtl_runpda/dtl_runpda@latest
+  `,
+
   'v1.3.5': `### [v1.3.5] - 13-05-2024
   - CORRECTIF - Ajout du PATH complet vers le JRE du package
   `,
