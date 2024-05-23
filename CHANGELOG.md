@@ -3,6 +3,9 @@
 ---
 ## Version 1.x.x
 
+### [v1.3.9] - 23-05-2024
+- CORRECTIF - Erreur lors de la récupération des infos du PDA, si par exemple easymobile n'est pas installé ça retourne null, et ça génère une erreur dans le code
+
 ### [v1.3.8] - 18-05-2024
 - CORRECTIF - On vérifie plus si la dernière version est différente de celle actuelle mais plutôt si la version actuelle est inférieure à la dernière version
 - CORRECTIF - On passe de 8h à 4h le temps entre deux recherche de version (TIME_BEFORE_CHECK_UPDATE)

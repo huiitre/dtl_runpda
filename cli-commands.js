@@ -103,7 +103,7 @@ const cli = {
               cli.getPdaEMVersion(item),
               cli.getPdaAndroidVersion(item),
             ])
-            const cleanedData = data.map(item => item.replace(/[\r\n]+/g, ''))
+            const cleanedData = data.map(item => item ? item.replace(/[\r\n]+/g, '') : '')
             pda.model = cleanedData[0]
             pda.serialNumber = cleanedData[1]
             pda.emVersion = cleanedData[2]
@@ -164,7 +164,7 @@ const cli = {
             break;
           }
         }
-        resolve(versionName.trim())
+        resolve(versionName)
       })
     })
   },
