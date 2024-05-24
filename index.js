@@ -70,7 +70,15 @@ const app = async() => {
   })
 
   //* si pas d'arguments ou alors premier argument commençant pas par un tiret --, on compile
-  if (args.length === 0 || !args[0].startsWith('-')) {
+  if (
+    //* on a un argument et il ne commence pas par un tiret
+    (
+      args.length === 0 ||
+    !args[0].startsWith('-')
+    ) &&
+    //* on a un argument qui ne commence pas par "git"
+    args[0].toUpperCase() !== 'git'.toUpperCase()
+  ) {
     if (adbIsNotInstalled) {
       console.log('')
       console.log(chalk.italic.red(`${adbIsNotInstalled}`))

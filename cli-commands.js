@@ -312,10 +312,49 @@ const cli = {
 
       exec(`${npmDir}\\lib\\jre1.8.0_411\\bin\\java.exe -jar ${npmDir}\\AdbCommand.jar ${serialNumber} ${filename} ${pdaDir} ${databaseRename}`, (error, stdout, stderr) => {
         if (stderr)
-            reject(stderr)
+          reject(stderr)
         if (error)
           reject(`${error}`)
         resolve(`${stdout}`)
+      });
+    })
+  },
+
+  //* récupère la liste des branches
+  getGitBranchList: () => {
+    return new Promise((resolve, reject) => {
+      exec(`git branch -a`, (error, stdout, stderr) => {
+        if (stderr)
+          reject(stderr)
+        if (error)
+          reject(`${error}`)
+
+        const brancheList = stdout.split(`\n`)
+        .filter(branch => !branch.startsWith('*'))
+        .map(branch => branch.trim())
+
+        resolve(brancheList)
+      })
+    })
+  },
+  execGitCheckout: (branch) => {
+    return new Promise((resolve, reject) => {
+      const childProcess = exec(`git checkout ${branch}`, (error, stdout, stderr) => {
+        if (stderr)
+          resolve(stderr)
+        if (error)
+          resolve(`${error}`)
+        resolve(stdout.trim())
+      })
+
+      childProcess.stdout.on('data', (data) => {
+        const output = data.toString().trim();
+        console.log(output);
+      })
+
+      childProcess.stderr.on('data', (data) => {
+        const errorOutput = data.toString().trim();
+        console.error(errorOutput);
       });
     })
   }

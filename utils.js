@@ -307,7 +307,7 @@ const utils = {
       message: quest,
       choices: array
     }
-    return inquirer.prompt(question).then((answers) => answers.selectedPDA);
+    return inquirer.prompt(question).then((answers) => answers[name]);
   },
 
   //* permet de sélectionner un élèment dans un tableau d'objets dynamiquement

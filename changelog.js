@@ -1,4 +1,8 @@
 export const changelog = {
+  'v1.4.0': `### [v1.4.0] - 24-05-2024
+  - AJOUT - Ajout d'une nouvelle commande "run git checkout" afin de naviguer plus facilement de branches en branches (comme tarzan)
+  `,
+
   'v1.3.9': `### [v1.3.9] - 23-05-2024
   - CORRECTIF - Erreur lors de la récupération des infos du PDA, si par exemple easymobile n'est pas installé ça retourne null, et ça génère une erreur dans le code
   `,

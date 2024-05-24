@@ -92,6 +92,13 @@ const commands = [
     func: async (args) => await fn.launchStreamPda(args),
     requireAdb: true
   },
+  {
+    name: `Git manager`,
+    description: `Lance diverses commandes git (checkout dans un premier temps, merge viendra ensuite)`,
+    args: ['git', 'GIT'],
+    func: async (args) => await fn.gitManager(args),
+    requireAdb: false
+  },
 ]
 
 export default commands

@@ -437,6 +437,46 @@ const fn = {
       await cli.updateLatestVersion(latestVersion)
 
     console.log(chalk.blue('Aucune mise à jour disponible'))
+  },
+
+  //* git manager
+  gitManager: async(args) => {
+    if (args.length === 0)
+      return console.log(chalk.red(`Commande git manquante`))
+
+    if (args.length === 1)
+      return console.log(chalk.red(`Nom de la branche manquante`))
+
+    const gitCommand = args[0]
+    const branch = args[1]
+
+    const branchList = await cli.getGitBranchList()
+
+    const filteredBranches = branchList.filter(b => b.toLowerCase().includes(branch.toLowerCase()))
+
+    let branchSelected = null
+
+    if (filteredBranches.length === 0)
+      return console.log(chalk.red(`La branche ${chalk.bold(branch)} n'a pas été trouvé`))
+    else if (filteredBranches.length > 1)
+      //* sélection de la branche voulu dans la liste
+      branchSelected = await utils.selectValueIntoArray(filteredBranches, 'Sélectionner une branche', 'selectGitBranch')
+    else
+      branchSelected = filteredBranches[0]
+
+    switch (gitCommand.toLowerCase()) {
+      case 'checkout':
+        await cli.execGitCheckout(branchSelected)
+        break;
+
+      case 'merge':
+        console.log(chalk.orange(`En cours de développement ...`))
+        break;
+    
+      default:
+        console.log(chalk.red(`La commande git ${chalk.bold(gitCommand)} n'existe pas ou n'est encore géré par l'application`))
+        break;
+    }
   }
 }
 
