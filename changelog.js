@@ -1,4 +1,9 @@
 export const changelog = {
+  'v1.5.0': `### [v1.5.0] - 25-05-2024
+  - AJOUT - Ajout de la commande merge comme run git merge <branch>
+  - AJOUT - Ajout de la commande pull comme run git pull qui exécute git pull, ou run git pull origin qui exécute git pull origin <branche-courante>
+  `,
+
   'v1.4.0': `### [v1.4.0] - 24-05-2024
   - AJOUT - Ajout d'une nouvelle commande "run git checkout" afin de naviguer plus facilement de branches en branches (comme tarzan)
   `,
