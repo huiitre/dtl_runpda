@@ -330,8 +330,8 @@ const cli = {
           reject(`${error}`)
 
         const brancheList = stdout.split(`\n`)
-        .filter(branch => !branch.startsWith('*'))
-        .map(branch => branch.trim())
+          .map(branch => branch.trim())
+          .filter(branch => branch && !branch.startsWith('remotes/') && !branch.startsWith('*'));
 
         resolve(brancheList)
       })
@@ -340,6 +340,66 @@ const cli = {
   execGitCheckout: (branch) => {
     return new Promise((resolve, reject) => {
       const childProcess = exec(`git checkout ${branch}`, (error, stdout, stderr) => {
+        if (stderr)
+          resolve(stderr)
+        if (error)
+          resolve(`${error}`)
+        resolve(stdout.trim())
+      })
+
+      childProcess.stdout.on('data', (data) => {
+        const output = data.toString().trim();
+        console.log(output);
+      })
+
+      childProcess.stderr.on('data', (data) => {
+        const errorOutput = data.toString().trim();
+        console.error(errorOutput);
+      });
+    })
+  },
+
+  //* récupère la branche courante git
+  getCurrentGitBranch: () => {
+    return new Promise((resolve, reject) => {
+      exec(`git rev-parse --abbrev-ref HEAD`, (error, stdout, stderr) => {
+        if (stderr)
+          resolve(stderr)
+        if (error)
+          resolve(`${error}`)
+        resolve(stdout.trim())
+      })
+    })
+  },
+
+  //* exécute un merge d'une branche sélectionné
+  execGitMerge: (branch) => {
+    return new Promise((resolve, reject) => {
+      const childProcess = exec(`git merge ${branch}`, (error, stdout, stderr) => {
+        if (stderr)
+          resolve(stderr)
+        if (error)
+          resolve(`${error}`)
+        resolve(stdout.trim())
+      })
+
+      childProcess.stdout.on('data', (data) => {
+        const output = data.toString().trim();
+        console.log(output);
+      })
+
+      childProcess.stderr.on('data', (data) => {
+        const errorOutput = data.toString().trim();
+        console.error(errorOutput);
+      });
+    })
+  },
+
+  //* exécute git pull
+  execGitPull: (branch = null) => {
+    return new Promise((resolve, reject) => {
+      const command = branch ? `git pull origin ${branch}` : `git pull`
+      const childProcess = exec(command, (error, stdout, stderr) => {
         if (stderr)
           resolve(stderr)
         if (error)

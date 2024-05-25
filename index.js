@@ -76,8 +76,10 @@ const app = async() => {
       args.length === 0 ||
     !args[0].startsWith('-')
     ) &&
-    //* on a un argument qui ne commence pas par "git"
-    args[0].toUpperCase() !== 'git'.toUpperCase()
+    //* on a un argument qui ne commence pas par "git" ou d'autres commandes git
+    (
+      args[0].toUpperCase() !== 'git'.toUpperCase()
+    )
   ) {
     if (adbIsNotInstalled) {
       console.log('')

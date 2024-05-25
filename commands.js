@@ -95,7 +95,7 @@ const commands = [
   {
     name: `Git manager`,
     description: `Lance diverses commandes git (checkout dans un premier temps, merge viendra ensuite)`,
-    args: ['git', 'GIT'],
+    args: ['git'],
     func: async (args) => await fn.gitManager(args),
     requireAdb: false
   },

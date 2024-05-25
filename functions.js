@@ -444,25 +444,29 @@ const fn = {
     if (args.length === 0)
       return console.log(chalk.red(`Commande git manquante`))
 
-    if (args.length === 1)
+    if (args[0].toLowerCase() !== 'pull' && args.length === 1)
       return console.log(chalk.red(`Nom de la branche manquante`))
 
     const gitCommand = args[0]
     const branch = args[1]
 
-    const branchList = await cli.getGitBranchList()
-
-    const filteredBranches = branchList.filter(b => b.toLowerCase().includes(branch.toLowerCase()))
-
     let branchSelected = null
 
-    if (filteredBranches.length === 0)
-      return console.log(chalk.red(`La branche ${chalk.bold(branch)} n'a pas été trouvé`))
-    else if (filteredBranches.length > 1)
-      //* sélection de la branche voulu dans la liste
-      branchSelected = await utils.selectValueIntoArray(filteredBranches, 'Sélectionner une branche', 'selectGitBranch')
-    else
-      branchSelected = filteredBranches[0]
+    //* récupération de la branche en cours
+    const currentGitBranch = await cli.getCurrentGitBranch()
+
+    //* git pull on a pas besoin de spécifier une branche
+    if (gitCommand !== 'pull') {
+      const branchList = await cli.getGitBranchList()
+      const filteredBranches = branchList.filter(b => b.toLowerCase().includes(branch.toLowerCase()))
+      if (filteredBranches.length === 0)
+        return console.log(chalk.red(`La branche ${chalk.bold(branch)} n'a pas été trouvé`))
+      else if (filteredBranches.length > 1)
+        //* sélection de la branche voulu dans la liste
+        branchSelected = await utils.selectValueIntoArray(filteredBranches, 'Sélectionner une branche', 'selectGitBranch')
+      else
+        branchSelected = filteredBranches[0]
+    }
 
     switch (gitCommand.toLowerCase()) {
       case 'checkout':
@@ -470,7 +474,19 @@ const fn = {
         break;
 
       case 'merge':
-        console.log(chalk.orange(`En cours de développement ...`))
+        //* vérification de sécurité
+        const isOk = await utils.selectValueIntoArray(['oui', 'non'], `Vous êtes sur le point de merge la branche ${branchSelected} dans la branche courante ${currentGitBranch}, vous confirmez ?`, 'confirmMergebranch')
+        if (isOk === 'oui')
+          await cli.execGitMerge(branchSelected)
+        else
+          console.log(chalk.red(`Merge ${chalk.bold(branchSelected)} -> ${chalk.bold(currentGitBranch)} annulé`))
+        break;
+
+      case 'pull':
+        if (branch && branch.toLowerCase() === 'origin')
+          await cli.execGitPull(currentGitBranch)
+        else
+          await cli.execGitPull()
         break;
     
       default:
