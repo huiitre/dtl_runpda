@@ -1,4 +1,8 @@
 export const changelog = {
+  'v1.5.1': `### [v1.5.1] - 26-05-2024
+  - CORRECTIF - Erreur de syntaxe lorsqu'on voulait build sans renseigner de modèle
+  `,
+
   'v1.5.0': `### [v1.5.0] - 25-05-2024
   - AJOUT - Ajout de la commande merge comme run git merge <branch>
   - AJOUT - Ajout de la commande pull comme run git pull qui exécute git pull, ou run git pull origin qui exécute git pull origin <branche-courante>
