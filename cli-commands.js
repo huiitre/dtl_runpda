@@ -417,6 +417,32 @@ const cli = {
         console.error(errorOutput);
       });
     })
+  },
+
+  //* sélection branche git
+  selectGitBranch: (branch) => {
+    return new Promise(async(resolve, reject) => {
+      try {
+        //* la liste des branches
+        const branchList = await cli.getGitBranchList()
+        let branchSelected = null
+
+        //* les branches en lien avec la demande
+        const filteredBranches = branchList.filter(b => b.toLowerCase().includes(branch.toLowerCase()))
+
+        if (filteredBranches.length === 0)
+          resolve(false)
+        if (filteredBranches.length > 1)
+          //* sélection de la branche voulu dans la liste
+          branchSelected = await utils.selectValueIntoArray(filteredBranches, 'Sélectionner une branche', 'selectGitBranch')
+        else
+          branchSelected = filteredBranches[0]
+
+        resolve(branchSelected)
+      } catch(err) {
+        reject(err)
+      }
+    })
   }
 }
 

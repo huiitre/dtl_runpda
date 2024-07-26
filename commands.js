@@ -93,10 +93,24 @@ const commands = [
     requireAdb: true
   },
   {
-    name: `Git manager`,
-    description: `Lance diverses commandes git (checkout dans un premier temps, merge viendra ensuite)`,
-    args: ['git'],
-    func: async (args) => await fn.gitManager(args),
+    name: `Git manager - Création / Changement de branche`,
+    description: `Création ou changement de branche git`,
+    args: ['checkout'],
+    func: async (args) => await fn.gitCheckout(args),
+    requireAdb: false
+  },
+  {
+    name: `Git manager - Merge`,
+    description: `Merge d'une branche existante vers l'actuelle`,
+    args: ['merge'],
+    func: async (args) => await fn.gitMerge(args),
+    requireAdb: false
+  },
+  {
+    name: `Git manager - Pull`,
+    description: `Met à jour la branche courante depuis l'origine ou non`,
+    args: ['pull'],
+    func: async (args) => await fn.gitPull(args),
     requireAdb: false
   },
 ]

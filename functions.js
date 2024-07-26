@@ -439,59 +439,82 @@ const fn = {
     console.log(chalk.blue('Aucune mise à jour disponible'))
   },
 
-  //* git manager
-  gitManager: async(args) => {
+  //* git manager - merge
+  gitMerge: async(args) => {
     if (args.length === 0)
       return console.log(chalk.red(`Commande git manquante`))
 
-    if (args[0].toLowerCase() !== 'pull' && args.length === 1)
-      return console.log(chalk.red(`Nom de la branche manquante`))
-
-    const gitCommand = args[0]
-    const branch = args[1]
-
-    let branchSelected = null
-
-    //* récupération de la branche en cours
-    const currentGitBranch = await cli.getCurrentGitBranch()
-
-    //* git pull on a pas besoin de spécifier une branche
-    if (gitCommand !== 'pull') {
-      const branchList = await cli.getGitBranchList()
-      const filteredBranches = branchList.filter(b => b.toLowerCase().includes(branch.toLowerCase()))
-      if (filteredBranches.length === 0)
-        return console.log(chalk.red(`La branche ${chalk.bold(branch)} n'a pas été trouvé`))
-      else if (filteredBranches.length > 1)
-        //* sélection de la branche voulu dans la liste
-        branchSelected = await utils.selectValueIntoArray(filteredBranches, 'Sélectionner une branche', 'selectGitBranch')
-      else
-        branchSelected = filteredBranches[0]
-    }
-
-    switch (gitCommand.toLowerCase()) {
-      case 'checkout':
-        await cli.execGitCheckout(branchSelected)
-        break;
-
-      case 'merge':
-        //* vérification de sécurité
-        const isOk = await utils.selectValueIntoArray(['oui', 'non'], `Vous êtes sur le point de merge la branche ${branchSelected} dans la branche courante ${currentGitBranch}, vous confirmez ?`, 'confirmMergebranch')
-        if (isOk === 'oui')
-          await cli.execGitMerge(branchSelected)
-        else
-          console.log(chalk.red(`Merge ${chalk.bold(branchSelected)} -> ${chalk.bold(currentGitBranch)} annulé`))
-        break;
-
-      case 'pull':
-        if (branch && branch.toLowerCase() === 'origin')
-          await cli.execGitPull(currentGitBranch)
-        else
-          await cli.execGitPull()
-        break;
+    //* la branche à merger
+    const branch = args[0]
     
-      default:
-        console.log(chalk.red(`La commande git ${chalk.bold(gitCommand)} n'existe pas ou n'est encore géré par l'application`))
-        break;
+    try {
+      //* la branche sélectionné
+      let branchSelected = await cli.selectGitBranch(branch)
+      if (!branchSelected)
+        return console.log(chalk.red(`La branche ${chalk.bold(branch)} n'a pas été trouvé`))
+
+      //* la branche courante
+      const currentGitBranch = await cli.getCurrentGitBranch()
+
+      //* vérification de sécurité
+      const isOk = await utils.selectValueIntoArray(['oui', 'non'], `Vous êtes sur le point de merge la branche ${branchSelected} dans la branche courante ${currentGitBranch}, vous confirmez ?`, 'confirmMergebranch')
+      if (isOk === 'oui')
+        await cli.execGitMerge(branchSelected)
+      else
+        console.log(chalk.red(`Merge ${chalk.bold(branchSelected)} -> ${chalk.bold(currentGitBranch)} annulé`))
+    } catch(err) {
+      console.log(err)
+    }
+  },
+
+  //* git manager - pull
+  gitPull: async(args) => {
+    const origin = args[0]
+
+    if (origin && origin.toLowerCase() === 'origin') {
+      //* récupération de la branche en cours
+      const currentGitBranch = await cli.getCurrentGitBranch()
+      await cli.execGitPull(currentGitBranch)
+    }
+    else
+      await cli.execGitPull()
+  },
+
+  //* git manager - checkout
+  gitCheckout: async(args) => {
+    if (args.length === 0)
+      return console.log(chalk.red(`Commande git manquante`))
+
+    //* la commande (nom d'une branche ou alors -b pour création)
+    const firstCommand = args[0]
+
+    //* création d'une branche
+    if (/^-+b$/i.test(firstCommand)) {
+      console.log(chalk.yellow(chalk.bold(`Création d'une branche cours de développement`)))
+      /* const branch = args[1]
+      if (!branch)
+        return console.log(chalk.red(`Numéro de branche manquant`))
+
+      //* la liste des branches
+      const branchList = await cli.getGitBranchList()
+      //* est-ce qu'elle existe
+      let branchExist = branchList.filter(b => b.toLowerCase().includes(branch.toLowerCase()))
+      
+      if (branchExist.length > 0)
+        return console.log(chalk.red(`Une branche portant le nom ${chalk.bold(branch)} existe déjà`)) */
+
+    }
+    //* changement de branche
+    else {
+      const branch = firstCommand
+      try {
+        let branchSelected = await cli.selectGitBranch(branch)
+        if (!branchSelected)
+          return console.log(chalk.red(`La branche ${chalk.bold(branch)} n'a pas été trouvé`))
+        await cli.execGitCheckout(branchSelected)
+      } catch(err) {
+        console.log(err)
+      }
     }
   }
 }

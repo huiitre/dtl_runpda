@@ -69,12 +69,20 @@ const app = async() => {
     value: args
   })
 
+  //* on check si la commande existe directement
+  const commandExist = commands.find(command => {
+    if (command.args.includes(args[0].toLowerCase()))
+      return true
+    return false
+  })
+
   //* si pas d'arguments ou alors premier argument commençant pas par un tiret --, on compile
   if (
-    //* on a un argument et il ne commence pas par un tiret ou n'est pas "git"
+    //* on a un argument et il ne commence pas par un tiret ou n'est directement pas dans la liste des commandes
     args.length === 0 ||
     (
-      !args[0].startsWith('-') && args[0].toUpperCase() !== 'git'.toUpperCase()
+      !args[0].startsWith('-') && 
+      !commandExist
     )
   ) {
     if (adbIsNotInstalled) {
