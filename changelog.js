@@ -1,4 +1,8 @@
 export const changelog = {
+  'v1.5.2': `### [v1.5.2] - 26-07-2024
+  - MODIFICATION - Retrait du préfix "git" dans les commandes, maintenant on a "run checkout -ticket-", "run pull (origin optionnel)" et "run merge -ticket-" au lieu de "run git checkout -ticket-" etc
+  `,
+
   'v1.5.1': `### [v1.5.1] - 26-05-2024
   - CORRECTIF - Erreur de syntaxe lorsqu'on voulait build sans renseigner de modèle
   `,
