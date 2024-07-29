@@ -71,7 +71,7 @@ const app = async() => {
 
   //* on check si la commande existe directement
   const commandExist = commands.find(command => {
-    if (command.args.includes(args[0].toLowerCase()))
+    if (command.args.includes(args[0]?.toLowerCase()))
       return true
     return false
   })
