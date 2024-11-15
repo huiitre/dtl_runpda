@@ -50,8 +50,8 @@ const getPreRelease = (tag) => {
 const updatePreReleaseToRelease = (releaseId) => {
   return new Promise((resolve, reject) => {
     const release_data = {
-      tag_name: `v${version_number}`,
-      name: `Release ${version_number}`,
+      tag_name: `${version_number}`,
+      name: `${version_number}`,
       prerelease: false,
       make_latest: true
     };
