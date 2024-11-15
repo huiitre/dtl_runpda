@@ -1,4 +1,8 @@
 export const changelog = {
+  'v1.5.5': `### [v1.5.5] - 15-11-2024
+  - CORRECTIF - Modification du fichier prerelease_to_release.js
+  `,
+
   'v1.5.4': `### [v1.5.4] - 15-11-2024
   - TEST - Ajout d'une fonction qui récupère la dernière version RELEASE depuis git
   `,

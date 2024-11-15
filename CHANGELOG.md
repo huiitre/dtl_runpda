@@ -3,6 +3,8 @@
 ---
 ## Version 1.x.x
 
+### [v1.5.4] - 15-11-2024
+- TEST - Ajout d'une fonction qui récupère la dernière version RELEASE depuis git
 ### [v1.5.3] - 29-07-2024
 - CORRECTIF - Erreur de syntaxe lorsqu'on ne renseigne pas de pda dans une commande
 ### [v1.5.2] - 26-07-2024
