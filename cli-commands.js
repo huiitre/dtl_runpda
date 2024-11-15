@@ -50,6 +50,24 @@ const cli = {
     })
   },
 
+  getLatestReleaseVersionFromGit: () => {
+    return new Promise(async(resolve, reject) => {
+      try {
+        const { data } = await axios.get(`https://api.github.com/repos/huiitre/dtl_runpda/releases/latest`)
+        let version = data.tag_name
+        if (version.startsWith('v'))
+            version = version.slice(1)
+        resolve(version)
+      } catch(err) {
+        console.log("%c cli-commands.js #39 || ERROR : ", 'background:red;color:#fff;font-weight:bold;', err);
+        utils.log({
+          label: 'getLatestVersionFromGit',
+          value: err
+        })
+      }
+    })
+  },
+
   //* met à jour le package
   updateLatestVersion: (tag) => {
     return new Promise(resolve => {
