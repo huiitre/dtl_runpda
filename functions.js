@@ -516,6 +516,154 @@ const fn = {
         console.log(err)
       }
     }
+  },
+
+  easymobileAbout: async() => {
+    const finish = async () => {
+      console.log('');
+      console.log(chalk.yellow.bold('Récapitulatif :'));
+      console.log(`Date       : ${chalk.green.bold(currentDate)}`);
+      console.log(`Version EM : ${chalk.green.bold(version)}`);
+      console.log(`Auteur     : ${chalk.green.bold(author)}`);
+      console.log(`Ticket     : ${chalk.green.bold(`#${ticketNumber}`)}`);
+      console.log(`Description: ${chalk.green.bold(ticketLibelle)}`);
+      console.log('');
+  
+      const buildSelected = await utils.selectValueIntoArray(
+        ['oui', 'non', 'modifier manuellement le numéro de version'],
+        'Souhaitez-vous valider cet ajout ?',
+        'validateTicket'
+      );
+  
+      if (buildSelected === 'oui') {
+        console.log(chalk.green.bold('Ajout validé.'));
+        const jsonFilePath = path.join(process.cwd(), 'easymobile_about.json');
+
+        // Lire et mettre à jour le fichier JSON
+        try {
+          // Charger le fichier JSON
+          if (!fs.existsSync(jsonFilePath)) {
+            console.log(chalk.red.bold(`Le fichier ${jsonFilePath} n'existe pas. Annulation de l'opération.`));
+            return;
+          }
+          const fileContent = fs.readFileSync(jsonFilePath, 'utf-8');
+          const jsonData = JSON.parse(fileContent);
+
+          // Créer le nouvel objet
+          const newEntry = {
+            date: currentDate,
+            version,
+            author,
+            ticket: ticketNumber,
+            description: ticketLibelle,
+          };
+
+          jsonData.push(newEntry);
+
+          jsonData.sort((a, b) => {
+            const dateA = new Date(a.date.split('/').reverse().join('-'));
+            const dateB = new Date(b.date.split('/').reverse().join('-'));
+
+            if (dateA > dateB) return -1;
+            if (dateA < dateB) return 1;
+
+            return a.author.localeCompare(b.author);
+          });
+
+          fs.writeFileSync(jsonFilePath, JSON.stringify(jsonData, null, 2), 'utf-8');
+          console.log(chalk.green.bold(`Le fichier ${jsonFilePath} a été mis à jour avec succès.`));
+        } catch (error) {
+          console.error(chalk.red.bold('Erreur lors de la mise à jour du fichier JSON:'), error);
+        }
+      } else if (buildSelected === 'non') {
+        console.log(chalk.red.bold('Ajout du ticket annulé.'));
+        return;
+      } else {
+        console.log(chalk.blue.bold('Modification manuelle du numéro de version...'));
+        await modifyVersion();
+      }
+    };
+
+    const modifyVersion = async () => {
+      const oldVersion = version || 'inconnu';
+      console.log(chalk.yellow(`Numéro de version actuel : ${chalk.bold(oldVersion)}`));
+      version = '';
+      while (!version) {
+        version = await utils.getUserInput(
+          chalk.bold(`Veuillez renseigner manuellement le numéro de version`),
+          oldVersion
+        );
+        if (!version) {
+          console.log(chalk.red.bold(`Numéro de version non renseigné`));
+        } else {
+          version = version.trim();
+        }
+      }
+      await finish();
+    };
+
+    const currentDate = new Date().toLocaleDateString('fr-FR');
+    let author = ''
+    const defaultAuthor = utils.getConfigValue('EMA_DEFAULT_AUTHOR')
+    while (!author) {
+      author = await utils.getUserInput(chalk.bold(`Veuillez renseigner votre nom d\'auteur`), defaultAuthor)
+      if (!author)
+        console.log(chalk.red.bold(`Auteur non renseigné`));
+      else {
+        author = author.toUpperCase().trim()
+        utils.updateConfig('EMA_DEFAULT_AUTHOR', author)
+      }
+    }
+
+    let ticketNumber = ''
+    while (!ticketNumber) {
+      ticketNumber = await utils.getUserInput(chalk.bold(`Veuillez renseigner le numéro du ticket (sans le # devant)`))
+      if (!ticketNumber)
+        console.log(chalk.red.bold(`Numéro du ticket non renseigné`));
+      else
+        ticketNumber = ticketNumber.replace(/\D/g, '')
+    }
+
+    let ticketLibelle = ''
+    while (!ticketLibelle) {
+      ticketLibelle = await utils.getUserInput(chalk.bold(`Veuillez renseigner libellé du ticket`))
+      if (!ticketLibelle)
+        console.log(chalk.red.bold(`Libellé non renseigné`));
+      else
+        ticketLibelle = ticketLibelle.trim()
+    }
+
+    let version = fn.getVersionFromConfig();
+    if (!version) {
+      while (!version) {
+        console.log(chalk.red.bold('Numéro de version introuvable dans le config.xml.'));
+        version = await utils.getUserInput(chalk.bold('Veuillez renseigner manuellement le numéro de version'));
+        if (!version)
+          console.log(chalk.red.bold(`Numéro de version non renseigné`));
+        else
+          version = version.trim()
+      }
+    }
+
+    await finish()
+  },
+
+  getVersionFromConfig: () => {
+    try {
+      const xmlContent = fs.readFileSync('config.xml', 'utf-8');
+  
+      const versionMatch = xmlContent.match(/<widget[^>]*version=["']([^"']+)["']/);
+  
+      if (versionMatch && versionMatch[1]) {
+        return versionMatch[1];
+      } else {
+        console.log('Numéro de version introuvable dans config.xml.');
+        return null;
+      }
+    } catch (err) {
+      console.error('Erreur lors de la lecture ou du parsing du fichier config.xml :', err);
+      return null;
+    }
   }
 }
 

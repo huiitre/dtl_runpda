@@ -1,4 +1,8 @@
 export const changelog = {
+  'v1.6.0': `### [v1.6.0] - 16-11-2024
+    - AJOUT - Commande "run ema" pour ajouter automatiquement une note de version dans le fichier easymobile_about.json
+  `,
+
   'v1.5.5': `### [v1.5.5] - 15-11-2024
   - CORRECTIF - Modification du fichier prerelease_to_release.js
   `,

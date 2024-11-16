@@ -195,6 +195,13 @@ const utils = {
           "description": "Niveau de debug pour l'écriture des logs",
           "app_editable": true,
           "editable": true
+        },
+        "EMA_DEFAULT_AUTHOR": {
+          "value": '',
+          "is_visible": true,
+          "description": "Auteur par défaut lors d'une insertion dans easymobile_about",
+          "app_editable": true,
+          "editable": true
         }
       }
       //* si le dossier n'existe pas, on le crée

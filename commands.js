@@ -113,6 +113,13 @@ const commands = [
     func: async (args) => await fn.gitPull(args),
     requireAdb: false
   },
+  {
+    name: `Easymobile About JSON`,
+    description: `Permet d'ajouter une ou plusieurs lignes dans le fichier easymobile_about.json`,
+    args: ['ema'],
+    func: async () => await fn.easymobileAbout(),
+    requireAdb: false
+  },
 ]
 
 export default commands
