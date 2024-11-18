@@ -1,4 +1,8 @@
 export const changelog = {
+  'v1.7.0': `### [v1.7.0] - 18-11-2024
+    - AJOUT - Commande "run --config" qui permet de modifier les paramètres éditables facilement
+  `,
+
   'v1.6.0': `### [v1.6.0] - 16-11-2024
     - AJOUT - Commande "run ema" pour ajouter automatiquement une note de version dans le fichier easymobile_about.json
   `,
