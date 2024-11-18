@@ -12,6 +12,7 @@ import boxen from 'boxen';
 import commands from './commands.js';
 import fs from 'fs';
 import path from 'path';
+import { exec } from 'child_process'
 
 const fn = {
   //* lance un stream du pda sélectionné avec l'exécutable 
@@ -382,6 +383,18 @@ const fn = {
   displayBuildApk: async() => {
     const buildSelected = await utils.selectValueIntoArray(['debug'], 'Sélectionner un type de build', 'selectBuildType')
     await cli.buildApk(buildSelected)
+  },
+
+  configManager: () => {
+    const npmDir = utils.getConfigValue('NPM_APP_DIR')
+    const electronPath = path.join(npmDir, 'config-electron', 'main.js')
+    exec(`npx electron ${electronPath}`, (error, stdout, stderr) => {
+      if (error) {
+        console.error('Erreur lors de l\'exécution d\'Electron :', error);
+      }
+      console.log(stdout);
+      console.log(stderr);
+    });
   },
 
   //* fonction qui cible un pda

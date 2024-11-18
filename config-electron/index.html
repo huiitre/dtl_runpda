@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hello World</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    input {
+      margin-bottom: 15px;
+      padding: 10px;
+      font-size: 16px;
+      width: 80%;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .config-dtl_runpda {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .c__title {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 3rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="config-dtl_runpda">
+    <div class="c__title">Configuration dtl_runpda</div>
+    <div class="c__config-list">
+      <div class="c__c__elem">
+        <div class="c__c__e__libelle"></div>
+        <div class="c__c__e__field"></div>
+      </div>
+    </div>
+    <div class="c__validate">
+      <button id="validate-button">Valider</button>
+    </div>
+  </div>
+  <script src="./renderer.js"></script>
+</body>
+</html>

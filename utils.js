@@ -117,91 +117,95 @@ const utils = {
           "is_visible": true,
           "description": "Chemin vers le dossier de config dtl_runpda",
           "app_editable": false,
-          "editable": false
+          "editable": false,
         },
         "CONFIGFILE_DIR": {
           "value": jsonPath,
           "is_visible": true,
           "description": "Chemin du fichier config.json à la racine de dtl_runpda",
           "app_editable": false,
-          "editable": false
+          "editable": false,
         },
         "NPM_APP_DIR": {
           "value": npmDir,
           "is_visible": true,
           "description": "Chemin du dossier dtl_runpda installé globalement via NPM",
           "app_editable": false,
-          "editable": false
+          "editable": false,
         },
         "CHANGELOG": {
           "value": "https://github.com/huiitre/run-pda-shell/blob/master/CHANGELOG.md",
           "is_visible": true,
           "description": "Lien vers le CHANGELOG des versions",
           "app_editable": false,
-          "editable": false
+          "editable": false,
         },
         "PDALIST": {
           "value": [],
           "is_visible": false,
           "description": "Liste des PDA disponibles en USB",
           "app_editable": false,
-          "editable": false
+          "editable": false,
         },
         "DEFAULT_PDA": {
           "value": "ct60",
           "is_visible": true,
           "description": "PDA par défaut configuré (depuis la commande --default)",
           "app_editable": true,
-          "editable": true
+          "editable": true,
+          "type": 'text'
         },
         "TIME_BEFORE_CHECK_UPDATE": {
           "value": 4,
           "is_visible": true,
           "description": "Temps (en heures) avant de rechercher une nouvelle mise à jour",
           "app_editable": true,
-          "editable": true
+          "editable": true,
+          "type": 'number'
         },
         "REQUIRE_UPDATE": {
           "value": false,
           "is_visible": false,
           "description": "Flag pour dire si on doit rechercher une mise à jour ou non",
           "app_editable": true,
-          "editable": false
+          "editable": false,
         },
         "CURRENT_VERSION": {
           "value": null,
           "is_visible": true,
           "description": "Version courante de l'application",
           "app_editable": true,
-          "editable": false
+          "editable": false,
         },
         "LATEST_VERSION": {
           "value": null,
           "is_visible": true,
           "description": "Dernière version en cours de l'application depuis npm",
           "app_editable": true,
-          "editable": false
+          "editable": false,
         },
         "LAST_CHECK_UPDATE": {
           "value": null,
           "is_visible": true,
           "description": "Date de la dernière recherche d'une mise à jour",
           "app_editable": true,
-          "editable": false
+          "editable": false,
         },
         "DEBUG_LEVEL": {
           "value": 0,
           "is_visible": true,
           "description": "Niveau de debug pour l'écriture des logs",
           "app_editable": true,
-          "editable": true
+          "editable": true,
+          "type": 'number'
         },
         "EMA_DEFAULT_AUTHOR": {
           "value": '',
           "is_visible": true,
           "description": "Auteur par défaut lors d'une insertion dans easymobile_about",
           "app_editable": true,
-          "editable": true
+          "editable": true,
+          "type": 'text'
         }
       }
       //* si le dossier n'existe pas, on le crée

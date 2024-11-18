@@ -120,6 +120,13 @@ const commands = [
     func: async () => await fn.easymobileAbout(),
     requireAdb: false
   },
+  {
+    name: `Config manager`,
+    description: `Permet de modifier les paramètres de l'application`,
+    args: ['config'],
+    func: async () => await fn.configManager(),
+    requireAdb: false
+  },
 ]
 
 export default commands
