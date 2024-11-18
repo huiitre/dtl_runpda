@@ -1,4 +1,8 @@
 export const changelog = {
+  'v1.7.1': `### [v1.7.0] - 18-11-2024
+    - CORRECTIF - Modification du titre de la fenêtre de configuration dtl_runpda
+  `,
+
   'v1.7.0': `### [v1.7.0] - 18-11-2024
     - AJOUT - Commande "run --config" qui permet de modifier les paramètres éditables facilement
   `,
