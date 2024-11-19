@@ -16,18 +16,20 @@ app.whenReady().then(() => {
     },
   });
 
-  mainWindow.loadFile(join(process.cwd(), 'config-electron', 'index.html'));
+  const configDir = join(homedir(), 'dtl_runpda');
+  const jsonPath = join(configDir, 'config.json');
+  const config = JSON.parse(readFileSync(jsonPath, 'utf-8'));
+
+  const npmAppDir = config.NPM_APP_DIR.value;
+
+  mainWindow.loadFile(join(npmAppDir, 'config-electron', 'index.html'));
 
   // mainWindow.webContents.openDevTools();
 
   // Envoyer utils.config au rendu
   mainWindow.webContents.once('did-finish-load', () => {
-    const configDir = join(homedir(), 'dtl_runpda');
-    const jsonPath = join(configDir, 'config.json');
-
     if (existsSync(jsonPath)) {
       try {
-        const config = JSON.parse(readFileSync(jsonPath, 'utf-8'));
         mainWindow.webContents.send('send-config', config); // Envoyer au rendu
       } catch (err) {
         console.error("Erreur lors de la lecture du fichier JSON :", err);

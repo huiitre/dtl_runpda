@@ -1,5 +1,9 @@
 export const changelog = {
-  'v1.7.1': `### [v1.7.0] - 18-11-2024
+  'v1.7.2': `### [v1.7.2] - 19-11-2024
+    - CORRECTIF - Récupération de l'index.html de la configuration depuis le PATH npm
+  `,
+
+  'v1.7.1': `### [v1.7.1] - 18-11-2024
     - CORRECTIF - Modification du titre de la fenêtre de configuration dtl_runpda
   `,
 
