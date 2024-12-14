@@ -40,8 +40,7 @@ Si ça plante, taper cette commande :
 - Set-ExecutionPolicy RemoteSigned -Scope Process
 
 ## Choses à faire
-
 - ~~Corriger le module d'export de la BDD du PDA~~
-- Récupérer la dernière version de l'app depuis les tags release git au lieu de faire npm show dtl_runpda version, afin de mieux gérer les pré release qui ne sont actuellement pas publiés sur npm donc ne servent à rien
-- Ajouter une commande `run --config` afin de pouvoir modifier n'importe quel paramètre via la syntaxe `run --config param1=newValue param2=newValue`
+- ~~Récupérer la dernière version de l'app depuis les tags release git au lieu de faire npm show dtl_runpda version, afin de mieux gérer les pré release qui ne sont actuellement pas publiés sur npm donc ne servent à rien~~
+- ~~Ajouter une commande `run --config` afin de pouvoir modifier n'importe quel paramètre via la syntaxe `run --config param1=newValue param2=newValue`~~
 - Créer un module/Class spécialement pour déployer les release (utile pour d'autres projets)
