@@ -1,4 +1,7 @@
 export const changelog = {
+  '1.8.0': `### [1.8.0] - 14-12-2024
+    - AJOUT - Migration sur gitlab, modification du script de génération de release
+  `,
   '1.7.4': `### [1.7.4] - 14-12-2024
     - AJOUT - Test migration déploiement sur gitlab 2
   `,

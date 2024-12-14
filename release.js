@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync } from 'fs'
 import axios from 'axios'
 import { exec } from 'child_process'
 
@@ -21,10 +20,7 @@ const execShellCommand = (cmd) => {
   });
 };
 
-const [ version_number, prerelease ] = process.argv.slice(2)
-
-let isPrerelease = false
-if (prerelease) isPrerelease = true
+const [ version_number ] = process.argv.slice(2)
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -33,7 +29,6 @@ if (!version_number) {
   process.exit(1)
 }
 
-const repo_name = process.env.GITLAB_PROJECT_NAME
 const repo_id = process.env.GITLAB_PROJECT_ID
 const access_token = process.env.GITLAB_API_TOKEN
 const api_url = process.env.GITLAB_API_URL
@@ -47,7 +42,7 @@ const createNpmTag = async (tag) => {
     await execShellCommand('git push');
 
     // Push du tag créé
-    await execShellCommand(`git push origin ${tag}`);
+    await execShellCommand(`git push origin v${tag}`);
     return true
   } catch (error) {
     console.error('Une erreur est survenue lors de l\'exécution des commandes :', error);
@@ -59,7 +54,7 @@ const createRelease = ({ tag, changelog }) => {
   return new Promise((resolve, reject) => {
     const releaseData = {
       name: `${tag}`,
-      tag_name: tag,
+      tag_name: `v${tag}`,
       description: `${changelog}`
     };
 
