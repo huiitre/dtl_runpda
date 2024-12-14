@@ -85,7 +85,7 @@ const createRelease = ({ tag, changelog }) => {
 (async() => {
   try {
     //* récupération du changelog
-    const changelogToVersion = changelog[`v${version_number}`] || false
+    const changelogToVersion = changelog[`${version_number}`] || false
 
     if (!changelogToVersion)
       throw(`Le changelog pour la version ${version_number} est vide`)
