@@ -6,6 +6,9 @@ import { exec } from 'child_process'
 
 import { changelog } from './changelog.js'
 
+import { config } from 'dotenv';
+config();
+
 const execShellCommand = (cmd) => {
   return new Promise((resolve, reject) => {
     exec(cmd, (error, stdout, stderr) => {
@@ -30,9 +33,10 @@ if (!version_number) {
   process.exit(1)
 }
 
-const repo_owner = 'huiitre'
-const repo_name = 'dtl_runpda'
-const access_token = readFileSync('./github_token.txt', 'utf-8')
+const repo_name = process.env.GITLAB_PROJECT_NAME
+const repo_id = process.env.GITLAB_PROJECT_ID
+const access_token = process.env.GITLAB_API_TOKEN
+const api_url = process.env.GITLAB_API_URL
 
 const createNpmTag = async (tag) => {
   try {
@@ -43,7 +47,7 @@ const createNpmTag = async (tag) => {
     await execShellCommand('git push');
 
     // Push du tag créé
-    await execShellCommand(`git push origin v${tag}`);
+    await execShellCommand(`git push origin ${tag}`);
 
     // Publication sur npm
     await execShellCommand('npm publish');
@@ -55,37 +59,17 @@ const createNpmTag = async (tag) => {
   }
 }
 
-const getRelease = ({ tag, changelog }) => {
-  return new Promise((resolve, reject) => {
-    axios.get(`https://api.github.com/repos/${repo_owner}/${repo_name}/releases/tags/${version_number}`, {
-      headers: {
-        Authorization: `token ${access_token}`
-      }
-    })
-    .then(data => {
-      resolve(data)
-    })
-    .catch(err => {
-      if (err.response.status == '404')
-        reject(`Le tag ${tag} n'existe pas`)
-      reject(err)
-    })
-  })
-}
-
 const createRelease = ({ tag, changelog }) => {
   return new Promise((resolve, reject) => {
     const releaseData = {
-      tag_name: tag,
       name: `${tag}`,
-      body: `${changelog}`,
-      draft: false,
-      prerelease: isPrerelease
+      tag_name: tag,
+      description: `${changelog}`
     };
 
-    axios.post(`https://api.github.com/repos/${repo_owner}/${repo_name}/releases`, releaseData, {
+    axios.post(`${api_url}/projects/${repo_id}/releases`, releaseData, {
       headers: {
-        Authorization: `token ${access_token}`,
+        "PRIVATE-TOKEN": `${access_token}`,
         "Content-Type": "application/json"
       }
     })
@@ -104,14 +88,14 @@ const createRelease = ({ tag, changelog }) => {
     const changelogToVersion = changelog[`v${version_number}`] || false
 
     if (!changelogToVersion)
-      throw(`Le changelog pour la version v${version_number} est vide`)
+      throw(`Le changelog pour la version ${version_number} est vide`)
 
-    const result = await createNpmTag(version_number)
+    await createNpmTag(version_number)
     // writeFileSync('res.json', JSON.stringify(result))
 
     await delay(5000);
 
-    const result2 = await createRelease({ tag: `v${version_number}`, changelog: changelogToVersion})
+    await createRelease({ tag: `${version_number}`, changelog: changelogToVersion})
     // writeFileSync('res2.json', JSON.stringify(result2))
 
   } catch(err) {

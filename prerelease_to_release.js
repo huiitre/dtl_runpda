@@ -3,6 +3,8 @@
 import { readFileSync, writeFileSync } from 'fs'
 import axios from 'axios'
 import { exec } from 'child_process'
+import { config } from 'dotenv';
+config();
 
 const execShellCommand = (cmd) => {
   return new Promise((resolve, reject) => {

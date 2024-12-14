@@ -1,4 +1,8 @@
 export const changelog = {
+  '1.7.3': `### [1.7.3] - 14-12-2024
+    - AJOUT - Test migration déploiement sur gitlab
+  `,
+
   'v1.7.2': `### [v1.7.2] - 19-11-2024
     - CORRECTIF - Récupération de l'index.html de la configuration depuis le PATH npm
   `,
