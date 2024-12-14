@@ -1,13 +1,6 @@
 #!/usr/bin/env node
-
-//* Core
-import * as fs from 'fs';
-import * as path from 'path';
-import * as os from 'os';
-
 //* dépendances
 import chalk from 'chalk';
-import tty from 'tty'
 
 //* Uitlitaires
 import utils from './utils.js';

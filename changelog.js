@@ -1,4 +1,7 @@
 export const changelog = {
+  '1.8.1': `### [1.8.1] - 14-12-2024
+    - MODIFICATION - On récupère dorénavant la dernière version depuis gitlab et portant un tag STABLE
+  `,
   '1.8.0': `### [1.8.0] - 14-12-2024
     - AJOUT - Migration sur gitlab, modification du script de génération de release
   `,

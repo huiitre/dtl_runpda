@@ -4,6 +4,9 @@ import { exec, spawn, execSync } from 'child_process';
 import path from 'path';
 import axios from 'axios'
 
+import { config } from 'dotenv';
+config();
+
 /**
  * Fonctions qui exécutent des commandes dans le terminal
  * 
@@ -35,8 +38,27 @@ const cli = {
   getLatestVersionFromGit: () => {
     return new Promise(async(resolve, reject) => {
       try {
-        const { data } = await axios.get(`https://api.github.com/repos/huiitre/dtl_runpda/releases/latest`)
-        let version = data.tag_name
+        const { data } = await axios.get(`${process.env.GITLAB_API_URL}/projects/${process.env.GITLAB_PROJECT_ID}/repository/tags/STABLE`, {
+          headers: {
+            "PRIVATE-TOKEN": process.env.GITLAB_API_TOKEN,
+            "Content-Type": "application/json"
+          }
+        });
+        const target = data.commit.id
+
+        const { data: releases } = await axios.get(`${process.env.GITLAB_API_URL}/projects/${process.env.GITLAB_PROJECT_ID}/releases`, {
+          headers: {
+            "PRIVATE-TOKEN": process.env.GITLAB_API_TOKEN,
+            "Content-Type": "application/json"
+          }
+        });
+
+        const matchingRelease = releases.find(release => release.commit.id === target)
+
+        if (!matchingRelease) throw 'Release non trouvé'
+
+        let version = matchingRelease.name
+
         if (version.startsWith('v'))
             version = version.slice(1)
         resolve(version)
@@ -463,5 +485,7 @@ const cli = {
     })
   }
 }
+
+cli.getLatestVersionFromGit()
 
 export default cli
