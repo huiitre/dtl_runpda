@@ -1,4 +1,8 @@
 export const changelog = {
+  '1.8.3': `### [1.8.3] - 14-12-2024
+    - CORRECTIF : On va dorénavant chercher la dernière version stable sur NPM via le tag LATEST
+    - MODIFICATION : Modif du script de déploiement en stockant l'ancienne version stable pour lui remettre le tag latest par la suite
+  `,
   '1.8.2': `### [1.8.2] - 14-12-2024
     - AJOUT - Ajout dans la doc générale de comment on modifie une version STABLE sur gitlab + une version latest sur NPM
     - AJOUT - Bloque l'installation si le package n'est pas installé globalement

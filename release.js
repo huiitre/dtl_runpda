@@ -73,27 +73,58 @@ const createRelease = ({ tag, changelog }) => {
   });
 }
 
+const getLatestStableVersionFromNpm = () => {
+  return new Promise(async(resolve, reject) => {
+    try {
+      const result = await execShellCommand(`npm dist-tag ls dtl_runpda`);
+      const latestVersionLine = result.trim().split('\n').find(line => line.startsWith('latest:'));
+      const latestVersion = latestVersionLine ? latestVersionLine.split(':')[1].trim() : null;
+      resolve(latestVersion);
+    } catch(err) {
+      reject(err)
+    }
+  })
+}
+
 (async() => {
   try {
+    console.log(`---------- Début du déploiement de la version ${version_number}`)
+
+    const currentLatestStableVersion = await getLatestStableVersionFromNpm()
+
+    console.log(`Version latest (stable) actuelle : ${currentLatestStableVersion}`)
+
     //* récupération du changelog
+    console.log('Récupération du changelog pour la version')
     const changelogToVersion = changelog[`${version_number}`] || false
 
     if (!changelogToVersion)
       throw(`Le changelog pour la version ${version_number} est vide`)
 
+    console.log('Création du tag npm')
     await createNpmTag(version_number)
     // writeFileSync('res.json', JSON.stringify(result))
 
     await delay(5000);
 
+    console.log('Création de la release sur gitlab')
     await createRelease({ tag: `${version_number}`, changelog: changelogToVersion})
     // writeFileSync('res2.json', JSON.stringify(result2))
 
     // Publication sur npm
+    console.log('Publication de la version sur npm')
     await execShellCommand('npm publish');
+
+    await delay(5000);
+
+    //* on remet la version de base en latest, on ne veut pas que ce soit celle qui vient d'être déployé
+    console.log(`La version ${version_number} est déployé. On replace la version ${currentLatestStableVersion.trim()} en version latest (stable)`)
+    await execShellCommand(`npm dist-tag add dtl_runpda@${currentLatestStableVersion.trim()} latest`)
 
   } catch(err) {
     console.log(err.toString())
     // writeFileSync('err.json', err.toString())
+  } finally {
+    console.log('(`---------- Fin du script de déploiement')
   }
 })()

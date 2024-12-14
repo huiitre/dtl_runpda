@@ -87,7 +87,7 @@ const fn = {
       utils.updateConfig('LAST_CHECK_UPDATE', dateNow)
 
       const [ latestVersion, currentVersion ] = await Promise.all([
-        cli.getLatestVersionFromGit(),
+        cli.getLatestVersionFromNpm(),
         cli.getCurrentVersion()
       ])
 

@@ -38,9 +38,8 @@ git reset HEAD~1
 - Pour npm, exécuter cette commande qui va déplacer le tag latest vers la version choisie, ça permettra de cibler cette dernière quand on installera le package `npm dist-tag add dtl_runpda@1.7.2 latest`
 
 ## Test du package en local
-Taper `npm link`
-Pour annuler `npm unlink`
-si l'annulation ne fonctionne pas, simplement faire `npm uninstall -g dtl_runpda`
+Taper `npm install -g ./`
+Pour annuler `npm uninstall -g dtl_runpda`
 
 ## Exécution du programme avec powershell
 Si ça plante, taper cette commande : 
@@ -50,4 +49,3 @@ Si ça plante, taper cette commande :
 - ~~Corriger le module d'export de la BDD du PDA~~
 - ~~Récupérer la dernière version de l'app depuis les tags release git au lieu de faire npm show dtl_runpda version, afin de mieux gérer les pré release qui ne sont actuellement pas publiés sur npm donc ne servent à rien~~
 - ~~Ajouter une commande `run --config` afin de pouvoir modifier n'importe quel paramètre via la syntaxe `run --config param1=newValue param2=newValue`~~
-- Créer un module/Class spécialement pour déployer les release (utile pour d'autres projets)

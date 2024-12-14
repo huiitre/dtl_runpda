@@ -35,6 +35,7 @@ const cli = {
     })
   },
 
+  //! déprécié
   getLatestVersionFromGit: () => {
     return new Promise(async(resolve, reject) => {
       try {
@@ -72,21 +73,20 @@ const cli = {
     })
   },
 
-  getLatestReleaseVersionFromGit: () => {
-    return new Promise(async(resolve, reject) => {
-      try {
-        const { data } = await axios.get(`https://api.github.com/repos/huiitre/dtl_runpda/releases/latest`)
-        let version = data.tag_name
-        if (version.startsWith('v'))
-            version = version.slice(1)
-        resolve(version)
-      } catch(err) {
-        console.log("%c cli-commands.js #39 || ERROR : ", 'background:red;color:#fff;font-weight:bold;', err);
-        utils.log({
-          label: 'getLatestVersionFromGit',
-          value: err
-        })
-      }
+  getLatestVersionFromNpm: () => {
+    return new Promise((resolve, reject) => {
+      exec(`npm dist-tag ls dtl_runpda`, (err, stdout) => {
+        if (err) {
+          console.error("Erreur lors de l'exécution de la commande npm dist-tag ls :", err);
+          reject(err);
+          return;
+        }
+
+        const latestVersionLine = stdout.trim().split('\n').find(line => line.startsWith('latest:'));
+        const latestVersion = latestVersionLine ? latestVersionLine.split(':')[1].trim() : null;
+
+        resolve(latestVersion);
+      })
     })
   },
 
@@ -485,7 +485,5 @@ const cli = {
     })
   }
 }
-
-cli.getLatestVersionFromGit()
 
 export default cli
