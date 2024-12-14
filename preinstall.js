@@ -2,6 +2,18 @@ import { existsSync, mkdirSync, unlinkSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 
+const isGlobalInstall = process.env.npm_config_global === 'true'
+
+if (!isGlobalInstall) {
+  console.error(`
+    ===========================================================
+    Ce package doit être installé globalement.
+    Veuillez utiliser la commande : npm install -g dtl_runpda
+    ===========================================================
+  `);
+  process.exit(1);
+}
+
 // Chemin du dossier de configuration
 const configDir = join(homedir(), 'dtl_runpda');
 
