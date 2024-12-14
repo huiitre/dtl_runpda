@@ -125,6 +125,6 @@ const getLatestStableVersionFromNpm = () => {
     console.log(err.toString())
     // writeFileSync('err.json', err.toString())
   } finally {
-    console.log('(`---------- Fin du script de déploiement')
+    console.log('---------- Fin du script de déploiement')
   }
 })()

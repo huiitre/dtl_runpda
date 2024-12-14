@@ -1,4 +1,7 @@
 export const changelog = {
+  '1.8.4': `### [1.8.4] - 14-12-2024
+    - CORRECTIF : Erreur de syntaxe dans un console log dans le script de déploiement
+  `,
   '1.8.3': `### [1.8.3] - 14-12-2024
     - CORRECTIF : On va dorénavant chercher la dernière version stable sur NPM via le tag LATEST
     - MODIFICATION : Modif du script de déploiement en stockant l'ancienne version stable pour lui remettre le tag latest par la suite
