@@ -32,6 +32,10 @@ git reset HEAD~1
 - éventuellement commit + push
 - Lancer `node release.js <tag version sans le v>`
 
+## Déclarer une version comme stable
+-  Depuis gitlab, suppression du tag actuel STABLE et création de ce dernier sur le tag release que l'on veut
+- Pour npm, exécuter cette commande qui va déplacer le tag latest vers la version choisie, ça permettra de cibler cette dernière quand on installera le package `npm dist-tag add dtl_runpda@1.7.2 latest`
+
 ## Test du package en local
 Taper `npm link`
 Pour annuler `npm unlink`
