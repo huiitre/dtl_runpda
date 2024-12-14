@@ -1,4 +1,7 @@
 export const changelog = {
+  '1.8.2': `### [1.8.2] - 14-12-2024
+    - AJOUT - Ajout dans la doc générale de comment on modifie une version STABLE sur gitlab + une version latest sur NPM
+  `,
   '1.8.1': `### [1.8.1] - 14-12-2024
     - MODIFICATION - On récupère dorénavant la dernière version depuis gitlab et portant un tag STABLE
   `,
