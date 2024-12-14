@@ -1,3 +1,5 @@
+# Documentation générale
+
 - Un changement de version trop rapide ? voici comment faire revenir le package.json en arrière : 
 ```shell
 git checkout -- package.json
