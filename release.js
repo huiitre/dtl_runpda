@@ -48,10 +48,6 @@ const createNpmTag = async (tag) => {
 
     // Push du tag créé
     await execShellCommand(`git push origin ${tag}`);
-
-    // Publication sur npm
-    await execShellCommand('npm publish');
-
     return true
   } catch (error) {
     console.error('Une erreur est survenue lors de l\'exécution des commandes :', error);
@@ -97,6 +93,9 @@ const createRelease = ({ tag, changelog }) => {
 
     await createRelease({ tag: `${version_number}`, changelog: changelogToVersion})
     // writeFileSync('res2.json', JSON.stringify(result2))
+
+    // Publication sur npm
+    await execShellCommand('npm publish');
 
   } catch(err) {
     console.log(err.toString())
