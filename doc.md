@@ -22,16 +22,16 @@ git reset HEAD~1
 - exécuter le fichier release.sh 0.2.16 (0.2.16 étant le numéro de la version à déployer)
 - créer la release depuis le tag sur github et y coller la note de version en cours
 
-## Mise en place d'une nouvelle version (déprécié)
+## Mise en place d'une nouvelle version
 - Pour créer une release : `node release.js <tag version (sans le v devant)> <prerelease (true)>`
 - Si on veut une pré-release il faut renseigner `true` en second argument du fichier
 - Si on souhaite passer une pré-release en release : `node prerelease_to_release.js <tag version (sans le v devant)>`
 
-## Déploiement d'une nouvelle release sur gitlab
+<!-- ## Déploiement d'une nouvelle release sur gitlab
 - Création d'une branche qui sera le numéro de version, exemple `git checkout -b 1.7.4`
 - Faire ce qu'on a à faire dans la branche
 - éventuellement commit + push
-- Lancer `node release.js <tag version sans le v>`
+- Lancer `node release.js <tag version sans le v>` -->
 
 ## Déclarer une version comme stable
 -  Depuis gitlab, suppression du tag actuel STABLE et création de ce dernier sur le tag release que l'on veut

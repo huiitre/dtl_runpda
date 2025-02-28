@@ -29,9 +29,10 @@ if (!version_number) {
   process.exit(1)
 }
 
-const repo_id = process.env.GITLAB_PROJECT_ID
-const access_token = process.env.GITLAB_API_TOKEN
-const api_url = process.env.GITLAB_API_URL
+const repo_name = process.env.GITHUB_REPO_NAME
+const repo_owner = process.env.GITHUB_REPO_OWNER
+const access_token = process.env.GITHUB_API_TOKEN
+const api_url = process.env.GITHUB_API_URL
 
 const createNpmTag = async (tag) => {
   try {
@@ -54,11 +55,14 @@ const createRelease = ({ tag, changelog }) => {
   return new Promise((resolve, reject) => {
     const releaseData = {
       name: `${tag}`,
-      tag_name: `v${tag}`,
-      description: `${changelog}`
+      tag_name: tag,
+      description: `${changelog}`,
+      body: `${changelog}`,
+      draft: false,
+      prerelease: false
     };
 
-    axios.post(`${api_url}/projects/${repo_id}/releases`, releaseData, {
+    axios.post(`${api_url}/repos/${repo_owner}/${repo_name}/releases`, releaseData, {
       headers: {
         "PRIVATE-TOKEN": `${access_token}`,
         "Content-Type": "application/json"
@@ -86,6 +90,22 @@ const getLatestStableVersionFromNpm = () => {
   })
 }
 
+const generateChangelog = () => {
+  return new Promise((resolve, reject) => {
+    exec('node generateChangelog.js', (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Erreur lors de l'exécution de generateChangelog.js: ${error.message}`);
+        return reject(error);
+      }
+      if (stderr) {
+        console.error(`Erreur: ${stderr}`);
+        return reject(stderr)
+      }
+      return resolve(stdout);
+    });
+  });
+};
+
 (async() => {
   try {
     console.log(`---------- Début du déploiement de la version ${version_number}`)
@@ -100,6 +120,10 @@ const getLatestStableVersionFromNpm = () => {
 
     if (!changelogToVersion)
       throw(`Le changelog pour la version ${version_number} est vide`)
+
+    //* génération du fichier CHANGELOG.md
+    console.log('Génération du fichier CHANGELOG.md')
+    await generateChangelog()
 
     console.log('Création du tag npm')
     await createNpmTag(version_number)

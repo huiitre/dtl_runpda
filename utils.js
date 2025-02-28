@@ -134,7 +134,7 @@ const utils = {
           "editable": false,
         },
         "CHANGELOG": {
-          "value": "https://github.com/huiitre/run-pda-shell/blob/master/CHANGELOG.md",
+          "value": "https://github.com/huiitre/dtl_runpda/blob/master/CHANGELOG.md",
           "is_visible": true,
           "description": "Lien vers le CHANGELOG des versions",
           "app_editable": false,
