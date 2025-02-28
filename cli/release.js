@@ -1,7 +1,12 @@
 #!/usr/bin/env node
 
 import axios from 'axios'
-import { exec } from 'child_process'
+import { exec } from 'child_process';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import { changelog } from './changelog.js'
 
@@ -92,14 +97,14 @@ const getLatestStableVersionFromNpm = () => {
 
 const generateChangelog = () => {
   return new Promise((resolve, reject) => {
-    exec('node generateChangelog.js', async(error, stdout, stderr) => {
+    exec('node generateChangelog.js', { cwd: __dirname }, async (error, stdout, stderr) => {
       if (error) {
         console.error(`Erreur lors de l'exécution de generateChangelog.js: ${error.message}`);
         return reject(error);
       }
       if (stderr) {
         console.error(`Erreur: ${stderr}`);
-        return reject(stderr)
+        return reject(stderr);
       }
       await execShellCommand('git add CHANGELOG.md');
       await execShellCommand('git commit -m "CHANGELOG.md"');
