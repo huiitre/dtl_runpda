@@ -96,6 +96,17 @@ const fn = {
         utils.updateConfig('LATEST_VERSION', latestVersion)
       ])
 
+      utils.log({
+        label: `currentVersion`,
+        value: currentVersion,
+        level: 0
+      })
+      utils.log({
+        label: `latestVersion`,
+        value: latestVersion,
+        level: 0
+      })
+
       // Transforme une version en tableau de nombres
       const parseVersion = (versionStr) => {
         return versionStr.split('.').map(num => parseInt(num, 10));
@@ -118,9 +129,19 @@ const fn = {
       //* si la version en cours est différente de la dernière version
       if (compareVersions(currentVersion, latestVersion) < 0) {
         await utils.updateConfig('REQUIRE_UPDATE', true)
+        utils.log({
+          label: `REQUIRE_UPDATE`,
+          value: true,
+          level: 0
+        })
         return true
       } else {
         await utils.updateConfig('REQUIRE_UPDATE', false)
+        utils.log({
+          label: `REQUIRE_UPDATE`,
+          value: false,
+          level: 0
+        })
         return false
       }
     }
