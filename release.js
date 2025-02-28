@@ -64,7 +64,7 @@ const createRelease = ({ tag, changelog }) => {
 
     axios.post(`${api_url}/repos/${repo_owner}/${repo_name}/releases`, releaseData, {
       headers: {
-        "PRIVATE-TOKEN": `${access_token}`,
+        "Authorization": `${access_token}`,
         "Content-Type": "application/json"
       }
     })
@@ -131,7 +131,7 @@ const generateChangelog = () => {
 
     await delay(5000);
 
-    console.log('Création de la release sur gitlab')
+    console.log('Création de la release sur github')
     await createRelease({ tag: `${version_number}`, changelog: changelogToVersion})
     // writeFileSync('res2.json', JSON.stringify(result2))
 
