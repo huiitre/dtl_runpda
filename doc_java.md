@@ -17,4 +17,9 @@ Puis de l'exécuter
 Si javac ne fonctionne pas, il faut ajouter cette ligne dans la variable d'environnement PATH
 - C:\Program Files\Java\jdk1.8.0_201\bin
 
+Ou sinon : 
+- /c/PROGRA~1/Java/jdk1.8.0_201/bin/javac AdbCommand.java
+- /c/PROGRA~1/Java/jdk1.8.0_201/bin/jar cfm AdbCommand.jar Manifest.txt AdbCommand.class
+PROGRA~1 signifie Program Files en gros
+
 C'est la version avec laquelle on va créer le .jar, donc il ne faut pas qu'elle soit au dessus de java 8 car dans le package on utilise le jre de java 8 pour exécuter le .jar, si on compile avec une version au dessus on ne pourra pas lire le fichier avec notre JRE actuel.

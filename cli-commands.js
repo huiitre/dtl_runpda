@@ -344,13 +344,29 @@ const cli = {
     })
   },
 
+  //* récupère le nom du fichier sqlite de easymobile au nouvel emplacement
+  getNewDatabaseFileNameEasymobile: (serialNumber) => {
+    return new Promise(async resolve => {
+      exec(`adb -s ${serialNumber} shell "run-as net.distrilog.easymobile ls databases | grep -v '-'"`, (err, stdout) => {
+        resolve(stdout.trim())
+      })
+    })
+  },
+
   //* extrait la base de donnée
-  extractDatabase: async(serialNumber, filename, pdaDir, databaseRename) => {
+  extractDatabase: async(serialNumber, filename, pdaDir, databaseRename, location) => {
     return new Promise((resolve, reject) => {
       //* on récupère le chemin de l'app dans npm
       const npmDir = utils.getConfigValue('NPM_APP_DIR')
 
-      exec(`${npmDir}\\lib\\jre1.8.0_411\\bin\\java.exe -jar ${npmDir}\\AdbCommand.jar ${serialNumber} ${filename} ${pdaDir} ${databaseRename}`, (error, stdout, stderr) => {
+      const command = `${npmDir}\\lib\\jre1.8.0_411\\bin\\java.exe -jar ${npmDir}\\AdbCommand.jar ${serialNumber} ${filename} ${pdaDir} ${databaseRename} ${location}`
+
+      utils.log({
+        label: 'Commande : ',
+        value: command
+      })
+
+      exec(`${npmDir}\\lib\\jre1.8.0_411\\bin\\java.exe -jar ${npmDir}\\AdbCommand.jar ${serialNumber} ${filename} ${pdaDir} ${databaseRename} ${location}`, (error, stdout, stderr) => {
         if (stderr)
           reject(stderr)
         if (error)

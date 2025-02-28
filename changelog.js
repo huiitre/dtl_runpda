@@ -1,4 +1,7 @@
 export const changelog = {
+  '1.11.0': `### [1.11.0] - 28-02-2025
+    - On récupère désormais la base de donnée EM depuis l'ancien ou le nouvel emplacement
+  `,
   '1.10.4': `### [1.10.4] - 28-02-2025
     - Rollback de la modification des fichiers dans un dossier "cli" pour plus de clarté
   `,

@@ -366,14 +366,15 @@ const fn = {
       console.log('')
       if (pdaSelected.emVersion) {
         //* on récupère le nom du fichier sqlite
-        const fileName = await cli.getDatabaseFileNameEasymobile(pdaSelected.serialNumber)
+        const [oldName, newName] = await Promise.all([cli.getDatabaseFileNameEasymobile(pdaSelected.serialNumber), cli.getNewDatabaseFileNameEasymobile(pdaSelected.serialNumber)])
 
-        if (utils.isStringEmpty(fileName)) {
+        if (utils.isStringEmpty(oldName) && utils.isStringEmpty(newName)) {
           console.log('')
           console.log(chalk.red(`La base de donnée du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} n'a pas été trouvé`))
           return
         }
 
+        //* on a trouvé au moins une base sur les deux
         const databaseName = `${pdaSelected.model}_${pdaSelected.serialNumber}`
 
         //* on check si le dossier du pda a été créé ou non
@@ -381,10 +382,39 @@ const fn = {
         const databaseDir = path.join(appDir, 'database')
         const pdaDir = path.join(databaseDir, pdaSelected.model.toUpperCase())
 
-        /* console.log(chalk.yellow(`Le module est actuellement en maintenance. Une commande a été généré afin de récupérer la base de donnée du PDA sélectionné en collant simplement la ligne dans un invité de commande gitbash (shell).`));
-        console.log('') */
-        const command = `adb -s ${pdaSelected.serialNumber} exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/${fileName} > "${pdaDir}\\${databaseName}"`
-        // console.log(chalk.blue.bold(command))
+        const oldDatabaseCommand = `adb -s ${pdaSelected.serialNumber} exec-out run-as net.distrilog.easymobile cat app_webview/Default/databases/file__0/${oldName} > "${pdaDir}\\${databaseName}"`
+        const newDatabaseCommand = `adb -s ${pdaSelected.serialNumber} exec-out run-as net.distrilog.easymobile cat databases/${newName} > "${pdaDir}\\${databaseName}"`
+
+        let command = ''
+        let location = ''
+        let fileName = ''
+
+        //* les deux bases sont présentes
+        if (!utils.isStringEmpty(oldName) && !utils.isStringEmpty(newName)) {
+          const response = await utils.selectValueIntoArray(['Ancienne base', 'Nouvelle base'], 'Plusieurs bases ont été trouvés, veuillez sélectionner la base à extraire', 'selectDatabaseToExtract')
+          if (response === 'Nouvelle base') {
+            command = newDatabaseCommand
+            location = 'new'
+            fileName = newName
+          }
+          else if (response === 'Ancienne base') {
+            command = oldDatabaseCommand
+            location = 'old'
+            fileName = oldName
+          }
+        }
+        //* une seule base est présente et c'est l'ancienne
+        else if (!utils.isStringEmpty(oldName)) {
+          command = oldDatabaseCommand
+          location = 'old'
+          fileName = oldName
+        }
+        //* une seule base est présente et c'est la nouvelle
+        else if (!utils.isStringEmpty(newName)) {
+          command = newDatabaseCommand
+          location = 'new'
+          fileName = newName
+        }
 
         try {
           //* si le dossier n'est pas créé, on le crée
@@ -400,7 +430,7 @@ const fn = {
 
           //* on extrait la base pour la coller dans le dossier
           console.log(chalk.blue(`Récupération de la base de donnée depuis le PDA ${pdaSelected.model} ...`))
-          await cli.extractDatabase(pdaSelected.serialNumber, fileName, pdaDir, databaseName)
+          await cli.extractDatabase(pdaSelected.serialNumber, fileName, pdaDir, databaseName, location)
 
           console.log(chalk.green(`La base de donnée du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} a été exporté avec succès !`))
           console.log(chalk.blue(`Chemin : ${chalk.bold(`${pdaDir}\\${databaseName}`)}`))
