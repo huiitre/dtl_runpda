@@ -1,11 +1,5 @@
 export const changelog = {
-  '1.9.2': `### [1.9.2] - 28-02-2025
-    - CORRECTIF : Correctif au niveau de l'autorisation du token
-  `,
-  '1.9.1': `### [1.9.1] - 28-02-2025
-    - CORRECTIF : Changement de l'en-tête lors de la création du tag sur github
-  `,
-  '1.9.0': `### [1.9.0] - 28-02-2025
+  '1.10.0': `### [1.10.0] - 28-02-2025
     - CORRECTIF : Changement de l'url du changelog
     - AJOUT : Création d'un script interne pour convertir le changelog.js en changelog.md
     - MODIFICATION : Retour du package sur github en gardant les dernières modifications
