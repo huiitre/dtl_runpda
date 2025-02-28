@@ -4,6 +4,12 @@
 
 ## Version 1.x.x
 
+### [1.10.4] - 28-02-2025
+    - Rollback de la modification des fichiers dans un dossier "cli" pour plus de clarté
+
+### [1.10.3] - 28-02-2025
+    - Déplacement des fichiers dans un dossier "cli" pour plus de clarté
+
 ### [1.10.2] - 28-02-2025
     - CORRECTIF : Ajout de logs pour savoir si on doit mettre à jour ou non
 
