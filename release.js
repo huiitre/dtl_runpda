@@ -92,7 +92,7 @@ const getLatestStableVersionFromNpm = () => {
 
 const generateChangelog = () => {
   return new Promise((resolve, reject) => {
-    exec('node generateChangelog.js', (error, stdout, stderr) => {
+    exec('node generateChangelog.js', async(error, stdout, stderr) => {
       if (error) {
         console.error(`Erreur lors de l'exécution de generateChangelog.js: ${error.message}`);
         return reject(error);
@@ -101,6 +101,9 @@ const generateChangelog = () => {
         console.error(`Erreur: ${stderr}`);
         return reject(stderr)
       }
+      await execShellCommand('git add CHANGELOG.md');
+      await execShellCommand('git commit -m "CHANGELOG.md"');
+      await execShellCommand('git push');
       return resolve(stdout);
     });
   });
