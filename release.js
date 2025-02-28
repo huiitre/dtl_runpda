@@ -145,8 +145,8 @@ const generateChangelog = () => {
     await delay(5000);
 
     //* on remet la version de base en latest, on ne veut pas que ce soit celle qui vient d'être déployé
-    console.log(`La version ${version_number} est déployé. On replace la version ${currentLatestStableVersion.trim()} en version latest (stable)`)
-    await execShellCommand(`npm dist-tag add dtl_runpda@${currentLatestStableVersion.trim()} latest`)
+    // console.log(`La version ${version_number} est déployé. On replace la version ${currentLatestStableVersion.trim()} en version latest (stable)`)
+    await execShellCommand(`npm dist-tag add dtl_runpda@${version_number.trim()} latest`)
 
   } catch(err) {
     console.log(err.toString())
