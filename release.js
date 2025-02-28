@@ -64,7 +64,7 @@ const createRelease = ({ tag, changelog }) => {
 
     axios.post(`${api_url}/repos/${repo_owner}/${repo_name}/releases`, releaseData, {
       headers: {
-        "Authorization": `${access_token}`,
+        "Authorization": `token ${access_token}`,
         "Content-Type": "application/json"
       }
     })
