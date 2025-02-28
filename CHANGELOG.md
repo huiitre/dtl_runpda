@@ -4,6 +4,9 @@
 
 ## Version 1.x.x
 
+### [1.10.2] - 28-02-2025
+    - CORRECTIF : Ajout de logs pour savoir si on doit mettre à jour ou non
+
 ### [1.10.1] - 28-02-2025
     - CORRECTIF : Correctif dans la récupération de la dernière version provenant de NPM, on ne proposait pas de mettre à jour si elle était supérieure
     - MODIFICATION : Lors d'une release, on la place directement en stable sur NPM
