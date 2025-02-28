@@ -1,4 +1,7 @@
 export const changelog = {
+  '1.10.1': `### [1.10.1] - 28-02-2025
+    - CORRECTIF : Correctif dans la récupération de la dernière version provenant de NPM, on ne proposait pas de mettre à jour si elle était supérieure
+  `,
   '1.10.0': `### [1.10.0] - 28-02-2025
     - CORRECTIF : Changement de l'url du changelog
     - AJOUT : Création d'un script interne pour convertir le changelog.js en changelog.md

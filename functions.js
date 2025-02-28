@@ -96,8 +96,27 @@ const fn = {
         utils.updateConfig('LATEST_VERSION', latestVersion)
       ])
 
+      // Transforme une version en tableau de nombres
+      const parseVersion = (versionStr) => {
+        return versionStr.split('.').map(num => parseInt(num, 10));
+      };
+
+      // Compare deux versions : retourne un nombre négatif si vA < vB, 0 si égal, positif si vA > vB
+      const compareVersions = (vA, vB) => {
+        const a = parseVersion(vA);
+        const b = parseVersion(vB);
+        for (let i = 0; i < Math.max(a.length, b.length); i++) {
+          const numA = a[i] || 0;
+          const numB = b[i] || 0;
+          if (numA !== numB) {
+            return numA - numB;
+          }
+        }
+        return 0;
+      };
+
       //* si la version en cours est différente de la dernière version
-      if (currentVersion < latestVersion) {
+      if (compareVersions(currentVersion, latestVersion) < 0) {
         await utils.updateConfig('REQUIRE_UPDATE', true)
         return true
       } else {
