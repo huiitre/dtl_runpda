@@ -4,6 +4,9 @@
 
 ## Version 1.x.x
 
+### [1.12.0] - 19-09-2025
+    - Ajout d'un timeout maximum pour éviter la mise en veille sur le pda avant le RUN ou avant le clear EM
+
 ### [1.11.0] - 28-02-2025
     - On récupère désormais la base de donnée EM depuis l'ancien ou le nouvel emplacement
 
