@@ -295,6 +295,9 @@ const fn = {
     const pdaSelected = await fn.targetPda(pdaToBuild)
 
     if (pdaSelected != null) {
+      //* on désactive à chaque fois la mise en veille du pda (timeout max)
+      cli.setInfiniteScreenTimeout(pdaSelected.serialNumber)
+
       console.log('')
       console.log(chalk.green(`Lancement de la compilation du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} en cours ...`))
       console.log('')
@@ -315,6 +318,9 @@ const fn = {
     const pdaSelected = await fn.targetPda(pdaToClear)
 
     if (pdaSelected != null) {
+      //* on désactive à chaque fois la mise en veille du pda (timeout max)
+      cli.setInfiniteScreenTimeout(pdaSelected.serialNumber)
+
       console.log('')
       console.log(chalk.blue(`Clear du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} en cours ...`))
       await cli.clearEM(pdaSelected.serialNumber)

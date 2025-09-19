@@ -335,6 +335,18 @@ const cli = {
     })
   },
 
+  //* désactive la mise en veille écran (timeout max) sur le PDA
+  setInfiniteScreenTimeout: (serialNumber) => {
+    return new Promise(async resolve => {
+      exec(
+        `adb -s ${serialNumber} shell settings put system screen_off_timeout 2147483647`,
+        (err, stdout, stderr) => {
+          resolve(true);
+        }
+      );
+    });
+  },
+
   //* récupère le nom du fichier sqlite de easymobile
   getDatabaseFileNameEasymobile: (serialNumber) => {
     return new Promise(async resolve => {
