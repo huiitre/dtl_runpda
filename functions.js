@@ -296,7 +296,7 @@ const fn = {
 
     if (pdaSelected != null) {
       //* on désactive à chaque fois la mise en veille du pda (timeout max)
-      cli.setInfiniteScreenTimeout(pdaSelected.serialNumber)
+      await cli.setInfiniteScreenTimeout(pdaSelected.serialNumber)
 
       console.log('')
       console.log(chalk.green(`Lancement de la compilation du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} en cours ...`))
@@ -319,7 +319,7 @@ const fn = {
 
     if (pdaSelected != null) {
       //* on désactive à chaque fois la mise en veille du pda (timeout max)
-      cli.setInfiniteScreenTimeout(pdaSelected.serialNumber)
+      await cli.setInfiniteScreenTimeout(pdaSelected.serialNumber)
 
       console.log('')
       console.log(chalk.blue(`Clear du PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)} en cours ...`))
