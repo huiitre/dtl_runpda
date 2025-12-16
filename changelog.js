@@ -1,4 +1,7 @@
 export const changelog = {
+  '1.12.2': `### [1.12.2] - 16-12-2025
+    - Correctif au niveau du changement de mise en veille sur le PDA
+  `,
   '1.12.1': `### [1.12.1] - 16-12-2025
     - Correctif au niveau du changement de mise en veille sur le PDA
   `,
