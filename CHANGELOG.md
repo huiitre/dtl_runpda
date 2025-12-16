@@ -4,6 +4,9 @@
 
 ## Version 1.x.x
 
+### [1.12.1] - 16-12-2025
+    - Correctif au niveau du changement de mise en veille sur le PDA
+
 ### [1.12.0] - 19-09-2025
     - Ajout d'un timeout maximum pour éviter la mise en veille sur le pda avant le RUN ou avant le clear EM
 
