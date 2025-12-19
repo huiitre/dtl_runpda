@@ -4,6 +4,9 @@
 
 ## Version 1.x.x
 
+### [1.12.3] - 19-12-2025
+    - Correctif de blocage du processus adb de temps en temps
+
 ### [1.12.2] - 16-12-2025
     - Correctif au niveau du changement de mise en veille sur le PDA
 
