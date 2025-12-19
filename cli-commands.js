@@ -17,7 +17,7 @@ const cli = {
   //* check si adb est installé
   isAdbInstalled: () => {
     return new Promise((resolve, reject) => {
-      exec(`adb version`, 
+      exec(`adb version`, { timeout: 5000 },
       (error, stdout, stderr) => {
         if (error || stderr)
           resolve(`ADB n'est pas installé sur votre système`)
@@ -117,13 +117,15 @@ const cli = {
   //* retourne la liste des pda
   getPdaList: () => {
     return new Promise((resolve, reject) => {
-        exec(`adb devices -l`, 
+        exec(`adb devices -l`, { timeout: 5000 },
         async(error, stdout, stderr) => {
-          if (stderr)
+          if (stderr) {
             reject(stderr)
+          }
 
-          if (error)
+          if (error) {
             reject(error)
+          }
 
           const lines = stdout.split('\n')
 
@@ -137,12 +139,12 @@ const cli = {
           const result = []
           for (const item of pdaList) {
             let pda = {}
-            const data = await Promise.all([
-              cli.getPdaModel(item),
-              cli.getPdaSerialNumber(item),
-              cli.getPdaEMVersion(item),
-              cli.getPdaAndroidVersion(item),
-            ])
+            const model = await cli.getPdaModel(item)
+            const serial = await cli.getPdaSerialNumber(item)
+            const em = await cli.getPdaEMVersion(item)
+            const android = await cli.getPdaAndroidVersion(item)
+
+            const data = [model, serial, em, android]
             const cleanedData = data.map(item => item ? item.replace(/[\r\n]+/g, '') : '')
             pda.model = cleanedData[0]
             pda.serialNumber = cleanedData[1]
@@ -162,7 +164,7 @@ const cli = {
   //* lance le serveur adb
   adbStartServer: async() => {
     return new Promise(async resolve => {
-      exec(`adb devices`, (err, stdout) => {
+      exec(`adb start-server`, { timeout: 5000 }, (err, stdout) => {
         resolve(true)
       })
     })
@@ -170,8 +172,9 @@ const cli = {
 
   //* modèle du pda
   getPdaModel: (pda) => {
-    return new Promise(async resolve => {
-      exec(`adb -s ${pda} shell getprop ro.product.model`, (err, stdout) => {
+    return new Promise(async (resolve, reject) => {
+      exec(`adb -s ${pda} shell getprop ro.product.model`, { timeout: 5000 }, (err, stdout) => {
+        if (err) reject(err)
         const data = stdout.replace(/[\r\n]+/g, '')
         resolve(data.trim())
       })
@@ -180,8 +183,9 @@ const cli = {
 
   //* numéro de série
   getPdaSerialNumber: (pda) => {
-    return new Promise(async resolve => {
-      exec(`adb -s ${pda} shell getprop ro.serialno`, (err, stdout) => {
+    return new Promise(async (resolve, reject) => {
+      exec(`adb -s ${pda} shell getprop ro.serialno`, { timeout: 5000 }, (err, stdout) => {
+        if (err) reject (err)
         const data = stdout.replace(/[\r\n]+/g, '')
         resolve(data.trim())
       })
@@ -189,10 +193,10 @@ const cli = {
   },
   //* version easymobile
   getPdaEMVersion: (pda) => {
-    return new Promise(async resolve => {
-      exec(`adb -s ${pda} shell dumpsys package net.distrilog.easymobile`, (err, stdout) => {
+    return new Promise(async (resolve, reject) => {
+      exec(`adb -s ${pda} shell dumpsys package net.distrilog.easymobile`, { timeout: 5000 }, (err, stdout) => {
         if (err) {
-          resolve(null)
+          reject(err)
         }
 
         const lines = stdout.split('\n')
@@ -211,8 +215,9 @@ const cli = {
 
   //* version android du pda
   getPdaAndroidVersion: (pda) => {
-    return new Promise(async resolve => {
-      exec(`adb -s ${pda} shell getprop ro.build.version.release`, (err, stdout) => {
+    return new Promise(async (resolve, reject) => {
+      exec(`adb -s ${pda} shell getprop ro.build.version.release`, { timeout: 5000 }, (err, stdout) => {
+        if (err) reject(err)
         const data = stdout.replace(/[\r\n]+/g, '')
         resolve(data.trim())
       })
@@ -229,58 +234,79 @@ const cli = {
 
   //* compile l'app sur un PDA
   runPda: (serialNumber) => {
-    return new Promise(resolve => {
-      const childProcess = exec(`cordova run android --target=${serialNumber}`, (err, stdout, stderr) => {
-        if (err) {
-          const errorMessage = stderr ? stderr.toString().trim() : 'Erreur inconnue';
-          resolve(errorMessage);
+    return new Promise((resolve, reject) => {
+      const child = spawn(
+        'cordova',
+        ['run', 'android', `--target=${serialNumber}`],
+        {
+          shell: true,        // important sous Windows
+          stdio: ['ignore', 'pipe', 'pipe']
+        }
+      );
+
+      child.stdout.on('data', (data) => {
+        console.log(data.toString().trim());
+      });
+
+      child.stderr.on('data', (data) => {
+        console.error(data.toString().trim());
+      });
+
+      child.on('close', (code) => {
+        if (code === 0) {
+          resolve('Cordova run terminé avec succès');
         } else {
-          resolve(stdout);
+          reject(new Error(`Cordova run failed (exit code ${code})`));
         }
       });
-  
-      // Capturer la sortie standard en continu
-      childProcess.stdout.on('data', (data) => {
-        const output = data.toString().trim();
-        console.log(output); // Afficher la sortie en continu
-      });
-  
-      // Capturer la sortie d'erreur en continu
-      childProcess.stderr.on('data', (data) => {
-        const errorOutput = data.toString().trim();
-        console.error(errorOutput); // Afficher la sortie d'erreur en continu
+
+      child.on('error', (err) => {
+        reject(err);
       });
     });
   },
 
   //* Build un apk (release / debug)
   buildApk: (type) => {
-    return new Promise(resolve => {
-      let command = ''
-      if (type === 'release')
-        command = '--release "--" --packageType=apk'
-      else
-        command = '--debug'
+    return new Promise((resolve, reject) => {
+      let args = ['build', 'android'];
 
-      const childProcess = exec(`cordova build android ${command}`, (err, stdout, stderr) => {
-        if (err) {
-          const errorMessage = stderr ? stderr.toString().trim() : 'Erreur inconnue';
-          resolve(errorMessage);
+      if (type === 'release') {
+        args.push('--release', '--', '--packageType=apk');
+      } else {
+        args.push('--debug');
+      }
+
+      const child = spawn(
+        'cordova',
+        args,
+        {
+          shell: true,              // important sous Windows
+          stdio: ['ignore', 'pipe', 'pipe']
+        }
+      );
+
+      // Sortie standard en continu (comme avant)
+      child.stdout.on('data', (data) => {
+        console.log(data.toString().trim());
+      });
+
+      // Sortie d’erreur en continu (comme avant)
+      child.stderr.on('data', (data) => {
+        console.error(data.toString().trim());
+      });
+
+      // Fin du build
+      child.on('close', (code) => {
+        if (code === 0) {
+          resolve('Build APK terminé avec succès');
         } else {
-          resolve(stdout);
+          reject(new Error(`Build APK échoué (exit code ${code})`));
         }
       });
-  
-      // Capturer la sortie standard en continu
-      childProcess.stdout.on('data', (data) => {
-        const output = data.toString().trim();
-        console.log(output); // Afficher la sortie en continu
-      });
-  
-      // Capturer la sortie d'erreur en continu
-      childProcess.stderr.on('data', (data) => {
-        const errorOutput = data.toString().trim();
-        console.error(errorOutput); // Afficher la sortie d'erreur en continu
+
+      child.on('error', (err) => {
+        reject(err);
       });
     });
   },
@@ -288,7 +314,7 @@ const cli = {
   //* clear EM du PDA
   clearEM: (serialNumber) => {
     return new Promise(async resolve => {
-      exec(`adb -s ${serialNumber} shell pm clear net.distrilog.easymobile`, (err, stdout) => {
+      exec(`adb -s ${serialNumber} shell pm clear net.distrilog.easymobile`, { timeout: 5000 }, (err, stdout) => {
         resolve(true)
       })
     })
@@ -320,7 +346,7 @@ const cli = {
   //* lance l'app easymobile du PDA
   startEM: (serialNumber) => {
     return new Promise(async resolve => {
-      exec(`adb -s ${serialNumber} shell am start -n net.distrilog.easymobile/.MainActivity`, (err, stdout) => {
+      exec(`adb -s ${serialNumber} shell am start -n net.distrilog.easymobile/.MainActivity`, { timeout: 5000 }, (err, stdout) => {
         resolve(true)
       })
     })
@@ -329,7 +355,7 @@ const cli = {
   //* désinstalle l'app easymobile du PDA
   uninstallEM: (serialNumber) => {
     return new Promise(async resolve => {
-      exec(`adb -s ${serialNumber} uninstall net.distrilog.easymobile`, (err, stdout) => {
+      exec(`adb -s ${serialNumber} uninstall net.distrilog.easymobile`, { timeout: 5000 }, (err, stdout) => {
         resolve(true)
       })
     })
@@ -339,7 +365,7 @@ const cli = {
   setInfiniteScreenTimeout: (serialNumber) => {
     return new Promise(async resolve => {
       exec(
-        `adb -s ${serialNumber} shell settings put system screen_off_timeout 2147483647`,
+        `adb -s ${serialNumber} shell settings put system screen_off_timeout 2147483647`, { timeout: 5000 },
         (err, stdout, stderr) => {
           resolve(true);
         }
@@ -350,7 +376,7 @@ const cli = {
   //* récupère le nom du fichier sqlite de easymobile
   getDatabaseFileNameEasymobile: (serialNumber) => {
     return new Promise(async resolve => {
-      exec(`adb -s ${serialNumber} shell "run-as net.distrilog.easymobile ls app_webview/Default/databases/file__0 | grep -v '-'"`, (err, stdout) => {
+      exec(`adb -s ${serialNumber} shell "run-as net.distrilog.easymobile ls app_webview/Default/databases/file__0 | grep -v '-'"`, { timeout: 5000 }, (err, stdout) => {
         resolve(stdout.trim())
       })
     })
@@ -359,7 +385,7 @@ const cli = {
   //* récupère le nom du fichier sqlite de easymobile au nouvel emplacement
   getNewDatabaseFileNameEasymobile: (serialNumber) => {
     return new Promise(async resolve => {
-      exec(`adb -s ${serialNumber} shell "run-as net.distrilog.easymobile ls databases | grep -v '-'"`, (err, stdout) => {
+      exec(`adb -s ${serialNumber} shell "run-as net.distrilog.easymobile ls databases | grep -v '-'"`, { timeout: 5000 }, (err, stdout) => {
         resolve(stdout.trim())
       })
     })
