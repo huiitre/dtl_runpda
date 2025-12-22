@@ -3,6 +3,8 @@ import utils from './utils.js';
 import { exec, spawn, execSync } from 'child_process';
 import path from 'path';
 import axios from 'axios'
+import os from 'os';
+import fs from 'fs';
 
 import { config } from 'dotenv';
 config();
@@ -322,25 +324,84 @@ const cli = {
 
   //* lance la fenêtre du pda sur le pc
   execScrcpy: (serialNumber) => {
-    return new Promise(async resolve => {
-      const npmDir = utils.getConfigValue('NPM_APP_DIR')
-      const executablePath = path.join(npmDir, 'lib', 'scrcpy', 'scrcpy.exe')
-      const child = spawn(`${executablePath}`, ['-s', serialNumber], { detached: true });
-      child.stdout.on('data', (data) => {
-        console.log(data.toString());
-        resolve()
-      });
+    console.log(
+      "%c cli-commands.js #execScrcpy",
+      'background:blue;color:#fff;font-weight:bold;'
+    );
 
-      child.stderr.on('data', (data) => {
-        console.error(data.toString());
-        resolve()
-      });
+    return new Promise(async (resolve) => {
+      const npmDir = path.normalize(utils.getConfigValue('NPM_APP_DIR'));
+      const base = path.join(npmDir, 'lib', 'scrcpy-v3.3.4');
 
-      child.on('close', (code) => {
-        console.log(`Le processus enfant a été fermé avec le code ${code}`);
-        resolve()
-      });
-    })
+      const isWindows = os.platform() === 'win32';
+
+      const scrcpyBin = isWindows
+        ? path.join(base, 'win64', 'scrcpy.exe')
+        : path.join(base, 'linux', 'scrcpy');
+
+      const adbBundled = isWindows
+        ? path.join(base, 'win64', 'adb.exe')
+        : path.join(base, 'linux', 'adb');
+
+      const argsBase = ['-s', serialNumber];
+
+      const spawnScrcpy = (adbPath = null) => {
+        return new Promise((res) => {
+          const args = [...argsBase];
+
+          if (adbPath) {
+            args.push(`--adb-path=${adbPath}`);
+            console.log(
+              "%c execScrcpy || using bundled adb",
+              'color:orange;font-weight:bold;',
+              adbPath
+            );
+          } else {
+            console.log(
+              "%c execScrcpy || using system adb",
+              'color:green;font-weight:bold;'
+            );
+          }
+
+          const child = spawn(scrcpyBin, args, {
+            detached: true,
+            stdio: 'inherit'
+          });
+
+          child.on('error', (err) => {
+            console.log(
+              "%c execScrcpy || spawn error",
+              'background:red;color:#fff;font-weight:bold;',
+              err
+            );
+            res({ ok: false });
+          });
+
+          child.on('close', (code) => {
+            console.log(
+              "%c execScrcpy || close",
+              'background:red;color:#fff;font-weight:bold;',
+              code
+            );
+            res({ ok: code === 0 });
+          });
+        });
+      };
+
+      // 1️⃣ Tentative avec ADB embarqué
+      const result = await spawnScrcpy(adbBundled);
+
+      // 2️⃣ Fallback : ADB système
+      if (!result.ok) {
+        console.log(
+          "%c execScrcpy || fallback to system adb",
+          'background:purple;color:#fff;font-weight:bold;'
+        );
+        await spawnScrcpy(null);
+      }
+
+      resolve();
+    });
   },
 
   //* lance l'app easymobile du PDA

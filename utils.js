@@ -99,7 +99,7 @@ const utils = {
           exec(`npm root -g`, (err, stdout) => {
             if (err)
               resolve(err)
-            resolve(`${stdout.trim()}\\dtl_runpda`)
+            resolve(path.join(stdout.trim(), 'dtl_runpda'))
           })
         })
       }
