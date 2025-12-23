@@ -209,9 +209,16 @@ const fn = {
     );
 
     //* Récupération des informations pour chaque pda
+    const safe = (v) => v ?? ''
     for (const item of pdaList) {
       const data = []
-      data.push(item.model, item.serialNumber, item.emVersion, item.androidVersion)
+      data.push(
+        safe(item.model),
+        safe(item.serialNumber),
+        safe(item.emVersion),
+        safe(item.androidVersion)
+      )
+
       table.push(data)
     }
 
@@ -288,9 +295,6 @@ const fn = {
     let pdaToBuild = ''
     if (pda)
       pdaToBuild = pda
-    else {
-      pdaToBuild = await utils.getUserInput(`Veuillez cibler le PDA`, utils.getConfigValue('DEFAULT_PDA'))
-    }
     
     const pdaSelected = await fn.targetPda(pdaToBuild)
 
@@ -338,9 +342,6 @@ const fn = {
     let pdaToUninstall = ''
     if (args[0])
       pdaToUninstall = args[0]
-    else {
-      pdaToUninstall = await utils.getUserInput(`Veuillez cibler le PDA`, utils.getConfigValue('DEFAULT_PDA'))
-    }
 
     const pdaSelected = await fn.targetPda(pdaToUninstall)
 
@@ -362,15 +363,12 @@ const fn = {
     let pdaToTreatment = ''
     if (args[0])
       pdaToTreatment = args[0]
-    else {
-      pdaToTreatment = await utils.getUserInput(`Veuillez cibler le PDA`, utils.getConfigValue('DEFAULT_PDA'))
-    }
 
     const pdaSelected = await fn.targetPda(pdaToTreatment)
 
     if (pdaSelected != null) {
       console.log('')
-      if (pdaSelected.emVersion) {
+      // if (pdaSelected.emVersion) {
         //* on récupère le nom du fichier sqlite
         const [oldName, newName] = await Promise.all([cli.getDatabaseFileNameEasymobile(pdaSelected.serialNumber), cli.getNewDatabaseFileNameEasymobile(pdaSelected.serialNumber)])
 
@@ -449,9 +447,9 @@ const fn = {
           console.log('')
           console.log(chalk.red(`Erreur : ${error}`))
         }
-      } else {
+      /* } else {
         console.log(chalk.red(`L'application EM n'est pas installé sur le PDA ${chalk.bold(pdaSelected.model)} - ${chalk.bold(pdaSelected.serialNumber)}`))
-      }
+      } */
     }
   },
 
@@ -474,48 +472,54 @@ const fn = {
   },
 
   //* fonction qui cible un pda
-  targetPda: async(pdaToTreatment) => {
-    //* on récupère la liste des pda
+  targetPda: async (pdaToTreatment) => {
+
     let pdaList = []
     try {
       pdaList = await cli.getPdaList()
-    } catch(err) {
+    } catch (err) {}
 
-    }
-
-    //* on lance la recherche
     if (pdaList.length === 0) {
       console.log('')
       console.log(chalk.red(`Aucun appareil n'a été trouvé`))
       return null
     }
 
-    //* on récupère le ou les pda qui correspondent au modèle qu'on a demandé
-    const pdaSelected = pdaList.filter(pda => pda.model.toLowerCase() == pdaToTreatment.toLowerCase())
+    //* si aucun argument → afficher tous les PDA
+    let candidates = pdaList
 
-    if (pdaSelected.length === 0) {
-      console.log('')
-      console.log(chalk.red(`Le PDA sélectionné ${chalk.bold(pdaToTreatment)} n'a pas été trouvé`))
-      return null
+    //* si un modèle est fourni → filtrer
+    if (pdaToTreatment) {
+      candidates = pdaList.filter(
+        pda => (pda.model ?? '').toLowerCase() === pdaToTreatment.toLowerCase()
+      )
+
+      if (candidates.length === 0) {
+        console.log('')
+        console.log(
+          chalk.red(
+            `Le PDA sélectionné ${chalk.bold(pdaToTreatment)} n'a pas été trouvé`
+          )
+        )
+        return null
+      }
     }
 
-    //* si on a trouvé plus d'un PDA
-    if (pdaSelected.length > 1) {
-      const objectSelected = await utils.selectValueIntoArrayObjets(pdaSelected, {
-        propsToDisplay: [
-          { name: 'Model', prop: 'model' },
-          { name: 'Serial number', prop: 'serialNumber' },
-          { name: 'EM version', prop: 'emVersion' },
-          { name: 'Android version', prop: 'androidVersion' }
-        ],
-        question: 'Sélectionner un PDA'
-      })
-
-      //* on a notre objet sélectionné, on va donc build avec ça
-      return objectSelected
-    } else {
-      return pdaSelected[0]
+    //* un seul PDA → retour direct
+    if (candidates.length === 1) {
+      return candidates[0]
     }
+
+    //* plusieurs PDA → sélection via Inquirer
+    return utils.selectValueIntoArrayObjets(candidates, {
+      propsToDisplay: [
+        { name: 'Model', prop: 'model' },
+        { name: 'Serial number', prop: 'serialNumber' },
+        { name: 'EM version', prop: 'emVersion' },
+        { name: 'Android version', prop: 'androidVersion' }
+      ],
+      question: 'Sélectionner un PDA'
+    })
   },
 
   //* met à jour le package

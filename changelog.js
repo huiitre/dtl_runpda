@@ -1,4 +1,7 @@
 export const changelog = {
+  '1.12.4': `### [1.12.4] - 23-12-2025
+    - Correctif Lenteurs et récupération de certaines données du pda via les commandes adb shell
+  `,
   '1.12.3': `### [1.12.3] - 19-12-2025
     - Correctif de blocage du processus adb de temps en temps
   `,

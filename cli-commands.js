@@ -119,54 +119,55 @@ const cli = {
   //* retourne la liste des pda
   getPdaList: () => {
     return new Promise((resolve, reject) => {
-        exec(`adb devices -l`, { timeout: 5000 },
-        async(error, stdout, stderr) => {
-          if (stderr) {
-            reject(stderr)
-          }
+      exec(`adb devices -l`, { timeout: 500 }, async (error, stdout, stderr) => {
+        if (stderr) return reject(stderr)
+        if (error) return reject(error)
 
-          if (error) {
-            reject(error)
-          }
+        const lines = stdout.split('\n')
 
-          const lines = stdout.split('\n')
+        //* extraction serial + model depuis adb devices -l
+        const devices = lines
+          .map(line => {
+            const serialMatch = line.match(/^(\S+)\s+device/)
+            if (!serialMatch) return null
 
-          const pdaList = lines
-            .map(line => {
-              const match = line.match(/^\s*([\S]+)/);
-              return match ? match[1] : null;
-            })
-            .filter(serialNumber => serialNumber !== null && serialNumber !== 'List');
+            const serialNumber = serialMatch[1]
 
-          const result = []
-          for (const item of pdaList) {
-            let pda = {}
-            const model = await cli.getPdaModel(item)
-            const serial = await cli.getPdaSerialNumber(item)
-            const em = await cli.getPdaEMVersion(item)
-            const android = await cli.getPdaAndroidVersion(item)
+            const modelMatch = line.match(/model:([^\s]+)/)
+            const model = modelMatch ? modelMatch[1] : null
 
-            const data = [model, serial, em, android]
-            const cleanedData = data.map(item => item ? item.replace(/[\r\n]+/g, '') : '')
-            pda.model = cleanedData[0]
-            pda.serialNumber = cleanedData[1]
-            pda.emVersion = cleanedData[2]
-            pda.androidVersion = cleanedData[3]
+            return { serialNumber, model }
+          })
+          .filter(Boolean)
 
-            result.push(pda)
-          }
+        //* récupération des infos lentes en parallèle
+        const result = await Promise.all(
+          devices.map(async ({ serialNumber, model }) => {
 
-          utils.pdaList = result
+            const [emVersion, androidVersion] = await Promise.all([
+              cli.getPdaEMVersion(serialNumber),
+              cli.getPdaAndroidVersion(serialNumber)
+            ])
 
-          resolve(result)
-        })
+            return {
+              model,
+              serialNumber,
+              emVersion,
+              androidVersion
+            }
+          })
+        )
+
+        utils.pdaList = result
+        resolve(result)
+      })
     })
   },
 
   //* lance le serveur adb
   adbStartServer: async() => {
     return new Promise(async resolve => {
-      exec(`adb start-server`, { timeout: 5000 }, (err, stdout) => {
+      exec(`adb devices`, { timeout: 500 }, (err, stdout) => {
         resolve(true)
       })
     })
@@ -175,8 +176,8 @@ const cli = {
   //* modèle du pda
   getPdaModel: (pda) => {
     return new Promise(async (resolve, reject) => {
-      exec(`adb -s ${pda} shell getprop ro.product.model`, { timeout: 5000 }, (err, stdout) => {
-        if (err) reject(err)
+      exec(`adb -s ${pda} shell getprop ro.product.model`, { timeout: 500 }, (err, stdout) => {
+        // if (err) console.log(`err : ${err}`)
         const data = stdout.replace(/[\r\n]+/g, '')
         resolve(data.trim())
       })
@@ -184,22 +185,21 @@ const cli = {
   },
 
   //* numéro de série
-  getPdaSerialNumber: (pda) => {
-    return new Promise(async (resolve, reject) => {
+  getPdaSerialNumber: async(pda) => {
+    /* return new Promise(async (resolve, reject) => {
       exec(`adb -s ${pda} shell getprop ro.serialno`, { timeout: 5000 }, (err, stdout) => {
-        if (err) reject (err)
+        // if (err) console.log(`err : ${err}`)
         const data = stdout.replace(/[\r\n]+/g, '')
         resolve(data.trim())
       })
-    })
+    }) */
+   return pda
   },
   //* version easymobile
   getPdaEMVersion: (pda) => {
     return new Promise(async (resolve, reject) => {
-      exec(`adb -s ${pda} shell dumpsys package net.distrilog.easymobile`, { timeout: 5000 }, (err, stdout) => {
-        if (err) {
-          reject(err)
-        }
+      exec(`adb -s ${pda} shell dumpsys package net.distrilog.easymobile`, { timeout: 500 }, (err, stdout) => {
+        // if (err) console.log(`err : ${err}`)
 
         const lines = stdout.split('\n')
         let versionName = null
@@ -218,11 +218,59 @@ const cli = {
   //* version android du pda
   getPdaAndroidVersion: (pda) => {
     return new Promise(async (resolve, reject) => {
-      exec(`adb -s ${pda} shell getprop ro.build.version.release`, { timeout: 5000 }, (err, stdout) => {
-        if (err) reject(err)
+      exec(`adb -s ${pda} shell getprop ro.build.version.release`, { timeout: 500 }, (err, stdout) => {
+        // if (err) console.log(`err : ${err}`)
         const data = stdout.replace(/[\r\n]+/g, '')
         resolve(data.trim())
       })
+    })
+  },
+
+  getPdaInfo: (pda) => {
+    return new Promise((resolve) => {
+      const cmd = `
+        echo "__MODEL__=$(getprop ro.product.model)"
+        echo "__SERIAL__=$(getprop ro.serialno)"
+        echo "__ANDROID__=$(getprop ro.build.version.release)"
+        dumpsys package net.distrilog.easymobile 2>/dev/null | grep versionName= || true
+      `
+
+      exec(
+        `adb -s ${pda} shell sh -c '${cmd.replace(/\n/g, '; ')}'`,
+        { timeout: 7000 },
+        (err, stdout) => {
+          if (err || !stdout) {
+            return resolve({
+              model: null,
+              serialNumber: pda,          // ADB serial conservé
+              emVersion: null,
+              androidVersion: null
+            })
+          }
+
+          const lines = stdout.split('\n')
+
+          const get = (prefix) =>
+            lines.find(l => l.startsWith(prefix))?.split('=')[1]?.trim() || null
+
+          const model = get('__MODEL__')
+          const serialFromProp = get('__SERIAL__')
+          const androidVersion = get('__ANDROID__')
+          const emVersion =
+            lines.find(l => l.includes('versionName='))?.split('versionName=')[1]?.trim() || null
+
+          // 🔒 RÈGLE CLÉ : sur émulateur, on IGNORE ro.serialno
+          const isEmulator = pda.startsWith('emulator-')
+          const serialNumber = isEmulator ? pda : (serialFromProp || pda)
+
+          resolve({
+            model,
+            serialNumber,
+            androidVersion,
+            emVersion
+          })
+        }
+      )
     })
   },
 
@@ -347,12 +395,12 @@ const cli = {
 
       const spawnScrcpy = (adbPath = null) => {
         return new Promise((res) => {
-          const args = [...argsBase];
+          let args = [...argsBase];
 
           if (adbPath) {
-            args.push(`--adb-path=${adbPath}`);
+            args = ['--adb', adbPath, ...args];
             console.log(
-              "%c execScrcpy || using bundled adb",
+              "%c execScrcpy || using forced adb",
               'color:orange;font-weight:bold;',
               adbPath
             );
@@ -366,15 +414,6 @@ const cli = {
           const child = spawn(scrcpyBin, args, {
             detached: true,
             stdio: 'inherit'
-          });
-
-          child.on('error', (err) => {
-            console.log(
-              "%c execScrcpy || spawn error",
-              'background:red;color:#fff;font-weight:bold;',
-              err
-            );
-            res({ ok: false });
           });
 
           child.on('close', (code) => {
@@ -453,25 +492,39 @@ const cli = {
   },
 
   //* extrait la base de donnée
-  extractDatabase: async(serialNumber, filename, pdaDir, databaseRename, location) => {
+  extractDatabase: async (serialNumber, filename, pdaDir, databaseRename, location) => {
     return new Promise((resolve, reject) => {
-      //* on récupère le chemin de l'app dans npm
-      const npmDir = utils.getConfigValue('NPM_APP_DIR')
 
-      const command = `${npmDir}\\lib\\jre1.8.0_411\\bin\\java.exe -jar ${npmDir}\\AdbCommand.jar ${serialNumber} ${filename} ${pdaDir} ${databaseRename} ${location}`
+      const npmDir = utils.getConfigValue('NPM_APP_DIR')
+      const isWindows = process.platform === 'win32'
+
+      const javaCmd = isWindows
+        ? `"${path.join(npmDir, 'lib', 'jre1.8.0_411', 'bin', 'java.exe')}"`
+        : 'java'
+
+      const jarPath = path.join(npmDir, 'AdbCommand.jar')
+
+      const command = [
+        javaCmd,
+        '-jar',
+        `"${jarPath}"`,
+        serialNumber,
+        filename,
+        `"${pdaDir}"`,
+        databaseRename,
+        location
+      ].join(' ')
 
       utils.log({
         label: 'Commande : ',
         value: command
       })
 
-      exec(`${npmDir}\\lib\\jre1.8.0_411\\bin\\java.exe -jar ${npmDir}\\AdbCommand.jar ${serialNumber} ${filename} ${pdaDir} ${databaseRename} ${location}`, (error, stdout, stderr) => {
-        if (stderr)
-          reject(stderr)
-        if (error)
-          reject(`${error}`)
-        resolve(`${stdout}`)
-      });
+      exec(command, (error, stdout, stderr) => {
+        if (stderr) return reject(stderr)
+        if (error) return reject(error.message)
+        resolve(stdout)
+      })
     })
   },
 
