@@ -26,6 +26,18 @@ const app = async() => {
     label: '========== DEBUT DU SCRIPT =========='
   })
 
+  const isGlobalInstall = process.env.npm_config_global === 'true'
+
+  if (!isGlobalInstall) {
+    console.error(`
+      ===========================================================
+      Ce package doit être installé globalement.
+      Veuillez utiliser la commande : npm install -g dtl_runpda
+      ===========================================================
+    `);
+    process.exit(1);
+  }
+
   //* récupération de la configuration de l'utilisateur, la crée si elle n'existe pas
   await utils.createConfigUser()
 
