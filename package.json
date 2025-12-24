@@ -1,7 +1,7 @@
 {
   "name": "dtl_runpda",
   "type": "module",
-  "version": "1.12.5",
+  "version": "1.12.6",
   "description": "Outils de développement pour la mobilité EASYWEB",
   "main": "index.js",
   "files": [
@@ -19,7 +19,8 @@
     ".gitignore",
     "lib",
     "config-electron",
-    "AdbCommand.jar"
+    "AdbCommand.jar",
+    "postinstall.js"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
