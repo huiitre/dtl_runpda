@@ -28,6 +28,14 @@ const cli = {
     })
   },
 
+  resolveAdbPath: async() => {
+    try {
+      return execSync('command -v adb', { encoding: 'utf8' }).trim();
+    } catch {
+      return null;
+    }
+  },
+
   //* Récupère la dernière version en cours du package NPM
   getLatestVersion: () => {
     return new Promise(resolve => {
@@ -371,75 +379,66 @@ const cli = {
   },
 
   //* lance la fenêtre du pda sur le pc
-  execScrcpy: (serialNumber) => {
+  execScrcpy: async (serialNumber) => {
     console.log(
       "%c cli-commands.js #execScrcpy",
       'background:blue;color:#fff;font-weight:bold;'
     );
 
-    return new Promise(async (resolve) => {
-      const npmDir = path.normalize(utils.getConfigValue('NPM_APP_DIR'));
-      const base = path.join(npmDir, 'lib', 'scrcpy-v3.3.4');
+    const npmDir = path.normalize(await utils.getConfigValue('NPM_APP_DIR'));
+    const base = path.join(npmDir, 'lib', 'scrcpy-v3.3.4');
 
-      const isWindows = os.platform() === 'win32';
+    const adbPath = await utils.getConfigValue('ADB_PATH');
+    if (!adbPath) {
+      console.error('ADB_PATH non configuré');
+      return;
+    }
 
-      const scrcpyBin = isWindows
-        ? path.join(base, 'win64', 'scrcpy.exe')
-        : path.join(base, 'linux', 'scrcpy');
+    // RÈGLE IMPOSÉE
+    const useWindowsScrcpy = adbPath.toLowerCase().endsWith('.exe');
 
-      const adbBundled = isWindows
-        ? path.join(base, 'win64', 'adb.exe')
-        : path.join(base, 'linux', 'adb');
+    const scrcpyBin = useWindowsScrcpy
+      ? path.join(base, 'win64', 'scrcpy.exe')
+      : path.join(base, 'linux', 'scrcpy');
 
-      const argsBase = ['-s', serialNumber];
+    const args = [
+      '--force-adb-forward',
+      '-s', serialNumber
+    ];
 
-      const spawnScrcpy = (adbPath = null) => {
-        return new Promise((res) => {
-          let args = [...argsBase];
+    const env = { ...process.env };
 
-          if (adbPath) {
-            args = ['--adb', adbPath, ...args];
-            console.log(
-              "%c execScrcpy || using forced adb",
-              'color:orange;font-weight:bold;',
-              adbPath
-            );
-          } else {
-            console.log(
-              "%c execScrcpy || using system adb",
-              'color:green;font-weight:bold;'
-            );
-          }
+    // scrcpy Linux → on force adb
+    if (!useWindowsScrcpy) {
+      env.SCRCPY_ADB = adbPath;
+    }
 
-          const child = spawn(scrcpyBin, args, {
-            detached: true,
-            stdio: 'inherit'
-          });
+    console.log(
+      "%c execScrcpy || using scrcpy",
+      'color:orange;font-weight:bold;',
+      scrcpyBin
+    );
+    console.log(
+      "%c execScrcpy || adb",
+      'color:orange;font-weight:bold;',
+      adbPath
+    );
 
-          child.on('close', (code) => {
-            console.log(
-              "%c execScrcpy || close",
-              'background:red;color:#fff;font-weight:bold;',
-              code
-            );
-            res({ ok: code === 0 });
-          });
-        });
-      };
+    return new Promise((resolve) => {
+      const child = spawn(scrcpyBin, args, {
+        stdio: 'inherit',
+        detached: true,
+        env
+      });
 
-      // 1️⃣ Tentative avec ADB embarqué
-      const result = await spawnScrcpy(adbBundled);
-
-      // 2️⃣ Fallback : ADB système
-      if (!result.ok) {
+      child.on('close', (code) => {
         console.log(
-          "%c execScrcpy || fallback to system adb",
-          'background:purple;color:#fff;font-weight:bold;'
+          "%c execScrcpy || close",
+          'background:red;color:#fff;font-weight:bold;',
+          code
         );
-        await spawnScrcpy(null);
-      }
-
-      resolve();
+        resolve();
+      });
     });
   },
 

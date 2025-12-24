@@ -147,6 +147,13 @@ const utils = {
           "app_editable": false,
           "editable": false,
         },
+        "ADB_PATH": {
+          "value": null,
+          "is_visible": true,
+          "description": "Chemin vers le binaire adb utilisé par dtl_runpda (null = résolution automatique)",
+          "app_editable": true,
+          "editable": true
+        },
         "DEFAULT_PDA": {
           "value": "ct60",
           "is_visible": true,
