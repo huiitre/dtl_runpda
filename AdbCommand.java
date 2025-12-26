@@ -1,4 +1,6 @@
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class AdbCommand {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -30,10 +32,10 @@ public class AdbCommand {
             filePath
         );
 
-        pb.redirectOutput(new File(pdaDir + "\\" + databaseRename));
+        Path outputFile = Paths.get(pdaDir, databaseRename);
+        pb.redirectOutput(outputFile.toFile());
 
         Process process = pb.start();
-
         process.waitFor();
     }
 }
