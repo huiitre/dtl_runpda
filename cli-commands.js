@@ -1,6 +1,6 @@
 /* const utils = require('./utils') */
 import utils from './utils.js';
-import { exec, spawn, execSync } from 'child_process';
+import { exec, spawn, execSync, execFile } from 'child_process';
 import path from 'path';
 import axios from 'axios'
 import os from 'os';
@@ -28,9 +28,10 @@ const cli = {
     })
   },
 
-  resolveAdbPath: async() => {
+  resolveAdbPath: async () => {
     try {
-      return execSync('command -v adb', { encoding: 'utf8' }).trim();
+      const out = execSync('bash --noprofile --norc -lc "command -v adb"', { encoding: 'utf8' });
+      return out.trim().split(/\r?\n/).pop(); // dernière ligne = chemin
     } catch {
       return null;
     }
@@ -378,7 +379,6 @@ const cli = {
     })
   },
 
-  //* lance la fenêtre du pda sur le pc
   execScrcpy: async (serialNumber) => {
     console.log(
       "%c cli-commands.js #execScrcpy",
@@ -388,30 +388,24 @@ const cli = {
     const npmDir = path.normalize(await utils.getConfigValue('NPM_APP_DIR'));
     const base = path.join(npmDir, 'lib', 'scrcpy-v3.3.4');
 
-    const adbPath = await utils.getConfigValue('ADB_PATH');
+    let adbPath = await utils.getConfigValue('ADB_PATH');
     if (!adbPath) {
       console.error('ADB_PATH non configuré');
       return;
     }
 
-    // RÈGLE IMPOSÉE
-    const useWindowsScrcpy = adbPath.toLowerCase().endsWith('.exe');
+    // Windows → on normalise le path adb
+    if (process.platform === 'win32') {
+      adbPath = adbPath
+        .replace(/^\/c\//i, 'C:/')
+        .replace(/\//g, '\\');
+    }
+
+    const useWindowsScrcpy = process.platform === 'win32';
 
     const scrcpyBin = useWindowsScrcpy
       ? path.join(base, 'win64', 'scrcpy.exe')
       : path.join(base, 'linux', 'scrcpy');
-
-    const args = [
-      '--force-adb-forward',
-      '-s', serialNumber
-    ];
-
-    const env = { ...process.env };
-
-    // scrcpy Linux → on force adb
-    if (!useWindowsScrcpy) {
-      env.SCRCPY_ADB = adbPath;
-    }
 
     console.log(
       "%c execScrcpy || using scrcpy",
@@ -424,22 +418,25 @@ const cli = {
       adbPath
     );
 
-    return new Promise((resolve) => {
-      const child = spawn(scrcpyBin, args, {
-        stdio: 'inherit',
-        detached: true,
-        env
-      });
+    if (useWindowsScrcpy) {
+      // ✅ LANCEMENT GUI WINDOWS (OBLIGATOIRE)
+      const child = execFile(
+        'cmd',
+        ['/c', 'start', '/B', '', scrcpyBin, '-s', serialNumber],
+        { windowsHide: true, shell: true }
+      );
+      child.unref();
+    } else {
+      // Linux / WSL
+      execFile(
+        scrcpyBin,
+        ['-s', serialNumber],
+        { env: { ...process.env, SCRCPY_ADB: adbPath } }
+      );
+    }
 
-      child.on('close', (code) => {
-        console.log(
-          "%c execScrcpy || close",
-          'background:red;color:#fff;font-weight:bold;',
-          code
-        );
-        resolve();
-      });
-    });
+    // fire-and-forget
+    return;
   },
 
   //* lance l'app easymobile du PDA
